@@ -5,9 +5,6 @@ import common.constants as constants
 from core.log import Log
 
 pg.init()
-
-
-
 flags = RESIZABLE | SCALED
 
 cr.screen = pg.display.set_mode([800,600],flags)
@@ -22,6 +19,7 @@ cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
 
 cr.event_holder = EventHolder()
 cr.log = Log("./log.json")
+constants.init_constants()
 
 
 while not cr.event_holder.should_quit:
