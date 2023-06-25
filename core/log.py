@@ -24,13 +24,14 @@ class Log:
     def write_log( self,message,log_level: LogLevel ):
         # todo: optimize file operations
         if log_level.value >= self.level.value:
-            print(log_level.name +" "+str(message))
+            time_ = log_time()
+            key = "id:"+str(Log._id)+" time:"+time_+" level:"+log_level.name
+            print(key+" : "+message)
 
             file = open(self.path,'r')
             readfile = file.read()
             dict_ = json.loads(readfile)
-            key = log_time()
-            dict_[str(Log._id)+"-"+key+"-"+log_level.name] = message
+            dict_[key] = message
             json.dump(dict_,open(self.path,'w'),indent=4)
             Log._id += 1
 
