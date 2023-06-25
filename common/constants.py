@@ -13,10 +13,32 @@ IS_MAC = (current_platform == 'Darwin')
 print("Current platform: ", current_platform)
 
 if IS_WINDOWS:
-    print("Running on Windows")
+    version_info = platform.win32_ver()
+    release_version = version_info[0]
+    service_pack = version_info[1]
+    build_number = version_info[2]
+
+    print("Release Version:", release_version)
+    print("Service Pack:", service_pack)
+    print("Build Number:", build_number)
+
 elif IS_LINUX:
-    print("Running on Linux")
+    # Get distribution information
+    distribution = \
+    subprocess.check_output(['lsb_release', '-d']).decode('utf-8').strip().split('\t')[1]
+    print("Distribution:", distribution)
+
+    # Get kernel version
+    kernel_version = subprocess.check_output(['uname', '-r']).decode('utf-8').strip()
+    print("Kernel Version:", kernel_version)
+
 elif IS_MAC:
-    print("Running on macOS")
+
+    version_info = platform.mac_ver()
+    macos_version = version_info[0]
+    build_number = version_info[1]
+
+    print("macOS Version:", macos_version)
+    print("Build Number:", build_number)
 else:
-    print("Running on an unknown platform")
+    print("Warning: running on an unknown platform")
