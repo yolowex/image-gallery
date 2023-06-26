@@ -6,8 +6,8 @@ class TaskEnum(Enum):
     Pending         = 'pending'
 
 class LogLevel(Enum):
-    DEBUG = 0
-    INFO = 1
-    WARNING = 2
-    ERROR = 3
-    CRITICAL = 4
+    DEBUG           = 0
+    INFO            = 1
+    WARNING         = 2
+    ERROR           = 3
+    CRITICAL        = 4

@@ -1,0 +1,27 @@
+
+
+1 - installer -> windows : uninstall, open with
+
+2 - infrastructures 
+    common 
+    core -> editor / gallery
+    gui -> 
+
+3 - agile
+    a - time limit:
+        1 year -> 2 year 
+        2 months -> 4
+
+    b - harmony between app components
+
+
+    gallery (gui{scrollbar, button,textbox..},preview,context_menu...)  25/100
+        show image details                                              50/100
+        caption                                                         100
+
+    editor image (save,load,pop-up window file,4\5)                     25/100
+    editor video ( ... )                                                25/100
+    modifying the tags (images and videos)                              50/100
+    individual labels                                                   50/100
+    sqlite                                                              25/100
+    search                                                              25/100

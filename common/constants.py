@@ -5,9 +5,9 @@ import platform
 
 
 
-IS_WINDOWS = ""
-IS_LINUX = ""
-IS_MAC = ""
+IS_WINDOWS = False
+IS_LINUX = False
+IS_MAC =  False
 WINDOWS_RELEASE_VERSION = ""
 WINDOWS_SERVICE_PACK = ""
 WINDOWS_BUILD_NUMBER = ""
