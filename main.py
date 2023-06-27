@@ -18,8 +18,17 @@ cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED # noqa
 cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
 
 cr.event_holder = EventHolder()
-cr.log = Log("./log.json")
+
+LOCAL_APPS_DATA = os.environ.get('LOCALAPPDATA')
+APP_DATA_PATH = LOCAL_APPS_DATA+f"/{constants.APP_NAME}"
+LOG_PATH = APP_DATA_PATH + "/log.json"
+os.mkdir(APP_DATA_PATH)
+
+
+cr.log = Log(LOG_PATH)
 constants.init_constants()
+constants.LOG_PATH = LOG_PATH
+constants.APP_DATA_PATH = APP_DATA_PATH
 
 
 while not cr.event_holder.should_quit:

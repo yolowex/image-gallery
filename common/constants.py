@@ -3,8 +3,12 @@ from common.names import *
 import common.resources as cr
 import platform
 
+APP_NAME = "Foto Folio"
 
 
+
+
+LOCAL_APPS_DATA = ""
 IS_WINDOWS = False
 IS_LINUX = False
 IS_MAC =  False
@@ -22,7 +26,7 @@ def export_platform_constants() :
     global IS_WINDOWS,WINDOWS_BUILD_NUMBER,WINDOWS_SERVICE_PACK,WINDOWS_RELEASE_VERSION
     global IS_LINUX,LINUX_DISTRIBUTION,LINUX_KERNEL_VERSION
     global IS_MAC,MACOS_VERSION,MACOS_BUILD_NUMBER,MACOS_ARCHITECTURE
-
+    global LOCAL_APPS_DATA
 
     # Determine the platform
     current_platform = platform.system()
@@ -41,6 +45,7 @@ def export_platform_constants() :
         WINDOWS_RELEASE_VERSION = version_info[0]
         WINDOWS_SERVICE_PACK = version_info[1]
         WINDOWS_BUILD_NUMBER = version_info[2]
+        LOCAL_APPS_DATA = os.environ.get('LOCALAPPDATA')
 
         cr.log.write_log("Release Version:"+ WINDOWS_RELEASE_VERSION,LogLevel.INFO)
         cr.log.write_log("Service Pack:"+ WINDOWS_SERVICE_PACK,LogLevel.INFO)
