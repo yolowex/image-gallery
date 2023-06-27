@@ -2,6 +2,17 @@ here=`pwd`
 echo $here
 # done: fix the file associations not getting added
 # done: fix the program not appearing in the search menu
+# todo: fix the program's icon not being shown in the search menu
+
+command="iscc"
+iscc_exists=0
+if where "$command" > /dev/null 2>&1; then
+    iscc_exists=1
+else
+    echo "Warning: Could not find iscc, please install Inno Setup Compiler"
+    echo " or if you have it installed already, add it to PATH"
+fi
+
 
 buildPath="$here/build"
 assetsPath="$here/test_assets"
@@ -136,7 +147,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-OutputBaseFilename=mysetup
+OutputBaseFilename=Foto Folio Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -266,5 +277,21 @@ else
     echo "The Windows Installer is already built."
 fi
 
+
+if [ $iscc_exists -eq 0 ]; then
+    echo Could not find iscc \(Inno Setup Compiler\), I can\'t compile the installer
+else 
+    echo Compile the Inno Setup Script file?? y/n:  
+    read input
+
+    if [ "$input" == "y" ]; then
+        iscc $installerOutPath 
+    elif [ "$input" == "n" ]; then
+        echo Ok
+    else
+        echo Bad output! 1>&2
+        exit 1
+    fi
+fi
 
 echo -e "\nGoodbye!"
