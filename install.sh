@@ -11,7 +11,7 @@ installerOutPath="$installerPath/inno.iss"
 shouldBuildExe=0
 shouldBuildInstaller=0
 extentions=("jpg" "myp2" "mid5")
-
+source_dirs=("test_assets")
 appName="Foto Folio"
 appVersion="1.0"
 appPublisher="Great Sunshine Company"
@@ -21,12 +21,42 @@ appAssocName="$appName File"
 # this should probably be more dynamic
 exeSource="../build/Foto Folio.exe"
 
+
+
+add_source_dir() {
+    number=$1
+    dir_name=$2
+    outputfile=$3
+    echo "adding" $dir_name "source directory in app's installation folder"
+
+mkdir_section=$(cat <<EOF
+Name: "{app}\\$dir_name"
+EOF
+    )
+
+    echo "$mkdir_section" >> $outputfile
+    
+}
+
+add_source_def() {
+    number=$1
+    dir_name=$2
+    outputfile=$3
+    echo "adding source definition for" $dir_name
+
+dirdef_section=$(cat <<EOF
+Source: "../$dir_name/*"; DestDir: "{app}\\$dir_name"; Flags: ignoreversion recursesubdirs createallsubdirs
+EOF
+    )
+
+    echo "$dirdef_section" >> $outputfile
+}
+
 write_assoc_def() {
     number=$1
     extention=$2
     outputfile=$3
     echo "writing definition section for" $extention
-
     
 assoc_def=$(cat <<EOF
 ;
@@ -117,15 +147,33 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
-[Files]
-Source: "{#ExeSource}" ; DestDir: "{app}"; Flags: ignoreversion
-; 
+[Dirs]
 EOF
     )
 
-
     echo "$body_section_text" >> $installerOutPath
+
+    i=0
+    for item in "${source_dirs[@]}"; do
+        add_source_dir $i $item $installerOutPath
+        ((i++))
+    done
     
+file_section_text=$(cat <<EOF
+;
+[Files]
+Source: "{#ExeSource}" ; DestDir: "{app}"; Flags: ignoreversion
+EOF
+)
+
+    echo "$file_section_text" >> $installerOutPath
+
+    i=0
+    for item in "${source_dirs[@]}"; do
+        add_source_def $i $item $installerOutPath
+        ((i++))
+    done
+
     echo "[Registry]" >> $installerOutPath
     
     echo writing the registeration section for program\'s associated extentions 
