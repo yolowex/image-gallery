@@ -1,7 +1,7 @@
 here=`pwd`
 echo $here
-# todo: fix the file associations not getting added
-# todo: fix the program not appearing in the search menu
+# done: fix the file associations not getting added
+# done: fix the program not appearing in the search menu
 
 buildPath="$here/build"
 assetsPath="$here/test_assets"
@@ -10,6 +10,7 @@ installerPath="$here/installer"
 installerOutPath="$installerPath/inno.iss"
 shouldBuildExe=0
 shouldBuildInstaller=0
+extentions=("jpg" "myp2" "mid5")
 
 appName="Foto Folio"
 appVersion="1.0"
@@ -41,7 +42,7 @@ write_assoc_reg() {
     number=$1
     extention=$2
     outputfile=$3
-    echo "writing registery section for" $extention
+    echo "writing registry section for" $extention
     
     assoc_reg=$(cat <<EOF
 ;
@@ -84,19 +85,18 @@ EOF
 
     echo "$def_section_text" >> $installerOutPath
 
-    echo writing the definition section for program\'s associated extentions \
+    echo writing the definition section for program\'s associated extentions
 
-    extentions=("jpg" "png" "webp" "mp4" "avi" "mkv" "myp")
     i=0
     for item in "${extentions[@]}"; do
-        write_assoc_def $i $item $installerOutPath
+        write_assoc_def $i ".$item" $installerOutPath
         ((i++))
     done
 
 body_section_text=$(cat <<EOF
 ; 
 [Setup]
-AppId={{931B78F1-4C54-4E34-883F-1470C64243CB}
+AppId={{931B78F1-4C54-4E34-883F-1470C64243CB}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -126,13 +126,13 @@ EOF
 
     echo "$body_section_text" >> $installerOutPath
     
-    echo "[Register]" >> $installerOutPath
+    echo "[Registry]" >> $installerOutPath
     
     echo writing the registeration section for program\'s associated extentions 
 
     i=0
     for item in "${extentions[@]}"; do
-        write_assoc_reg $i $item $installerOutPath
+        write_assoc_reg $i ".$item" $installerOutPath
         ((i++))
     done
 
@@ -149,12 +149,12 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 EOF
     )
 
-    echo writing the final section of the inno setup script! \
+    echo writing the final section of the inno setup script!
     echo "$final_section_text" >> $installerOutPath
 }
 
 if [ -e $buildPath ]; then
-    echo The build folder already exists, re-build the executables?? y:  
+    echo The build folder already exists, re-build the executables?? y/n:  
     read input
 
     if [ "$input" == "y" ]; then

@@ -14,7 +14,7 @@
 
 
 [Setup]
-AppId={{931B78F1-4C54-4E34-883F-1470C64243CB}
+AppId={{931B78F1-4C54-4E34-883F-1470C64243CB}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
