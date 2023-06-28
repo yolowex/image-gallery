@@ -1,3 +1,5 @@
+import os
+
 from common.names import *
 import common.resources as cr
 from core.event_holder import EventHolder
@@ -19,16 +21,22 @@ cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
 
 cr.event_holder = EventHolder()
 
-LOCAL_APPS_DATA = os.environ.get('LOCALAPPDATA')
-APP_DATA_PATH = LOCAL_APPS_DATA+f"/{constants.APP_NAME}"
-LOG_PATH = APP_DATA_PATH + "/log.json"
-os.mkdir(APP_DATA_PATH)
+local_apps_data = os.environ.get('LOCALAPPDATA')
+
+if local_apps_data is not None:
+    app_data_path = local_apps_data+f"/{constants.APP_NAME}"
+    log_path = app_data_path + "/log.json"
+    if not os.path.exists(app_data_path):
+        os.mkdir(app_data_path)
+else:
+    app_data_path = constants.APP_DATA_PATH
+    log_path = constants.LOG_PATH
 
 
-cr.log = Log(LOG_PATH)
+cr.log = Log(log_path)
 constants.init_constants()
-constants.LOG_PATH = LOG_PATH
-constants.APP_DATA_PATH = APP_DATA_PATH
+constants.LOG_PATH = log_path
+constants.APP_DATA_PATH = app_data_path
 
 
 while not cr.event_holder.should_quit:

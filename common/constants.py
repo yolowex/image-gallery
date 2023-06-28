@@ -4,8 +4,8 @@ import common.resources as cr
 import platform
 
 APP_NAME = "Foto Folio"
-APP_DATA_PATH = ""
-LOG_PATH = ""
+APP_DATA_PATH = "."
+LOG_PATH = "./log.json"
 
 
 LOCAL_APPS_DATA = ""
