@@ -15,14 +15,13 @@ fi
 
 
 buildPath="$here/build"
-assetsPath="$here/test_assets"
 pythonEntryPath="$here/main.py"
 installerPath="$here/installer"
 installerOutPath="$installerPath/inno.iss"
 shouldBuildExe=0
 shouldBuildInstaller=0
 extentions=("jpg" "gif" "webp" "png" "mp4" "mkv" "avi" )
-source_dirs=("test_assets")
+source_dirs=()
 appName="Foto Folio"
 appVersion="1.0"
 appPublisher="Great Sunshine Company"
@@ -251,7 +250,13 @@ fi
 
 if [ $shouldBuildExe -eq 1 ]; then
     echo "Building the executables ..."
-    rm -rf $buildPath
+    if [ -e $buildPath ]; then
+        rm -rf $buildPath
+        echo Deleting $buildPath
+    else
+        echo $buildPath does not exist.
+    fi
+
     mkdir $buildPath
     cd $buildPath
     echo "I'm in $(pwd)"
@@ -262,7 +267,6 @@ if [ $shouldBuildExe -eq 1 ]; then
     # todo: automatically sync the executable name with the script name ( or sth like that )
     mv "$buildPath\dist\main.exe" "$buildPath\\$appExeName"
     rm -r "$buildPath\dist"
-    cp -r $assetsPath $buildPath
 
 else
     echo "The executables are already built."
