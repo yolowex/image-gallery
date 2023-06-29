@@ -23,15 +23,21 @@ class Entry:
 
         local_apps_data = os.environ.get('LOCALAPPDATA')
 
-        if local_apps_data is not None:
-            app_data_path = local_apps_data+f"/{constants.APP_NAME}"
-            log_path = app_data_path + "/log.json"
-            if not os.path.exists(app_data_path):
-                os.mkdir(app_data_path)
-        else:
-            app_data_path = constants.APP_DATA_PATH
-            log_path = constants.LOG_PATH
 
+        current_platform = platform.system()
+
+        app_name = "Foto Folio"
+        app_data_path = "."
+        if current_platform == "Windows" :
+            x = os.environ.get("LOCALAPPDATA")
+            if x is not None :
+                app_data_path = x
+
+        app_data_path = f"{app_data_path}/{app_name}"
+        log_path = os.path.abspath(f"{app_data_path}/log.json")
+
+        if not os.path.exists(app_data_path) :
+            os.mkdir(app_data_path)
 
         constants.init_constants()
         constants.LOG_PATH = log_path
