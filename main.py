@@ -1,4 +1,4 @@
-from common.enums import LogLevel
+from core.common.enums import LogLevel
 from core.log import Log
 import platform
 import traceback

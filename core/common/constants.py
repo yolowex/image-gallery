@@ -1,6 +1,6 @@
-from common.enums import LogLevel
-from common.names import *
-import common.resources as cr
+from core.common.enums import LogLevel
+from core.common.names import *
+import core.common.resources as cr
 import platform
 
 APP_NAME = "Foto Folio"

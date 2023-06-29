@@ -14,7 +14,7 @@ from typing import Optional,List,Dict,Union
 
 # third party
 import pygame as pg
-from pygame.locals import *
+import pygame.locals as pgl
 from pygame import Color,Font,FRect,Vector2,Surface
 
 from pygame._sdl2 import Renderer, Texture, Window # noqa

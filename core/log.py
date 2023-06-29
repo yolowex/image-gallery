@@ -1,6 +1,6 @@
 import json
-from common.utils import *
-from common.enums import LogLevel
+from core.common.utils import *
+from core.common.enums import LogLevel
 
 """
 this class is supposed to print the program logs

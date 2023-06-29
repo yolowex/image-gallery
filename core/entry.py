@@ -1,13 +1,15 @@
-from common.names import *
-import common.resources as cr
+from core.common.names import *
+import core.common.resources as cr
+from core.editor.editor import Editor
 from core.event_holder import EventHolder
-import common.constants as constants
+import core.common.constants as constants
 from core.log import Log
+from core.gallery.gallery import Gallery
 
 class Entry:
     def __init__(self,log:Log):
         pg.init()
-        flags = RESIZABLE | SCALED
+        flags = pgl.RESIZABLE | pgl.SCALED
         cr.screen = pg.display.set_mode([800,600],flags)
         cr.window = Window.from_display_module()
         cr.log = log
@@ -20,9 +22,6 @@ class Entry:
         cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
 
         cr.event_holder = EventHolder()
-
-        local_apps_data = os.environ.get('LOCALAPPDATA')
-
 
         current_platform = platform.system()
 
@@ -43,6 +42,8 @@ class Entry:
         constants.LOG_PATH = log_path
         constants.APP_DATA_PATH = app_data_path
 
+        cr.gallery = Gallery()
+        cr.editor = Editor()
 
 
     def run( self ):
@@ -50,6 +51,8 @@ class Entry:
             cr.renderer.draw_color = Color("gray")
             cr.renderer.clear()
             cr.event_holder.get_events()
+            cr.gallery.check_events()
+            cr.gallery.render()
             cr.renderer.present()
 
 
