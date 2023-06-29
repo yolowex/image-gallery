@@ -11,8 +11,8 @@ class Entry:
         pg.init()
         flags = pgl.RESIZABLE
 
-        cr.screen = pg.display.set_mode([800,600],flags)
-        cr.window = Window.from_display_module()
+        # cr.screen = pg.display.set_mode([800,600],flags)
+        cr.window = Window(size=[800,600])
         cr.log = log
         """
         _sdl2 is a hidden pygame module, therefore the linters can't find it
@@ -20,7 +20,8 @@ class Entry:
         which disables any linter errors and warnings
         """
         cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED # noqa
-        cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
+        # cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
+        cr.renderer = Renderer(cr.window)    
 
         cr.event_holder = EventHolder()
 
