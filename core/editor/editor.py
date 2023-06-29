@@ -14,7 +14,6 @@ class Editor:
     def render_debug(self):
         ...
 
-
     def render(self) :
         cr.renderer.draw_color = Color("red")
         cr.renderer.clear()
