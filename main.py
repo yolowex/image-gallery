@@ -1,49 +1,34 @@
-import os
-
-from common.names import *
-import common.resources as cr
-from core.event_holder import EventHolder
-import common.constants as constants
+from common.enums import LogLevel
 from core.log import Log
+import platform
+import traceback
+import os
+import pathlib
+current_platform = platform.system()
+app_name = "Foto Folio"
+app_data_path = "."
+if current_platform == "Windows":
+    x = os.environ.get("LOCALAPPDATA")
+    if x is not None:
+        app_data_path = x
 
-pg.init()
-flags = RESIZABLE | SCALED
+app_data_path = f"{app_data_path}/{app_name}"
+log_path = os.path.abspath(f"{app_data_path}/log.json")
 
-cr.screen = pg.display.set_mode([800,600],flags)
-cr.window = Window.from_display_module()
-"""
-_sdl2 is a hidden pygame module, therefore the linters can't find it
-and converse with it properly. to fix annoying false alarms, we use # noqa here,
-which disables any linter errors and warnings
-"""
-cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED # noqa
-cr.renderer = pg._sdl2.video.Renderer.from_window(cr.window) # noqa
+print(f"The log file is located at {log_path}")
 
-cr.event_holder = EventHolder()
+log = Log(log_path)
 
-local_apps_data = os.environ.get('LOCALAPPDATA')
+try:
+    log.write_log("Starting the app...",LogLevel.INFO)
+    from core.entry import Entry
+    entry = Entry(log)
+    entry.run()
 
-if local_apps_data is not None:
-    app_data_path = local_apps_data+f"/{constants.APP_NAME}"
-    log_path = app_data_path + "/log.json"
-    if not os.path.exists(app_data_path):
-        os.mkdir(app_data_path)
-else:
-    app_data_path = constants.APP_DATA_PATH
-    log_path = constants.LOG_PATH
-
-
-cr.log = Log(log_path)
-constants.init_constants()
-constants.LOG_PATH = log_path
-constants.APP_DATA_PATH = app_data_path
+except Exception as e:
+    error_log = "Unexpected error: " + str(
+        e) + "\n" + traceback.format_exc()
+    log.write_log(error_log, LogLevel.FATAL)
 
 
-while not cr.event_holder.should_quit:
-    cr.renderer.draw_color = Color("gray")
-    cr.renderer.clear()
-    cr.event_holder.get_events()
-    cr.renderer.present()
-
-
-
+log.write_log("Closing the app...",LogLevel.INFO)
