@@ -9,7 +9,8 @@ from core.gallery.gallery import Gallery
 class Entry:
     def __init__(self,log:Log):
         pg.init()
-        flags = pgl.RESIZABLE | pgl.SCALED
+        flags = pgl.RESIZABLE
+
         cr.screen = pg.display.set_mode([800,600],flags)
         cr.window = Window.from_display_module()
         cr.log = log

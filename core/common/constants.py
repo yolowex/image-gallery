@@ -70,6 +70,62 @@ def export_platform_constants() :
         cr.log.write_log("Warning: running on an unknown platform",LogLevel.INFO)
 
 
+class Colors:
+    # Basic Colors
+    WHITE = Color([255, 255, 255])
+    BLACK = Color([0, 0, 0])
+
+    # Primary Colors
+    RED = Color([255, 0, 0])
+    GREEN = Color([0, 255, 0])
+    BLUE = Color([0, 0, 255])
+
+    # Secondary Colors
+    YELLOW = Color([255, 255, 0])
+    ORANGE = Color([255, 165, 0])
+    PURPLE = Color([128, 0, 128])
+
+    # Other Popular Colors
+    PINK = Color([255, 192, 203])
+    GRAY = Color([128, 128, 128])
+    BROWN = Color([165, 42, 42])
+    MAGENTA = Color([255, 0, 255])
+    CYAN = Color([0, 255, 255])
+    LIME = Color([0, 255, 0])
+    NAVY = Color([0, 0, 128])
+    TEAL = Color([0, 128, 128])
+    OLIVE = Color([128, 128, 0])
+    MAROON = Color([128, 0, 0])
+
+    # Metallic Colors
+    GOLD = Color([255, 215, 0])
+    SILVER = Color([192, 192, 192])
+
+    # Shades and Tints
+    INDIGO = Color([75, 0, 130])
+    AQUA = Color([0, 255, 255])
+    CORAL = Color([255, 127, 80])
+    SKY_BLUE = Color([135, 206, 235])
+    LAVENDER = Color([230, 230, 250])
+    TURQUOISE = Color([64, 224, 208])
+    ORCHID = Color([218, 112, 214])
+    SALMON = Color([250, 128, 114])
+    BEIGE = Color([245, 245, 220])
+
+    # Additional Colors
+    STEEL_BLUE = Color([70, 130, 180])
+    CHOCOLATE = Color([210, 105, 30])
+    PLUM = Color([221, 160, 221])
+    DARK_GREEN = Color([0, 100, 0])
+    CRIMSON = Color([220, 20, 60])
+    PALE_GREEN = Color([152, 251, 152])
+    HOT_PINK = Color([255, 105, 180])
+    MEDIUM_ORCHID = Color([186, 85, 211])
+    DARK_SLATE_GRAY = Color([47, 79, 79])
+    SPRING_GREEN = Color([0, 255, 127])
+    FOREST_GREEN = Color([34, 139, 34])
+
+
 """
 I added this try/except block just in case, it might be unnecessary thou
 """
@@ -81,3 +137,7 @@ def init_constants():
         error_log= "Could not fetch platform details due to this error! :"+ str(e) +"\n" \
               + traceback.format_exc()
         cr.log.write_log(error_log,LogLevel.ERROR)
+
+
+
+

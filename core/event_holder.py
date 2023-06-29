@@ -79,6 +79,9 @@ class EventHolder :
                 if i.key in self.held_keys :
                     self.held_keys.remove(i.key)
 
+            # elif i.type == VIDEORESIZE : # this might be useful later
+            #     new_width, new_height = i.size
+
             if i.type == MOUSEBUTTONDOWN :
                 self.mouse_pressed_keys = list(pg.mouse.get_pressed())
                 self.mouse_held_keys = list(pg.mouse.get_pressed())
