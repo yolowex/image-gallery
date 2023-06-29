@@ -6,7 +6,7 @@ from core.common.names import *
 import core.common.resources as cr
 from helper_kit.relative_rect import RelRect
 
-
+# todo: add black formatter
 class DetailedView:
     def __init__(self):
         image_pos = Vector2(0.2,0.1)
@@ -51,12 +51,25 @@ class DetailedView:
         )
 
 
-
-
-
-
     def check_events(self):
-        ...
+        m_rect = cr.event_holder.mouse_rect
+
+
+        if m_rect.colliderect(self.image_box.get()) and \
+                m_rect.colliderect(self.preview_box.get()) \
+                    and m_rect.colliderect(self.left_box.get()):
+            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEALL)
+
+        elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(self.left_box.get()):
+            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEWE)
+
+        elif m_rect.colliderect(self.image_box.get()) and \
+                m_rect.colliderect(self.preview_box.get()):
+
+            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZENS)
+
+        else:
+            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
 
     def render_debug(self):
         ...

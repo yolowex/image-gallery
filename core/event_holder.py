@@ -33,7 +33,8 @@ class EventHolder :
 
     @property
     def mouse_rect( self ) -> FRect:
-        return FRect(self.mouse_pos.x - 1, self.mouse_pos.y - 1,2,2)
+        radius = 2
+        return FRect(self.mouse_pos.x - radius, self.mouse_pos.y - radius,radius*2,radius*2)
 
     def get_events( self ) :
         self.pressed_keys.clear()
