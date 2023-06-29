@@ -11,3 +11,13 @@ log: Optional[Log] = None
 
 gallery = None
 editor = None
+
+
+def ws() -> Vector2:
+    """
+    returns the size of the sdl2 window
+
+    :return: Vector2
+    """
+    # todo: handle this linter error
+    return Vector2(window.size)
