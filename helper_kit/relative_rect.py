@@ -124,7 +124,6 @@ class RelRect:
 
 if __name__ == "__main__":
     # this block tests to see if this helper class is functioning correctly
-
     def f():
         return 800,600
 

@@ -1,3 +1,4 @@
+from core.common import assets
 from core.common.names import *
 import core.common.resources as cr
 from core.editor.editor import Editor
@@ -42,6 +43,8 @@ class Entry:
         constants.init_constants()
         constants.LOG_PATH = log_path
         constants.APP_DATA_PATH = app_data_path
+
+        assets.init_assets()
 
         cr.gallery = Gallery()
         cr.editor = Editor()

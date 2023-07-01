@@ -6,7 +6,8 @@ from core.common.names import *
 import core.common.resources as cr
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
-from core.common import utils
+from core.common import utils, assets
+
 
 # todo: add black formatter
 class DetailedView :
@@ -39,7 +40,7 @@ class DetailedView :
         self.x_locked = False
         self.y_locked = False
 
-        self.zoom_texture = Texture.from_surface(cr.renderer,pg.image.load("./test_assets/image-25.jpg"))
+        self.zoom_texture = random.choice(assets.pics)
 
         self.zoom_view = ZoomView(self.image_box,self.zoom_texture)
 
@@ -94,6 +95,10 @@ class DetailedView :
         self.zoom_view.check_events()
 
         # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
+
+        if pgl.K_SPACE in cr.event_holder.pressed_keys:
+            self.zoom_view.image = random.choice(assets.pics)
+            self.zoom_view.update()
 
 
         if m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
