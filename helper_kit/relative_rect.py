@@ -52,11 +52,10 @@ class RelRect:
         res.x = self.rect.x
         res.y = self.rect.y
 
-
         if in_rect_ar_group == AspectRatioGroup.RECTANGULAR:
             size = min(self.rect.size)
             if container_ar_group == AspectRatioGroup.PORTRAIT:
-                res.size = size, size * container_ar.y
+                res.size = size, size * container_ar.x
             else:
                 res.size = size, size * container_ar.x
 
@@ -66,13 +65,16 @@ class RelRect:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # portrait, portrait
                 if in_rect_ar.y < container_ar.y:
-                    height = min(self.rect.size)
-                    res.size = height * in_rect_ar.x, height
+                    # when the picture is shorter than the container in scale
+                    width = min(self.rect.size)
+                    res.size = width , width * in_rect_ar.y
                     res.center = self.rect.center
                 else:
-                    height = min(self.rect.size)
-                    res.size = height * in_rect_ar.x, height
+                    # when the picture is taller than the container in scale
+                    height = max(self.rect.size)
+                    res.size = height / in_rect_ar.y, height
                     res.center = self.rect.center
+
             else:
                 # portrait, landscape
                 ...
@@ -80,8 +82,8 @@ class RelRect:
         elif container_ar_group == AspectRatioGroup.LANDSCAPE:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # landscape, portrait
-                height = min(self.rect.size)
-                res.size = height * in_rect_ar.x,height
+                height = self.rect.h
+                res.size = height / in_rect_ar.y  ,height
                 res.center = self.rect.center
             else:
                 # landscape, landscape
@@ -90,9 +92,10 @@ class RelRect:
         else:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # rectangular, portrait
-                height = min(self.rect.size)
-                res.size = height * in_rect_ar.x, height
+                width = min(self.rect.size)
+                res.size = width / in_rect_ar.y , width
                 res.center = self.rect.center
+                print("jackpot")
 
             else:
                 # rectangular, landscape

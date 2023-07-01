@@ -16,7 +16,7 @@ class ZoomView:
     def update(self):
 
         # self.inner_image_rect = self.container_box.get_in_rect(Vector2(self.image.get_rect().size))
-        self.inner_image_rect = self.container_box.get_in_rect(Vector2(80,100))
+        self.inner_image_rect = self.container_box.get_in_rect(Vector2(75,100))
 
 
     def check_events(self):
