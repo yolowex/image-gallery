@@ -5,76 +5,102 @@ from core.common.constants import Colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from helper_kit.relative_rect import RelRect
+from core.common import utils
 
 # todo: add black formatter
-class DetailedView:
-    def __init__(self):
-        image_pos = Vector2(0.2,0.1)
-        image_size = Vector2(0.8,0.65)
+class DetailedView :
 
-        self.top_box = RelRect(cr.ws,0,0,1,0.05)
-        self.bottom_box = RelRect(cr.ws,0,0.95,1,0.05)
+    def __init__(self) :
+        self.image_pos :Optional[Vector2] = Vector2(0.2, 0.1)
+        self.image_size :Optional[Vector2] = Vector2(0.8, 0.65)
 
-        self.detail_box = RelRect(cr.ws,image_pos.x,image_pos.y-0.05,image_size.x,0.05)
-        self.image_box = RelRect(cr.ws,image_pos,image_size)
-
-        self.left_box = RelRect(
-            cr.ws,
-            0,
-            image_pos.y,
-            image_pos.x,
-            image_size.y
-        )
-
-        self.info_box = RelRect(
-            cr.ws,
-            0,
-            self.top_box.rect.y+self.top_box.rect.h,
-            image_pos.x,
-            abs(self.top_box.rect.y+self.top_box.rect.h-image_pos.y)
-        )
-
-        self.log_box = RelRect(
-            cr.ws,
-            0,
-            self.left_box.rect.y+self.left_box.rect.h,
-            image_pos.x,
-            abs(self.left_box.rect.y+self.left_box.rect.h-self.bottom_box.rect.y)
-        )
-
-        self.preview_box = RelRect(
-            cr.ws,
-            image_pos.x,
-            image_pos.y+image_size.y,
-            image_size.x,
-            abs(image_pos.y+image_size.y-self.bottom_box.rect.y)
-        )
+        self.top_box: Optional[RelRect] = None
+        self.bottom_box: Optional[RelRect] = None
+        self.detail_box: Optional[RelRect] = None
+        self.image_box: Optional[RelRect] = None
+        self.left_box: Optional[RelRect] = None
+        self.info_box: Optional[RelRect] = None
+        self.log_box: Optional[RelRect] = None
+        self.preview_box: Optional[RelRect] = None
 
 
-    def check_events(self):
+        """
+        these fields are used  to resize the image box & the relative rectangles group.
+        whenever set to any value other than None, resize_boxes gets called and a new 
+        size is set for the image_box, and so on the other rectangles.
+        this operation resizes the relative rectangles based on image_box.
+        """
+        self.resize_x_request: Optional[float] = None
+        self.resize_y_request: Optional[float] = None
+
+        self.resize_boxes()
+
+    def resize_boxes(self) :
+
+        X,Y = cr.ws()
+        x,y,w,h = 0.2,0.1,0.8,0.65
+
+        if self.resize_x_request is not None:
+            x = utils.inv_lerp(0,X,self.resize_x_request)
+
+        if self.resize_y_request is not None:
+            x = utils.inv_lerp(0,Y,self.resize_y_request)
+
+        image_pos  = self.image_pos = Vector2(x, y)
+        image_size = self.image_size = Vector2(w, h)
+
+        self.top_box = RelRect(cr.ws, 0, 0, 1, 0.05)
+        self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
+
+        self.detail_box = RelRect(cr.ws, image_pos.x, image_pos.y - 0.05, image_size.x, 0.05)
+        self.image_box = RelRect(cr.ws, image_pos, image_size)
+
+        self.left_box = RelRect(cr.ws, 0, image_pos.y, image_pos.x, image_size.y)
+
+        self.info_box = RelRect(cr.ws, 0, self.top_box.rect.y + self.top_box.rect.h, image_pos.x,
+            abs(self.top_box.rect.y + self.top_box.rect.h - image_pos.y))
+
+        self.log_box = RelRect(cr.ws, 0, self.left_box.rect.y + self.left_box.rect.h, image_pos.x,
+            abs(self.left_box.rect.y + self.left_box.rect.h - self.bottom_box.rect.y))
+
+        self.preview_box = RelRect(cr.ws, image_pos.x, image_pos.y + image_size.y, image_size.x,
+            abs(image_pos.y + image_size.y - self.bottom_box.rect.y))
+
+
+    def check_events(self) :
         m_rect = cr.event_holder.mouse_rect
+        held = cr.event_holder.mouse_held_keys[0]
 
-
-        if m_rect.colliderect(self.image_box.get()) and \
-                m_rect.colliderect(self.preview_box.get()) \
-                    and m_rect.colliderect(self.left_box.get()):
+        if m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
+                self.preview_box.get()) and m_rect.colliderect(self.left_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEALL)
+            if held:
+                self.resize_x_request = cr.event_holder.mouse_pos.x
+                self.resize_y_request = cr.event_holder.mouse_pos.y
 
-        elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(self.left_box.get()):
+        elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(self.left_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEWE)
+            if held:
+                self.resize_x_request = cr.event_holder.mouse_pos.x
 
-        elif m_rect.colliderect(self.image_box.get()) and \
-                m_rect.colliderect(self.preview_box.get()):
-
+        elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
+                self.preview_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZENS)
+            if held:
+                self.resize_y_request = cr.event_holder.mouse_pos.y
 
-        else:
+        else :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
 
-    def render_debug(self):
+        if self.resize_x_request is not None or self.resize_y_request is not None:
+            self.resize_boxes()
+
+
+    def render_debug(self) :
         ...
 
-    def render(self):
+
+    def render(self) :
         cr.renderer.draw_color = colors.CRIMSON
         cr.renderer.draw_rect(self.top_box.get())
         cr.renderer.draw_rect(self.bottom_box.get())
@@ -89,12 +115,8 @@ class DetailedView:
         cr.renderer.draw_rect(self.detail_box.get())
         cr.renderer.draw_rect(self.preview_box.get())
 
-        if cr.event_holder.should_render_debug:
+        if cr.event_holder.should_render_debug :
             self.render_debug()
-
-
-
-
 
 
 

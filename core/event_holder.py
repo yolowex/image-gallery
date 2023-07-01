@@ -42,8 +42,6 @@ class EventHolder :
         self.mouse_pressed_keys = [False, False, False]
         self.mouse_released_keys = [False, False, False]
 
-
-
         self.mouse_moved = False
         self.final_fps = self.clock.get_fps()
         self.dt = (self.clock.tick(self.determined_fps) / 1000)
