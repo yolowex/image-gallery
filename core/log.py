@@ -1,4 +1,6 @@
 import json
+import os
+
 from core.common.utils import *
 from core.common.enums import LogLevel
 
@@ -17,7 +19,8 @@ class Log:
         self.path = path
         self.level: LogLevel = LogLevel.DEBUG
 
-        json.dump({}, open(self.path, 'w'),indent=4)
+        if not os.path.exists(self.path):
+            json.dump({}, open(self.path, 'w'),indent=4)
 
 
     # replace with a better name

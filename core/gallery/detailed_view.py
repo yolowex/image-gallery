@@ -25,13 +25,16 @@ class DetailedView :
 
 
         """
-        these fields are used  to resize the image box & the relative rectangles group.
+        these fields are used to resize the image box & the relative rectangles group.
         whenever set to any value other than None, resize_boxes gets called and a new 
         size is set for the image_box, and so on the other rectangles.
         this operation resizes the relative rectangles based on image_box.
         """
         self.resize_x_request: Optional[float] = None
         self.resize_y_request: Optional[float] = None
+
+        self.x_locked = False
+        self.y_locked = False
 
         self.resize_boxes()
 
@@ -40,10 +43,10 @@ class DetailedView :
         X,Y = cr.ws()
         x,y,w,h = 0.2,0.1,0.8,0.65
 
-        if self.resize_x_request is not None:
+        if self.x_locked:
             x = utils.inv_lerp(0,X,self.resize_x_request)
 
-        if self.resize_y_request is not None:
+        if self.y_locked:
             x = utils.inv_lerp(0,Y,self.resize_y_request)
 
         image_pos  = self.image_pos = Vector2(x, y)
@@ -71,28 +74,47 @@ class DetailedView :
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
 
+
+        # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
+
+
         if m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
                 self.preview_box.get()) and m_rect.colliderect(self.left_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEALL)
+
             if held:
-                self.resize_x_request = cr.event_holder.mouse_pos.x
-                self.resize_y_request = cr.event_holder.mouse_pos.y
+                self.x_locked = True
+                self.y_locked = True
 
         elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(self.left_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEWE)
             if held:
-                self.resize_x_request = cr.event_holder.mouse_pos.x
+                self.x_locked = True
 
         elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
                 self.preview_box.get()) :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZENS)
             if held:
-                self.resize_y_request = cr.event_holder.mouse_pos.y
+                self.y_locked = True
 
         else :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
 
-        if self.resize_x_request is not None or self.resize_y_request is not None:
+
+        if cr.event_holder.mouse_released_keys[0]:
+
+            self.x_locked = False
+            self.y_locked = False
+            self.resize_x_request = None
+            self.resize_y_request = None
+
+        if self.x_locked:
+            self.resize_x_request = cr.event_holder.mouse_pos.x
+
+        if self.y_locked:
+            self.resize_y_request = cr.event_holder.mouse_pos.y
+
+        if self.x_locked or self.y_locked:
             self.resize_boxes()
 
 

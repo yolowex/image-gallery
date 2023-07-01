@@ -17,6 +17,9 @@ log_path = os.path.abspath(f"{app_data_path}/log.json")
 
 print(f"The log file is located at {log_path}")
 
+if not os.path.exists(app_data_path) :
+    os.mkdir(app_data_path)
+
 log = Log(log_path)
 
 try:

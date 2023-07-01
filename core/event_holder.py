@@ -87,4 +87,17 @@ class EventHolder :
 
             if i.type == MOUSEBUTTONUP :
                 self.mouse_released_keys = list(pg.mouse.get_pressed())
+
+                for index,released,held in zip(
+                        range(3),self.mouse_released_keys,self.mouse_held_keys):
+                    if held and not released:
+                        self.mouse_released_keys[index] = True
+                    else:
+                        self.mouse_released_keys[index] = False
+
                 self.mouse_held_keys = list(pg.mouse.get_pressed())
+
+
+
+        if any(self.mouse_released_keys):
+            print(self.mouse_released_keys)
