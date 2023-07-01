@@ -96,8 +96,3 @@ class EventHolder :
                         self.mouse_released_keys[index] = False
 
                 self.mouse_held_keys = list(pg.mouse.get_pressed())
-
-
-
-        if any(self.mouse_released_keys):
-            print(self.mouse_released_keys)

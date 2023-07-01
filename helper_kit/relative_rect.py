@@ -20,10 +20,10 @@ class RelRect:
         :return: FRect pointer
         """
         w,h = self.source_function()
-        self.__get_result.x = self.rect.x * w
-        self.__get_result.w = self.rect.w * w
-        self.__get_result.y = self.rect.y * h
-        self.__get_result.h = self.rect.h * h
+        self.__get_result.x = self.rect.x * w - 1
+        self.__get_result.w = self.rect.w * w + 2
+        self.__get_result.y = self.rect.y * h - 1
+        self.__get_result.h = self.rect.h * h + 2
 
         return self.__get_result
 

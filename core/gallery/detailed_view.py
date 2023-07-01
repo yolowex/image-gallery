@@ -41,27 +41,35 @@ class DetailedView :
     def resize_boxes(self) :
 
         X,Y = cr.ws()
-        x,y,w,h = 0.2,0.1,0.8,0.65
+        rect = FRect(self.image_pos,self.image_size)
 
         if self.x_locked:
-            x = utils.inv_lerp(0,X,self.resize_x_request)
+            x_val = utils.inv_lerp(0,X,self.resize_x_request)
+            if x_val < 0.1: x_val = 0.1
+            if x_val > 0.65: x_val = 0.65
+            rect.x = x_val
+            rect.w = abs(1-rect.x)
 
         if self.y_locked:
-            x = utils.inv_lerp(0,Y,self.resize_y_request)
+            y_val = utils.inv_lerp(0,Y,self.resize_y_request)
+            if y_val > 0.8: y_val = 0.8
+            if y_val < 0.6: y_val = 0.6
+            rect.h = abs(rect.y - y_val)
 
-        image_pos  = self.image_pos = Vector2(x, y)
-        image_size = self.image_size = Vector2(w, h)
+
+        image_pos  = self.image_pos = Vector2(rect.x, rect.y)
+        image_size = self.image_size = Vector2(rect.w, rect.h)
 
         self.top_box = RelRect(cr.ws, 0, 0, 1, 0.05)
+        self.detail_box = RelRect(cr.ws, image_pos.x, self.top_box.rect.bottom, image_size.x, 0.05)
         self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
 
-        self.detail_box = RelRect(cr.ws, image_pos.x, image_pos.y - 0.05, image_size.x, 0.05)
         self.image_box = RelRect(cr.ws, image_pos, image_size)
 
-        self.left_box = RelRect(cr.ws, 0, image_pos.y, image_pos.x, image_size.y)
+        self.left_box = RelRect(cr.ws, 0, 0.1, image_pos.x, image_size.y)
 
         self.info_box = RelRect(cr.ws, 0, self.top_box.rect.y + self.top_box.rect.h, image_pos.x,
-            abs(self.top_box.rect.y + self.top_box.rect.h - image_pos.y))
+            0.05)
 
         self.log_box = RelRect(cr.ws, 0, self.left_box.rect.y + self.left_box.rect.h, image_pos.x,
             abs(self.left_box.rect.y + self.left_box.rect.h - self.bottom_box.rect.y))
@@ -125,17 +133,29 @@ class DetailedView :
     def render(self) :
         cr.renderer.draw_color = colors.CRIMSON
         cr.renderer.draw_rect(self.top_box.get())
+
+        cr.renderer.draw_color = colors.CHOCOLATE
         cr.renderer.draw_rect(self.bottom_box.get())
 
         cr.renderer.draw_color = colors.FOREST_GREEN
         cr.renderer.draw_rect(self.log_box.get())
-        cr.renderer.draw_rect(self.left_box.get())
+
+        cr.renderer.draw_color = colors.BROWN
         cr.renderer.draw_rect(self.info_box.get())
+
+        cr.renderer.draw_color = colors.CORAL
+        cr.renderer.draw_rect(self.detail_box.get())
+
+        cr.renderer.draw_color = colors.DARK_SLATE_GRAY
+        cr.renderer.draw_rect(self.preview_box.get())
+
+        cr.renderer.draw_color = colors.BLUE
+        cr.renderer.draw_rect(self.left_box.get())
 
         cr.renderer.draw_color = colors.NAVY
         cr.renderer.draw_rect(self.image_box.get())
-        cr.renderer.draw_rect(self.detail_box.get())
-        cr.renderer.draw_rect(self.preview_box.get())
+
+
 
         if cr.event_holder.should_render_debug :
             self.render_debug()
