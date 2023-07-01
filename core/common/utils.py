@@ -35,6 +35,12 @@ def get_aspect_ratio(size: Vector2) :
         ar.y = ar.y / ar.x
         ar.x = 1
 
+
+    if ar.x < 1:
+        ar.y = ar.y * (1 / ar.x)
+        ar.x = 1
+        # print("ar",size,ar)
+
     return ar
 
 def get_aspect_ratio_group(aspect_ratio: Vector2):
@@ -54,5 +60,8 @@ def get_aspect_ratio_group(aspect_ratio: Vector2):
 this block is here to test various helper functions 
 """
 if __name__ == "__main__" :
-    print(*[get_aspect_ratio(Vector2(1, 10)), get_aspect_ratio(Vector2(5, 7)), get_aspect_ratio(Vector2(30, 3)),
-        get_aspect_ratio(Vector2(5, 5))])
+    for i in range(1,5):
+        for c in range(1,5):
+            ar = get_aspect_ratio(Vector2(i,c))
+            arg = get_aspect_ratio_group(ar)
+            print((i,c),ar,arg)

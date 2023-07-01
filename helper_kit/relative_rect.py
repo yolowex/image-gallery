@@ -41,87 +41,68 @@ class RelRect:
         container_ar = utils.get_aspect_ratio(Vector2(self.rect.size))
         container_ar_group = utils.get_aspect_ratio_group(container_ar)
         in_rect_ar = utils.get_aspect_ratio(rect_size)
-        in_rect_ar_group = utils.get_aspect_ratio_group(in_rect_ar)
+        in_rect_ar_converted = in_rect_ar.copy()
+        in_rect_ar_group = utils.get_aspect_ratio_group(in_rect_ar_converted)
 
-        res = FRect((0,0),in_rect_ar)
-        in_rect_ar.x *= self.rect.w
-        in_rect_ar.y *= self.rect.h
+        res = FRect((0,0),in_rect_ar_converted)
+        in_rect_ar_converted.x *= self.rect.w
+        in_rect_ar_converted.y *= self.rect.h
 
-        res.size = in_rect_ar
+        res.size = in_rect_ar_converted
         res.x = self.rect.x
         res.y = self.rect.y
 
-        if container_ar_group == AspectRatioGroup.PORTRAIT:
+
+        if in_rect_ar_group == AspectRatioGroup.RECTANGULAR:
+            size = min(self.rect.size)
+            if container_ar_group == AspectRatioGroup.PORTRAIT:
+                res.size = size, size * container_ar.y
+            else:
+                res.size = size, size * container_ar.x
+
+            res.center = self.rect.center
+
+        elif container_ar_group == AspectRatioGroup.PORTRAIT:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # portrait, portrait
-                ...
-            elif in_rect_ar_group == AspectRatioGroup.LANDSCAPE:
+                if in_rect_ar.y < container_ar.y:
+                    height = min(self.rect.size)
+                    res.size = height * in_rect_ar.x, height
+                    res.center = self.rect.center
+                else:
+                    height = min(self.rect.size)
+                    res.size = height * in_rect_ar.x, height
+                    res.center = self.rect.center
+            else:
                 # portrait, landscape
                 ...
-
-            else:
-                size = min(self.rect.size)
-                res.size = size, size * container_ar.y
-                print(res.size, container_ar)
-                res.center = self.rect.center
-                w, h = self.scale_source_function()
-                res.x = res.x * w - 1
-                res.w = res.w * w + 2
-                res.y = res.y * h - 1
-                res.h = res.h * h + 2
 
         elif container_ar_group == AspectRatioGroup.LANDSCAPE:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # landscape, portrait
-                ...
-            elif in_rect_ar_group == AspectRatioGroup.LANDSCAPE:
+                height = min(self.rect.size)
+                res.size = height * in_rect_ar.x,height
+                res.center = self.rect.center
+            else:
                 # landscape, landscape
                 ...
-
-            else:
-                # landscape, rectangular
-                size = min(self.rect.size)
-                res.size = size, size * container_ar.x
-                print(res.size,container_ar)
-                res.center = self.rect.center
-                w, h = self.scale_source_function()
-                res.x = res.x * w - 1
-                res.w = res.w * w + 2
-                res.y = res.y * h - 1
-                res.h = res.h * h + 2
-
 
         else:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # rectangular, portrait
-                ...
-            elif in_rect_ar_group == AspectRatioGroup.LANDSCAPE:
+                height = min(self.rect.size)
+                res.size = height * in_rect_ar.x, height
+                res.center = self.rect.center
+
+            else:
                 # rectangular, landscape
                 ...
 
-            else:
-                size = min(self.rect.size)
-                res.size = size, size * container_ar.y
-                print(res.size, container_ar)
-                res.center = self.rect.center
-                w, h = self.scale_source_function()
-                res.x = res.x * w - 1
-                res.w = res.w * w + 2
-                res.y = res.y * h - 1
-                res.h = res.h * h + 2
-
-
-
-
-
-
-
-
-
-
-
-
-
+        w, h = self.scale_source_function()
+        res.x = res.x * w - 1
+        res.w = res.w * w + 2
+        res.y = res.y * h - 1
+        res.h = res.h * h + 2
 
         return res
 

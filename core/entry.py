@@ -11,7 +11,7 @@ class Entry:
         pg.init()
         flags = pgl.RESIZABLE
 
-        cr.window = Window(size=[800,600],resizable=True)
+        cr.window = Window(size=[800,800],resizable=True)
         cr.window.resizable = True
         cr.log = log
         """
