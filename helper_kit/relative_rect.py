@@ -77,7 +77,9 @@ class RelRect:
 
             else:
                 # portrait, landscape
-                ...
+                width = self.rect.w
+                res.size = width , width * in_rect_ar.y
+                res.center = self.rect.center
 
         elif container_ar_group == AspectRatioGroup.LANDSCAPE:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
@@ -87,7 +89,16 @@ class RelRect:
                 res.center = self.rect.center
             else:
                 # landscape, landscape
-                ...
+                if in_rect_ar.y > container_ar.y :
+                    # when the picture is narrower than the container in scale
+                    height = self.rect.h
+                    res.size = height / in_rect_ar.y, height
+                    res.center = self.rect.center
+                else :
+                    # when the picture is wider than the container in scale
+                    width = self.rect.w
+                    res.size = width , width * in_rect_ar.y
+                    res.center = self.rect.center
 
         else:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
@@ -95,11 +106,12 @@ class RelRect:
                 width = min(self.rect.size)
                 res.size = width / in_rect_ar.y , width
                 res.center = self.rect.center
-                print("jackpot")
 
             else:
                 # rectangular, landscape
-                ...
+                width = self.rect.w
+                res.size = width, width * in_rect_ar.y
+                res.center = self.rect.center
 
         w, h = self.scale_source_function()
         res.x = res.x * w - 1
