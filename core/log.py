@@ -19,8 +19,10 @@ class Log:
         self.path = path
         self.level: LogLevel = LogLevel.DEBUG
 
-        if not os.path.exists(self.path):
-            json.dump({}, open(self.path, 'w'),indent=4)
+        if os.path.exists(self.path):
+            os.remove(self.path)
+            
+        json.dump({}, open(self.path, 'w'),indent=4)
 
 
     # replace with a better name
