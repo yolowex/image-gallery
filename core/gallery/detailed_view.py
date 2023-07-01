@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import Colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
 from core.common import utils
 
@@ -17,7 +18,9 @@ class DetailedView :
         self.top_box: Optional[RelRect] = None
         self.bottom_box: Optional[RelRect] = None
         self.detail_box: Optional[RelRect] = None
-        self.image_box: Optional[RelRect] = None
+
+        self.image_box = RelRect(cr.ws, (0,0), (0,0))
+
         self.left_box: Optional[RelRect] = None
         self.info_box: Optional[RelRect] = None
         self.log_box: Optional[RelRect] = None
@@ -35,6 +38,11 @@ class DetailedView :
 
         self.x_locked = False
         self.y_locked = False
+
+        self.zoom_texture = Texture.from_surface(cr.renderer,pg.image.load("./test_assets/image-25.jpg"))
+
+        self.zoom_view = ZoomView(self.image_box,self.zoom_texture)
+
 
         self.resize_boxes()
 
@@ -64,7 +72,7 @@ class DetailedView :
         self.detail_box = RelRect(cr.ws, image_pos.x, self.top_box.rect.bottom, image_size.x, 0.05)
         self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
 
-        self.image_box = RelRect(cr.ws, image_pos, image_size)
+        self.image_box.rect = FRect(self.image_pos,self.image_size)
 
         self.left_box = RelRect(cr.ws, 0, 0.1, image_pos.x, image_size.y)
 
@@ -77,11 +85,13 @@ class DetailedView :
         self.preview_box = RelRect(cr.ws, image_pos.x, image_pos.y + image_size.y, image_size.x,
             abs(image_pos.y + image_size.y - self.bottom_box.rect.y))
 
+        self.zoom_view.update()
+
 
     def check_events(self) :
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
-
+        self.zoom_view.check_events()
 
         # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
 
@@ -131,6 +141,8 @@ class DetailedView :
 
 
     def render(self) :
+        self.zoom_view.render()
+
         cr.renderer.draw_color = colors.CRIMSON
         cr.renderer.draw_rect(self.top_box.get())
 
