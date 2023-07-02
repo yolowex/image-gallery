@@ -114,6 +114,8 @@ class DetailedView:
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
+        self.zoom_view.check_events()
+
         # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
 
         if pgl.K_SPACE in cr.event_holder.pressed_keys:
@@ -146,7 +148,6 @@ class DetailedView:
             if held:
                 self.y_locked = True
 
-        self.zoom_view.check_events()
 
         if cr.event_holder.mouse_released_keys[0]:
             self.x_locked = False

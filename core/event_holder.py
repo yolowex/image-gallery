@@ -66,6 +66,7 @@ class EventHolder:
             if i.type == WINDOWENTER:
                 self.mouse_focus = True
                 self.mouse_focus_gain_timer = pg.time.get_ticks() / 1000
+
             if i.type == WINDOWLEAVE:
                 self.mouse_focus = False
 

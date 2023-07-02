@@ -31,6 +31,59 @@ class ZoomView:
             Vector2(self.image.get_rect().size), window_relative=True
         )
 
+
+    @property
+    def x_grab_allowed(self) -> bool:
+        """
+        this function determines if the user is allowed to
+        grab the picture and move it towards the x-axis.
+        :return:
+        """
+
+        n_rect = self.inner_image_rect.copy()
+        n_rect.w *= self.zoom
+        n_rect.h *= self.zoom
+
+        return n_rect.w > self.container_box.get().w
+
+
+    @property
+    def y_grab_allowed(self) -> bool :
+        """
+        this function determines if the user is allowed to
+        grab the picture and move it towards the y-axis.
+        :return:
+        """
+
+        n_rect = self.inner_image_rect.copy()
+        n_rect.w *= self.zoom
+        n_rect.h *= self.zoom
+
+        return n_rect.h > self.container_box.get().h
+
+
+    def get_picture_rect(self):
+        grab_diff = self.grab_dst - self.grab_src
+        l_rect = self.inner_image_rect.copy()
+
+        if self.x_grab_allowed :
+            l_rect.x += grab_diff.x + self.current_rel.x
+        else:
+            self.current_rel.x = 0
+
+        if self.y_grab_allowed :
+            l_rect.y += grab_diff.y + self.current_rel.y
+        else:
+            self.current_rel.y= 0
+
+        n_rect = self.inner_image_rect.copy()
+        n_rect.w *= self.zoom
+        n_rect.h *= self.zoom
+        n_rect.center = l_rect.center
+
+        return n_rect
+
+
     def check_events(self):
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
@@ -38,17 +91,8 @@ class ZoomView:
         if mw != 0 and mod:
             self.zoom *= 1 + mw * 0.04
 
-        grab_diff = self.grab_dst - self.grab_src
-        l_rect = self.inner_image_rect.copy()
-        l_rect.x += grab_diff.x + self.current_rel.x
-        l_rect.y += grab_diff.y + self.current_rel.y
 
-        n_rect = self.inner_image_rect.copy()
-        n_rect.w *= self.zoom
-        n_rect.h *= self.zoom
-        n_rect.center = l_rect.center
-
-        if mr.colliderect(n_rect) and mr.colliderect(self.container_box.get()):
+        if mr.colliderect(self.get_picture_rect()) and mr.colliderect(self.container_box.get()):
             if cr.event_holder.mouse_pressed_keys[0]:
                 self.is_grabbing = True
                 self.grab_src = cr.event_holder.mouse_pos.copy()
@@ -84,17 +128,8 @@ class ZoomView:
     def render(self):
         # dst_rect = self.container_box.cut_rect_in(self.inner_image_rect)
         # todo: cut the picture in case it is bigger than the box size
-        grab_diff = self.grab_dst - self.grab_src
 
-        l_rect = self.inner_image_rect.copy()
-        l_rect.x += grab_diff.x + self.current_rel.x
-        l_rect.y += grab_diff.y + self.current_rel.y
-
-        n_rect = self.inner_image_rect.copy()
-        n_rect.w *= self.zoom
-        n_rect.h *= self.zoom
-        n_rect.center = l_rect.center
-        self.image.draw(None, n_rect)
+        self.image.draw(None, self.get_picture_rect())
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

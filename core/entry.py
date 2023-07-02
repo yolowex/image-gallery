@@ -12,9 +12,9 @@ from core.mouse import Mouse
 class Entry:
     def __init__(self, log: Log):
         pg.init()
-        flags = pgl.RESIZABLE
 
-        cr.window = Window(size=[700, 700], resizable=True)
+        # todo: fix the bug/problem with borderless flag breaking the resizable flag
+        cr.window = Window(size=[700, 700], resizable=True,borderless=True)
         cr.log = log
         """
         _sdl2 is a hidden pygame module, therefore the linters can't find it
