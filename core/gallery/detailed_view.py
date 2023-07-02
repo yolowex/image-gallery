@@ -110,13 +110,12 @@ class DetailedView:
     def check_events(self):
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
+        clicked = cr.event_holder.mouse_pressed_keys[0]
 
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
         self.zoom_view.check_events()
-
-        # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
 
         if pgl.K_SPACE in cr.event_holder.pressed_keys:
             self.zoom_view.image = random.choice(assets.pics)
@@ -130,7 +129,7 @@ class DetailedView:
         ):
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_SIZEALL
 
-            if held:
+            if clicked:
                 self.x_locked = True
                 self.y_locked = True
 
@@ -138,14 +137,14 @@ class DetailedView:
             self.left_box.get()
         ):
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_SIZEWE
-            if held:
+            if clicked:
                 self.x_locked = True
 
         elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
             self.preview_box.get()
         ):
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_SIZENS
-            if held:
+            if clicked:
                 self.y_locked = True
 
 

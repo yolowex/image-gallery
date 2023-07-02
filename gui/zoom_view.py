@@ -65,6 +65,7 @@ class ZoomView:
     def get_picture_rect(self):
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
+        con_rect = self.container_box.get()
 
         if self.x_grab_allowed :
             l_rect.x += grab_diff.x + self.current_rel.x
@@ -80,6 +81,21 @@ class ZoomView:
         n_rect.w *= self.zoom
         n_rect.h *= self.zoom
         n_rect.center = l_rect.center
+
+        if self.x_grab_allowed :
+            if n_rect.left > con_rect.left:
+                n_rect.left = con_rect.left
+
+            if n_rect.right < con_rect.right:
+                n_rect.right = con_rect.right
+
+        if self.y_grab_allowed :
+            if n_rect.bottom < con_rect.bottom:
+                n_rect.bottom = con_rect.bottom
+
+            if n_rect.top > con_rect.top:
+                n_rect.top = con_rect.top
+
 
         return n_rect
 
