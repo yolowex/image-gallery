@@ -147,7 +147,6 @@ class DetailedView:
             if clicked:
                 self.y_locked = True
 
-
         if cr.event_holder.mouse_released_keys[0]:
             self.x_locked = False
             self.y_locked = False
