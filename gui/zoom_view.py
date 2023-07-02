@@ -19,6 +19,7 @@ class ZoomView:
         self.grab_dst = Vector2(0, 0)
         self.current_rel = Vector2(0, 0)
         self.__picture_rect = FRect(0,0,0,0)
+
     def reset(self):
         self.zoom = 1
         self.is_grabbing = False
@@ -63,6 +64,11 @@ class ZoomView:
 
 
     def update_picture_rect(self):
+        """
+        this function returns the rectangle of the picture that is currently
+        being shown, regarding the zoom, and current_rel/grab values.
+        this function updates self.__picture_rect.
+        """
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
         con_rect = self.container_box.get()
@@ -82,6 +88,7 @@ class ZoomView:
         n_rect.h *= self.zoom
         n_rect.center = l_rect.center
 
+        # todo: forbid invalid current_rel movements
         if self.x_grab_allowed :
             if n_rect.left > con_rect.left :
                 n_rect.left = con_rect.left
@@ -99,7 +106,14 @@ class ZoomView:
 
         self.__picture_rect = n_rect
 
-    def get_picture_rect(self):
+    def get_picture_rect(self) -> FRect:
+        """
+        this function returns __picture_rect which is continuously being
+        updated by update_picture_rect. since it returns an existing object,
+        make sure to not modify it.
+
+        :return: FRect pointer
+        """
         return self.__picture_rect.copy()
 
 
