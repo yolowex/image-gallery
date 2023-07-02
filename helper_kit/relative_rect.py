@@ -85,8 +85,12 @@ class RelRect:
             size = min(self.rect.size)
             if container_ar_group == AspectRatioGroup.PORTRAIT:
                 res.size = size, size * container_ar.x
+                res.w *= mx
+                res.h *= my
             else:
                 res.size = size, size * container_ar.x
+                res.w *= my
+                res.h *= mx
 
         elif container_ar_group == AspectRatioGroup.PORTRAIT:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
@@ -95,43 +99,58 @@ class RelRect:
                     # when the picture is shorter than the container in scale
                     width = min(self.rect.size)
                     res.size = width , width * in_rect_ar.y
+                    res.w *= my
+                    res.h *= mx
                 else:
                     # when the picture is taller than the container in scale
                     height = max(self.rect.size)
                     res.size = height / in_rect_ar.y, height
+                    res.w *= my
+                    res.h *= mx
             else:
                 # portrait, landscape
                 width = self.rect.w
                 res.size = width , width * in_rect_ar.y
+                res.w *= my
+                res.h *= mx
 
         elif container_ar_group == AspectRatioGroup.LANDSCAPE:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # landscape, portrait
                 height = self.rect.h
                 res.size = height / in_rect_ar.y  ,height
+                res.w *= my
+                res.h *= mx
             else:
                 # landscape, landscape
                 if in_rect_ar.y > container_ar.y :
                     # when the picture is narrower than the container in scale
                     height = self.rect.h
                     res.size = height / in_rect_ar.y, height
+                    res.w *= my
+                    res.h *= mx
                 else :
                     # when the picture is wider than the container in scale
                     width = self.rect.w
                     res.size = width , width * in_rect_ar.y
+                    res.w *= my
+                    res.h *= mx
         else:
             if in_rect_ar_group == AspectRatioGroup.PORTRAIT :
                 # rectangular, portrait
                 width = min(self.rect.size)
                 res.size = width / in_rect_ar.y , width
+                res.w *= my
+                res.h *= mx
 
             else:
                 # rectangular, landscape
                 width = self.rect.w
                 res.size = width, width * in_rect_ar.y
+                res.w *= my
+                res.h *= mx
 
-        res.w *= my
-        res.h *= mx
+
         res.center = self.rect.center
 
         w, h = self.scale_source_function()
