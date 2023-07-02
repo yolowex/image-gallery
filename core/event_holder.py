@@ -11,6 +11,8 @@ class EventHolder :
         self.window_focus = True
         self.window_resized = False
 
+
+        self.mouse_wheel = 0
         self.mouse_moved = False
         self.mouse_pos = Vector2(0, 0)
         self.mouse_pressed_keys = [False, False, False]
@@ -47,6 +49,7 @@ class EventHolder :
         self.final_fps = self.clock.get_fps()
         self.dt = (self.clock.tick(self.determined_fps) / 1000)
         self.window_resized = False
+        self.mouse_wheel = 0
 
         for i in pg.event.get() :
             if i.type == WINDOWFOCUSLOST:
@@ -72,6 +75,9 @@ class EventHolder :
 
             if i.type == MOUSEMOTION :
                 self.mouse_moved = True
+
+            if i.type == MOUSEWHEEL:
+                self.mouse_wheel = abs(i.y) / i.y
 
             if i.type == KEYDOWN :
                 self.pressed_keys.append(i.key)

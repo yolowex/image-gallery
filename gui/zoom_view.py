@@ -20,7 +20,9 @@ class ZoomView:
 
 
     def check_events(self):
-        ...
+        mw = cr.event_holder.mouse_wheel
+        if mw != 0:
+            print(mw)
 
     def render_debug(self):
         ...
