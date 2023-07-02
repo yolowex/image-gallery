@@ -13,6 +13,8 @@ from core.common import utils, assets
 class DetailedView :
 
     def __init__(self) :
+        self.last_ratio = utils.get_aspect_ratio(cr.ws())
+
         self.image_pos :Optional[Vector2] = Vector2(0.2, 0.1)
         self.image_size :Optional[Vector2] = Vector2(0.8, 0.65)
 
@@ -44,7 +46,6 @@ class DetailedView :
 
         self.zoom_view = ZoomView(self.image_box,self.zoom_texture)
 
-
         self.resize_boxes()
 
     def resize_boxes(self) :
@@ -73,18 +74,43 @@ class DetailedView :
         self.detail_box = RelRect(cr.ws, image_pos.x, self.top_box.rect.bottom, image_size.x, 0.05)
         self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
 
+
         self.image_box.rect = FRect(self.image_pos,self.image_size)
 
-        self.left_box = RelRect(cr.ws, 0, 0.1, image_pos.x, image_size.y)
 
-        self.info_box = RelRect(cr.ws, 0, self.top_box.rect.y + self.top_box.rect.h, image_pos.x,
-            0.05)
+        left_box_width = image_pos.x
+        self.left_box = RelRect(
+            cr.ws,
+            0,
+            0.1,
+            left_box_width,
+            image_size.y
+        )
 
-        self.log_box = RelRect(cr.ws, 0, self.left_box.rect.y + self.left_box.rect.h, image_pos.x,
+
+        self.info_box = RelRect(
+            cr.ws,
+            0,
+            self.top_box.rect.y + self.top_box.rect.h,
+            self.left_box.rect.w,
+            0.05
+        )
+
+        self.log_box = RelRect(
+            cr.ws,
+            0,
+            self.left_box.rect.y + self.left_box.rect.h,
+            self.left_box.rect.w,
             abs(self.left_box.rect.y + self.left_box.rect.h - self.bottom_box.rect.y))
 
-        self.preview_box = RelRect(cr.ws, image_pos.x, image_pos.y + image_size.y, image_size.x,
-            abs(image_pos.y + image_size.y - self.bottom_box.rect.y))
+        self.preview_box = RelRect(
+            cr.ws,
+            image_pos.x,
+            image_pos.y + image_size.y,
+            image_size.x,
+            abs(image_pos.y + image_size.y - self.bottom_box.rect.y)
+        )
+
 
         self.zoom_view.update()
 
@@ -93,6 +119,9 @@ class DetailedView :
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
         self.zoom_view.check_events()
+
+        if cr.event_holder.window_resized:
+            self.resize_boxes()
 
         # print(self.x_locked,self.y_locked,self.resize_x_request,self.resize_y_request)
 

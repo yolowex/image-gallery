@@ -12,8 +12,7 @@ class Entry:
         pg.init()
         flags = pgl.RESIZABLE
 
-        cr.window = Window(size=[800,800],resizable=True)
-        cr.window.resizable = True
+        cr.window = Window(size=[700,700],resizable=True)
         cr.log = log
         """
         _sdl2 is a hidden pygame module, therefore the linters can't find it

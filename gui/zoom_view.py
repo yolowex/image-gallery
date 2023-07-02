@@ -14,7 +14,9 @@ class ZoomView:
         self.inner_image_rect = FRect(0,0,0,0)
 
     def update(self):
-        self.inner_image_rect = self.container_box.get_in_rect(Vector2(self.image.get_rect().size))
+        self.inner_image_rect = self.container_box.get_in_rect(
+            Vector2(self.image.get_rect().size),window_relative=True
+        )
 
 
     def check_events(self):

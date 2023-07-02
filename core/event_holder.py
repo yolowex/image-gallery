@@ -9,6 +9,7 @@ class EventHolder :
         self.released_keys = []
         self.held_keys = []
         self.window_focus = True
+        self.window_resized = False
 
         self.mouse_moved = False
         self.mouse_pos = Vector2(0, 0)
@@ -45,6 +46,7 @@ class EventHolder :
         self.mouse_moved = False
         self.final_fps = self.clock.get_fps()
         self.dt = (self.clock.tick(self.determined_fps) / 1000)
+        self.window_resized = False
 
         for i in pg.event.get() :
             if i.type == WINDOWFOCUSLOST:
@@ -52,6 +54,9 @@ class EventHolder :
             if i.type == WINDOWFOCUSGAINED:
                 self.window_focus = True
                 self.focus_gain_timer = pg.time.get_ticks() / 1000
+
+            if i.type == WINDOWRESIZED:
+                self.window_resized = True
 
             if i.type == WINDOWENTER:
                 self.mouse_focus = True
