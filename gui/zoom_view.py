@@ -14,6 +14,8 @@ class ZoomView:
         self.image = image
         self.inner_image_rect = FRect(0, 0, 0, 0)
         self.zoom = 1
+        self.zoom_pos = Vector2(0,0)
+
         self.is_grabbing = False
         self.grab_src = Vector2(0, 0)
         self.grab_dst = Vector2(0, 0)
@@ -38,7 +40,7 @@ class ZoomView:
         """
         this function determines if the user is allowed to
         grab the picture and move it towards the x-axis.
-        :return:
+        :return: boolean
         """
 
         n_rect = self.inner_image_rect.copy()
@@ -53,7 +55,7 @@ class ZoomView:
         """
         this function determines if the user is allowed to
         grab the picture and move it towards the y-axis.
-        :return:
+        :return: boolean
         """
 
         n_rect = self.inner_image_rect.copy()
@@ -68,6 +70,7 @@ class ZoomView:
         this function returns the rectangle of the picture that is currently
         being shown, regarding the zoom, and current_rel/grab values.
         this function updates self.__picture_rect.
+        :return: None
         """
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
@@ -88,7 +91,7 @@ class ZoomView:
         n_rect.h *= self.zoom
         n_rect.center = l_rect.center
 
-        # todo: forbid invalid current_rel movements
+        # todo: prohibit invalid current_rel movements
         if self.x_grab_allowed :
             if n_rect.left > con_rect.left :
                 n_rect.left = con_rect.left
@@ -108,11 +111,11 @@ class ZoomView:
 
     def get_picture_rect(self) -> FRect:
         """
-        this function returns __picture_rect which is continuously being
-        updated by update_picture_rect. since it returns an existing object,
-        make sure to not modify it.
+        this function returns a copy of
+        __picture_rect which is continuously being
+        updated by update_picture_rect.
 
-        :return: FRect pointer
+        :return: FRect
         """
         return self.__picture_rect.copy()
 
