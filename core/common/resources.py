@@ -9,7 +9,7 @@ window: Optional[Window] = None
 renderer: Optional[Renderer] = None
 log: Optional[Log] = None
 
-mouse :Optional[Mouse] = None
+mouse: Optional[Mouse] = None
 gallery = None
 editor = None
 

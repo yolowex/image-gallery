@@ -10,19 +10,19 @@ from core.mouse import Mouse
 
 
 class Entry:
-    def __init__(self,log:Log):
+    def __init__(self, log: Log):
         pg.init()
         flags = pgl.RESIZABLE
 
-        cr.window = Window(size=[700,700],resizable=True)
+        cr.window = Window(size=[700, 700], resizable=True)
         cr.log = log
         """
         _sdl2 is a hidden pygame module, therefore the linters can't find it
         and converse with it properly. to fix annoying false alarms, we use # noqa here,
         which disables any linter errors and warnings
         """
-        cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED # noqa
-        cr.renderer = Renderer(cr.window)    
+        cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED  # noqa
+        cr.renderer = Renderer(cr.window)
         cr.mouse = Mouse()
         cr.event_holder = EventHolder()
 
@@ -30,15 +30,15 @@ class Entry:
 
         app_name = "Foto Folio"
         app_data_path = "."
-        if current_platform == "Windows" :
+        if current_platform == "Windows":
             x = os.environ.get("LOCALAPPDATA")
-            if x is not None :
+            if x is not None:
                 app_data_path = x
 
         app_data_path = f"{app_data_path}/{app_name}"
         log_path = os.path.abspath(f"{app_data_path}/log.json")
 
-        if not os.path.exists(app_data_path) :
+        if not os.path.exists(app_data_path):
             os.mkdir(app_data_path)
 
         constants.init_constants()
@@ -50,8 +50,7 @@ class Entry:
         cr.gallery = Gallery()
         cr.editor = Editor()
 
-
-    def run( self ):
+    def run(self):
         while not cr.event_holder.should_quit:
             cr.renderer.draw_color = Color("gray")
             cr.renderer.clear()
@@ -60,6 +59,3 @@ class Entry:
             cr.mouse.check_events()
             cr.gallery.render()
             cr.renderer.present()
-
-
-

@@ -1,5 +1,6 @@
 from core.common.names import *
 
+
 class Mouse:
     def __init__(self):
         self.current_cursor: int = pgl.SYSTEM_CURSOR_ARROW

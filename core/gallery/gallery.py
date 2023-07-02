@@ -20,10 +20,10 @@ class Gallery:
             self.fullscreen_view.check_events()
 
     def render_debug(self):
-        if self.current_view == ViewType.DETAILED :
+        if self.current_view == ViewType.DETAILED:
             self.detailed_view.render_debug()
 
-        elif self.current_view == ViewType.FULLSCREEN :
+        elif self.current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.render_debug()
 
     def render(self):
@@ -34,10 +34,3 @@ class Gallery:
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
-
-
-
-
-
-
-
