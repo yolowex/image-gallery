@@ -118,7 +118,6 @@ class DetailedView :
     def check_events(self) :
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
-        self.zoom_view.check_events()
 
         if cr.event_holder.window_resized:
             self.resize_boxes()
@@ -152,6 +151,8 @@ class DetailedView :
         else :
             pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
 
+
+        self.zoom_view.check_events()
 
         if cr.event_holder.mouse_released_keys[0]:
 
