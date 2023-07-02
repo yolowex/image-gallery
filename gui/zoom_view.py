@@ -18,7 +18,7 @@ class ZoomView:
         self.grab_src = Vector2(0, 0)
         self.grab_dst = Vector2(0, 0)
         self.current_rel = Vector2(0, 0)
-
+        self.__picture_rect = FRect(0,0,0,0)
     def reset(self):
         self.zoom = 1
         self.is_grabbing = False
@@ -62,20 +62,20 @@ class ZoomView:
         return n_rect.h > self.container_box.get().h
 
 
-    def get_picture_rect(self):
+    def update_picture_rect(self):
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
         con_rect = self.container_box.get()
 
         if self.x_grab_allowed :
             l_rect.x += grab_diff.x + self.current_rel.x
-        else:
+        else :
             self.current_rel.x = 0
 
         if self.y_grab_allowed :
             l_rect.y += grab_diff.y + self.current_rel.y
-        else:
-            self.current_rel.y= 0
+        else :
+            self.current_rel.y = 0
 
         n_rect = self.inner_image_rect.copy()
         n_rect.w *= self.zoom
@@ -83,30 +83,39 @@ class ZoomView:
         n_rect.center = l_rect.center
 
         if self.x_grab_allowed :
-            if n_rect.left > con_rect.left:
+            if n_rect.left > con_rect.left :
                 n_rect.left = con_rect.left
 
-            if n_rect.right < con_rect.right:
+            if n_rect.right < con_rect.right :
                 n_rect.right = con_rect.right
 
         if self.y_grab_allowed :
-            if n_rect.bottom < con_rect.bottom:
+            if n_rect.bottom < con_rect.bottom :
                 n_rect.bottom = con_rect.bottom
 
-            if n_rect.top > con_rect.top:
+            if n_rect.top > con_rect.top :
                 n_rect.top = con_rect.top
 
 
-        return n_rect
+        self.__picture_rect = n_rect
+
+    def get_picture_rect(self):
+        return self.__picture_rect.copy()
 
 
     def check_events(self):
+        self.update_picture_rect()
+
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
         if mw != 0 and mod:
             self.zoom *= 1 + mw * 0.04
+            if self.zoom < 1:
+                self.zoom = 1
 
+        if pgl.K_r in cr.event_holder.pressed_keys:
+            self.current_rel = Vector2(0,0)
 
         if mr.colliderect(self.get_picture_rect()) and mr.colliderect(self.container_box.get()):
             if cr.event_holder.mouse_pressed_keys[0]:
