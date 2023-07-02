@@ -126,30 +126,29 @@ class DetailedView :
 
         if pgl.K_SPACE in cr.event_holder.pressed_keys:
             self.zoom_view.image = random.choice(assets.pics)
+            self.zoom_view.reset()
             self.zoom_view.update()
 
 
         if m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
                 self.preview_box.get()) and m_rect.colliderect(self.left_box.get()) :
-            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEALL)
+
+            cr.mouse.current_cursor = (pgl.SYSTEM_CURSOR_SIZEALL)
 
             if held:
                 self.x_locked = True
                 self.y_locked = True
 
         elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(self.left_box.get()) :
-            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZEWE)
+            cr.mouse.current_cursor = (pgl.SYSTEM_CURSOR_SIZEWE)
             if held:
                 self.x_locked = True
 
         elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
                 self.preview_box.get()) :
-            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_SIZENS)
+            cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_SIZENS
             if held:
                 self.y_locked = True
-
-        else :
-            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
 
 
         self.zoom_view.check_events()

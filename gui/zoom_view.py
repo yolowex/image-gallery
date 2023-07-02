@@ -18,6 +18,14 @@ class ZoomView:
         self.grab_dst = Vector2(0,0)
         self.current_rel = Vector2(0,0)
 
+
+    def reset(self):
+        self.zoom = 1
+        self.is_grabbing = False
+        self.grab_src = Vector2(0, 0)
+        self.grab_dst = Vector2(0, 0)
+        self.current_rel = Vector2(0, 0)
+
     def update(self):
         self.inner_image_rect = self.container_box.get_in_rect(
             Vector2(self.image.get_rect().size),window_relative=True
@@ -29,9 +37,8 @@ class ZoomView:
         mr = cr.event_holder.mouse_rect
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
         if mw != 0 and mod:
-            self.zoom += (mw * 0.04)
+            self.zoom *= (1+mw*0.04)
 
-        cursor = pgl.SYSTEM_CURSOR_ARROW
 
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
@@ -60,10 +67,9 @@ class ZoomView:
                 self.grab_src = Vector2(0,0)
                 self.grab_dst = Vector2(0,0)
 
-            cursor = pgl.SYSTEM_CURSOR_HAND
+            cr.mouse.current_cursor =  pgl.SYSTEM_CURSOR_HAND
 
         else:
-            pg.mouse.set_cursor(pgl.SYSTEM_CURSOR_ARROW)
             self.is_grabbing = False
             grab_diff = self.grab_dst - self.grab_src
             self.current_rel += grab_diff
@@ -73,10 +79,10 @@ class ZoomView:
 
 
         if mr.colliderect(self.container_box.get()) and mod:
-            cursor = pg.cursors.broken_x
+            cr.mouse.current_cursor = pg.cursors.broken_x
 
 
-        pg.mouse.set_cursor(cursor)
+
 
     def render_debug(self):
         ...

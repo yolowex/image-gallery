@@ -6,6 +6,8 @@ from core.event_holder import EventHolder
 import core.common.constants as constants
 from core.log import Log
 from core.gallery.gallery import Gallery
+from core.mouse import Mouse
+
 
 class Entry:
     def __init__(self,log:Log):
@@ -21,7 +23,7 @@ class Entry:
         """
         cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED # noqa
         cr.renderer = Renderer(cr.window)    
-
+        cr.mouse = Mouse()
         cr.event_holder = EventHolder()
 
         current_platform = platform.system()
@@ -55,6 +57,7 @@ class Entry:
             cr.renderer.clear()
             cr.event_holder.get_events()
             cr.gallery.check_events()
+            cr.mouse.check_events()
             cr.gallery.render()
             cr.renderer.present()
 
