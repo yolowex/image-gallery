@@ -160,8 +160,8 @@ class DetailedView:
 
         self.image_ui_layer.check_events()
         if not self.image_ui_layer.any_hovered:
-            self.check_mouse_events()
             self.zoom_view.check_events()
+            self.check_mouse_events()
         else:
             self.zoom_view.is_grabbing = False
 

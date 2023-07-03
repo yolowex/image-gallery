@@ -12,7 +12,7 @@ class Button:
     __id = 0
 
     def __init__(
-        self, name: str, rel_rect: RelRect, image: Texture, on_click_action=None
+        self, name: str, rel_rect: RelRect, image: Texture, on_click_action=None,render_condition=None
     ):
         self.id_ = Button.__id
         Button.__id += 1
@@ -20,6 +20,11 @@ class Button:
         self.rel_rect: RelRect = rel_rect
         self.image = image
         self.on_click_action = on_click_action
+        """
+        the conditions that have to be met in order to render this buttons,
+        this has to be a callable object, and return either false or true.
+        """
+        self.render_condition = render_condition
         self.is_hovered = False
 
     def check_events(self):
@@ -44,13 +49,12 @@ class Button:
         ...
 
     def render(self):
-        # mr = cr.event_holder.mouse_rect
-        # this = self.rel_rect.get()
-        #
-        # if not mr.colliderect(this):
-        #     return
+        if not (not callable(self.render_condition) or (
+                callable(self.render_condition) and self.render_condition())) :
+            return
+
 
         self.image.draw(None, self.rel_rect.get())
 
         if cr.event_holder.should_render_debug:
-            self.render_debug()
+                self.render_debug()

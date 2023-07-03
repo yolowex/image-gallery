@@ -5,11 +5,16 @@ import core.common.resources as cr
 
 
 class RelRect:
-    def __init__(self, source_function, *args):
+    def __init__(self, source_function, *args,**kwargs):
         if len(args) in [4, 2]:
             self.rect = FRect(*args)
         else:
             raise ValueError("Bad input.")
+
+        self.use_param = False
+        if "use_param" in kwargs:
+            self.use_param = kwargs['use_param']
+
 
         self.init_rect = self.rect.copy()
 
@@ -24,6 +29,9 @@ class RelRect:
 
         :return: FRect pointer
         """
+        if self.use_param:
+            self.__get_result = self.scale_source_function(self.rect)
+            return self.__get_result
 
         pos_rel = Vector2(0, 0)
         fun_out = self.scale_source_function()
@@ -36,6 +44,7 @@ class RelRect:
 
         else:
             raise ValueError("Bad function output.")
+
 
         self.__get_result.x = self.rect.x * w - 0.5 + pos_rel.x
         self.__get_result.w = self.rect.w * w + 1
