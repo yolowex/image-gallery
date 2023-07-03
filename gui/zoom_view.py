@@ -29,7 +29,6 @@ class ZoomView:
         target.current_rel = self.current_rel
         target.is_grabbing = False
 
-
     def reset(self):
         self.zoom = 1
         self.is_grabbing = False

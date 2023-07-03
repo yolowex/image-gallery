@@ -17,16 +17,25 @@ class ImageUiLayer(UiLayer):
         self.init_right_pane()
         self.init_bottom_pane()
 
+
+    @property
+    def parent(self):
+        if cr.gallery.get_current_view() == ViewType.DETAILED:
+            return cr.gallery.detailed_view
+
+        return cr.gallery.fullscreen_view
+
+
     def init_bottom_pane(self):
         def bottom_pane_render_condition():
-            x = cr.gallery.detailed_view.image_box.get()
+            x = self.parent.image_box.get()
             mr = cr.event_holder.mouse_pos
             return mr.y > x.bottom - x.h * 0.2
 
         def source_function(rect: FRect):
             rect = rect.copy()
 
-            x = cr.gallery.detailed_view.image_box.get()
+            x = self.parent.image_box.get()
 
             rect.x *= x.w
             rect.y *= x.h
@@ -93,32 +102,33 @@ class ImageUiLayer(UiLayer):
 
     def init_right_pane(self):
         def right_pane_render_condition():
-            x = cr.gallery.detailed_view.image_box.get()
+            x = self.parent.image_box.get()
             mr = cr.event_holder.mouse_pos
             return mr.x > x.right - x.w * 0.05
 
         def source_function():
-            x = cr.gallery.detailed_view.image_box.get()
+            x = self.parent.image_box.get()
             return x.x, x.y, x.w, x.w
 
         def fullscreen_function():
             cr.gallery.update_current_view(ViewType.FULLSCREEN)
 
+
         def reset_function():
-            cr.gallery.detailed_view.zoom_view.reset()
-            cr.gallery.detailed_view.zoom_view.check_events()
+            self.parent.zoom_view.reset()
+            self.parent.zoom_view.check_events()
 
         def zoom_function(in_: bool):
             def do_zoom():
-                current_zoom = cr.gallery.detailed_view.zoom_view.zoom
+                current_zoom = self.parent.zoom_view.zoom
                 if in_:
                     current_zoom += 0.25
                 else:
                     current_zoom -= 0.25
 
-                image_box = cr.gallery.detailed_view.image_box.get()
+                image_box = self.parent.image_box.get()
 
-                cr.gallery.detailed_view.zoom_view.do_zoom(
+                self.parent.zoom_view.do_zoom(
                     current_zoom, Vector2(image_box.center)
                 )
 
@@ -128,7 +138,7 @@ class ImageUiLayer(UiLayer):
 
         h_step = 0.06
 
-        enter_fs_button = Button(
+        fullscreen_button = Button(
             "Enter fullscreen",
             R((0.95, h_step * 0), (0.05, 0.05)),
             assets.ui_buttons["fullscreen_enter"],
@@ -161,7 +171,7 @@ class ImageUiLayer(UiLayer):
         )
 
         self.buttons.extend(
-            [enter_fs_button, zoom_in_button, zoom_out_button, reset_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
         )
 
     def check_events(self):

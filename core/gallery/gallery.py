@@ -11,10 +11,19 @@ class Gallery:
     def __init__(self):
         self.detailed_view: DetailedView = DetailedView()
         self.fullscreen_view: FullscreenView = FullscreenView()
-        self.__current_view: ViewType = ViewType.DETAILED
+        self.__current_view: ViewType = ViewType.FULLSCREEN
+
+
+    def get_current_view(self):
+        return self.__current_view
 
     def update_current_view(self,to:ViewType):
         self.__current_view = to
+        if to == ViewType.FULLSCREEN:
+            self.detailed_view.zoom_view.sync(self.fullscreen_view.zoom_view)
+
+        elif to == ViewType.DETAILED:
+            self.fullscreen_view.zoom_view.sync(self.detailed_view.zoom_view)
 
     def check_events(self):
         if self.__current_view == ViewType.DETAILED:
