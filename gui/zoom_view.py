@@ -136,6 +136,9 @@ class ZoomView:
             self.zoom *= 1 + mw * self.zoom_power
             if self.zoom < 1:
                 self.zoom = 1
+                self.current_rel = Vector2(0,0)
+            if self.zoom > 20:
+                self.zoom = 20
 
             self.update_picture_rect()
 

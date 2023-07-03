@@ -28,10 +28,10 @@ class RelRect:
             pos_rel = Vector2(0, 0)
 
         w, h = self.scale_source_function()
-        self.__get_result.x = (self.rect.x + pos_rel.x) * w
-        self.__get_result.w = self.rect.w * w
-        self.__get_result.y = (self.rect.y + pos_rel.y) * h
-        self.__get_result.h = self.rect.h * h
+        self.__get_result.x = (self.rect.x + pos_rel.x) * w - 0.5
+        self.__get_result.w = self.rect.w * w + 1
+        self.__get_result.y = (self.rect.y + pos_rel.y) * h - 0.5
+        self.__get_result.h = self.rect.h * h + 1
 
         return self.__get_result
 
