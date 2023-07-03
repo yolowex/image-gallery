@@ -82,7 +82,7 @@ def stack_pin(
     abs_point_1 = get_abs_point_in_rect(rel_point_1, rect_1)
     abs_point_2 = get_abs_point_in_rect(rel_point_2, rect_2)
 
-    return abs_point_1  -abs_point_2
+    return abs_point_1 - abs_point_2
 
 
 """
@@ -104,37 +104,35 @@ if __name__ == "__main__":
     print(stack_pin(rect, Vector2(0.5, 0.5), rect2, Vector2(0.5, 0.5)))
 
     i = input("would you want to start the visual test? y/n: ")
-    if i == 'y':
-        print('cool')
+    if i == "y":
+        print("cool")
     else:
         raise SystemExit
 
-
     import pygame as pg
     import pygame.locals as pgl
-    from pygame import Vector2,FRect,Color
+    from pygame import Vector2, FRect, Color
     from typing import Optional
+
     pg.init()
-    screen = pg.display.set_mode([800,600])
+    screen = pg.display.set_mode([800, 600])
 
     rect_1: Optional[FRect] = None
     rect_2: Optional[FRect] = None
     rel_point_1: Optional[Vector2] = None
     rel_point_2: Optional[Vector2] = None
 
-
     def reset():
-        global rect_1,rect_2,rel_point_1,rel_point_2
-        rect_1 = FRect(50,50,250,250)
-        rect_2 = FRect(400,300,100,100)
+        global rect_1, rect_2, rel_point_1, rel_point_2
+        rect_1 = FRect(50, 50, 250, 250)
+        rect_2 = FRect(400, 300, 100, 100)
 
-        rel_point_1 = Vector2(0.2,0.2)
-        rel_point_2 = Vector2(0.8,0.8)
-
+        rel_point_1 = Vector2(0.2, 0.2)
+        rel_point_2 = Vector2(0.8, 0.8)
 
     reset()
-    abs_point_1 = get_abs_point_in_rect(rel_point_1,rect_1)
-    abs_point_2 = get_abs_point_in_rect(rel_point_2,rect_2)
+    abs_point_1 = get_abs_point_in_rect(rel_point_1, rect_1)
+    abs_point_2 = get_abs_point_in_rect(rel_point_2, rect_2)
 
     run = True
     while run:
@@ -147,15 +145,11 @@ if __name__ == "__main__":
                 if i.key == pgl.K_SPACE:
                     trigger = True
 
-
-
-
         if trigger:
-            rel = stack_pin(rect_1,rel_point_1,rect_2,rel_point_2)
+            rel = stack_pin(rect_1, rel_point_1, rect_2, rel_point_2)
             rect_2.center += rel
             abs_point_1 = get_abs_point_in_rect(rel_point_1, rect_1)
             abs_point_2 = get_abs_point_in_rect(rel_point_2, rect_2)
-
 
         STEEL_BLUE = Color([70, 130, 180])
         CHOCOLATE = Color([210, 105, 30])
@@ -165,14 +159,9 @@ if __name__ == "__main__":
 
         screen.fill("gray")
 
-        pg.draw.rect(screen,CRIMSON,rect_1,2)
-        pg.draw.rect(screen,FOREST_GREEN,rect_2,2)
-        pg.draw.circle(screen,STEEL_BLUE,abs_point_1,6)
-        pg.draw.circle(screen,STEEL_BLUE,abs_point_2,6)
+        pg.draw.rect(screen, CRIMSON, rect_1, 2)
+        pg.draw.rect(screen, FOREST_GREEN, rect_2, 2)
+        pg.draw.circle(screen, STEEL_BLUE, abs_point_1, 6)
+        pg.draw.circle(screen, STEEL_BLUE, abs_point_2, 6)
 
         pg.display.update()
-
-
-
-
-

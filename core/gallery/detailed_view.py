@@ -8,7 +8,7 @@ from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
-
+# todo: precisely position the boxes so there is no vacant space between them
 # done: add black formatter
 class DetailedView:
     def __init__(self):
@@ -166,31 +166,19 @@ class DetailedView:
         ...
 
     def render(self):
+
+        self.image_box.render(colors.GIMP_1,colors.GIMP_2)
         self.zoom_view.render()
+        self.log_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.detail_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.preview_box.render(colors.GIMP_1,colors.GIMP_2)
 
-        cr.renderer.draw_color = colors.CRIMSON
-        cr.renderer.draw_rect(self.top_box.get())
+        self.info_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.left_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.top_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.bottom_box.render(colors.GIMP_1,colors.GIMP_2)
 
-        cr.renderer.draw_color = colors.CHOCOLATE
-        cr.renderer.draw_rect(self.bottom_box.get())
 
-        cr.renderer.draw_color = colors.FOREST_GREEN
-        cr.renderer.draw_rect(self.log_box.get())
-
-        cr.renderer.draw_color = colors.BROWN
-        cr.renderer.draw_rect(self.info_box.get())
-
-        cr.renderer.draw_color = colors.CORAL
-        cr.renderer.draw_rect(self.detail_box.get())
-
-        cr.renderer.draw_color = colors.DARK_SLATE_GRAY
-        cr.renderer.draw_rect(self.preview_box.get())
-
-        cr.renderer.draw_color = colors.BLUE
-        cr.renderer.draw_rect(self.left_box.get())
-
-        cr.renderer.draw_color = colors.NAVY
-        cr.renderer.draw_rect(self.image_box.get())
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

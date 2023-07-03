@@ -52,7 +52,7 @@ class Entry:
 
     def run(self):
         while not cr.event_holder.should_quit:
-            cr.renderer.draw_color = Color("gray")
+            cr.renderer.draw_color = Color(constants.Colors.GIMP_2)
             cr.renderer.clear()
             cr.event_holder.get_events()
             cr.gallery.check_events()

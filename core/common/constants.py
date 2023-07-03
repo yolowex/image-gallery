@@ -132,6 +132,11 @@ class Colors:
     FOREST_GREEN = Color([34, 139, 34])
 
 
+    # GIMP colors
+    GIMP_0 = Color("#3b3b3b")
+    GIMP_1 = Color("#454545")
+    GIMP_2 = Color("#5c5c5c")
+
 """
 I added this try/except block just in case, it might be unnecessary thou
 """

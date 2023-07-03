@@ -28,10 +28,10 @@ class RelRect:
             pos_rel = Vector2(0, 0)
 
         w, h = self.scale_source_function()
-        self.__get_result.x = (self.rect.x + pos_rel.x) * w - 1
-        self.__get_result.w = self.rect.w * w + 2
-        self.__get_result.y = (self.rect.y + pos_rel.y) * h - 1
-        self.__get_result.h = self.rect.h * h + 2
+        self.__get_result.x = (self.rect.x + pos_rel.x) * w
+        self.__get_result.w = self.rect.w * w
+        self.__get_result.y = (self.rect.y + pos_rel.y) * h
+        self.__get_result.h = self.rect.h * h
 
         return self.__get_result
 
@@ -142,6 +142,37 @@ class RelRect:
         res.h = res.h * h + 2
 
         return res
+
+    def render(self,bg_color:Color,border_color:Color=None,padding_color:Color=None):
+
+        main_rect = self.get()
+        padding_rect = None
+
+        if padding_color is not None:
+            shrunk_rect = self.get()
+            lc = shrunk_rect.center
+
+            if shrunk_rect.w >= 20:
+                shrunk_rect.w -= 10
+
+            if shrunk_rect.h >= 20:
+                shrunk_rect.h -= 10
+
+            shrunk_rect.center = lc
+            padding_rect = main_rect
+            main_rect = shrunk_rect
+
+        cr.renderer.draw_color = bg_color
+        cr.renderer.fill_rect(main_rect)
+
+        if padding_rect is not None:
+            cr.renderer.draw_color = padding_color
+            cr.renderer.fill_rect(padding_rect)
+
+        if border_color is not None:
+            cr.renderer.draw_color = border_color
+            cr.renderer.draw_rect(self.get())
+
 
 
 if __name__ == "__main__":

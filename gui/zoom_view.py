@@ -14,6 +14,7 @@ class ZoomView:
         self.image = image
         self.inner_image_rect = FRect(0, 0, 0, 0)
         self.zoom = 1
+        self.zoom_power = 0.1
         self.zoom_pos = Vector2(0, 0)
 
         self.is_grabbing = False
@@ -132,7 +133,7 @@ class ZoomView:
         ):
             last_pic_rect = self.__picture_rect.copy()
             last_pic_point_rel = utils.get_rel_point_in_rect(mp, last_pic_rect)
-            self.zoom *= 1 + mw * 0.1
+            self.zoom *= 1 + mw * self.zoom_power
             if self.zoom < 1:
                 self.zoom = 1
 
@@ -142,15 +143,13 @@ class ZoomView:
                 last_pic_rect,
                 last_pic_point_rel,
                 self.__picture_rect,
-                last_pic_point_rel
-
+                last_pic_point_rel,
             )
 
             # print(last_pic_point_rel,rel_stack)
             self.current_rel += rel_stack
 
             self.update_picture_rect()
-
 
         if pgl.K_r in cr.event_holder.pressed_keys:
             self.reset()
