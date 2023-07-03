@@ -29,12 +29,17 @@ class Button:
             if callable(self.on_click_action):
                 self.on_click_action()
 
-            print(f"Clicked on button: {self.name}")
+            print(f"Clicked on button: {self.name}, id: {self.id_}")
 
     def render_debug(self):
         ...
 
     def render(self):
+        mr = cr.event_holder.mouse_rect
+        this = self.rel_rect.get()
+
+        if not mr.colliderect(this): return
+
         self.image.draw(None,self.rel_rect.get())
 
         if cr.event_holder.should_render_debug:
