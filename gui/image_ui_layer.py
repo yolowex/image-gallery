@@ -10,6 +10,7 @@ from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
 
+# todo: properly center the bottom pane elements
 class ImageUiLayer(UiLayer):
     def __init__(self):
         super().__init__()
@@ -20,45 +21,88 @@ class ImageUiLayer(UiLayer):
         def bottom_pane_render_condition():
             x = cr.gallery.detailed_view.image_box.get()
             mr = cr.event_holder.mouse_pos
-            return mr.x > x.right - x.w*0.05
+            return mr.y > x.bottom - x.h * 0.2
 
-
-        def source_function(rect:FRect):
+        def source_function(rect: FRect):
             rect = rect.copy()
 
             x = cr.gallery.detailed_view.image_box.get()
 
-            rect.w *= x.w
-            rect.h *= x.w
+            rect.x *= x.w
+            rect.y *= x.h
+            rect.x += x.x
+            rect.y += x.y
+            rect.w *= x.h
+            rect.h *= x.h
 
             return rect
 
+        R = lambda *x: RelRect(source_function, *x, use_param=True)
 
-        R = lambda *x: RelRect(source_function, *x,use_param=True)
+        play_button_size = (0.1, 0.1)
+        other_buttons_size = (0.08, 0.08)
+        play_button_y = 0.85
+        other_buttons_y = (
+            play_button_y + (play_button_size[0] - other_buttons_size[0]) / 2
+        )
 
-        w_step = 0.1
+        w_step = play_button_size[0]
 
         play_button = Button(
             "Play",
-            R((0.5+w_step*0,0.9), (0.05, 0.05)),
+            R((0.46 + w_step * 0, play_button_y), play_button_size),
             assets.ui_buttons["play"],
+            lambda: None,
+            bottom_pane_render_condition,
         )
 
+        next_button = Button(
+            "Next",
+            R((0.46 + w_step * 1, other_buttons_y), other_buttons_size),
+            assets.ui_buttons["play_go_next"],
+            lambda: None,
+            bottom_pane_render_condition,
+        )
+
+        previous_button = Button(
+            "Previous",
+            R((0.46 + w_step * -1, other_buttons_y), other_buttons_size),
+            assets.ui_buttons["play_go_previous"],
+            lambda: None,
+            bottom_pane_render_condition,
+        )
+
+        first_button = Button(
+            "First",
+            R((0.46 + w_step * -2, other_buttons_y), other_buttons_size),
+            assets.ui_buttons["play_go_first"],
+            lambda: None,
+            bottom_pane_render_condition,
+        )
+        last_button = Button(
+            "Last",
+            R((0.46 + w_step * 2, other_buttons_y), other_buttons_size),
+            assets.ui_buttons["play_go_last"],
+            lambda: None,
+            bottom_pane_render_condition,
+        )
 
         self.buttons.extend(
-            [play_button]
+            [play_button, next_button, previous_button, first_button, last_button]
         )
 
     def init_right_pane(self):
         def right_pane_render_condition():
             x = cr.gallery.detailed_view.image_box.get()
             mr = cr.event_holder.mouse_pos
-            return mr.x > x.right - x.w*0.05
-
+            return mr.x > x.right - x.w * 0.05
 
         def source_function():
             x = cr.gallery.detailed_view.image_box.get()
             return x.x, x.y, x.w, x.w
+
+        def fullscreen_function():
+            cr.gallery.update_current_view(ViewType.FULLSCREEN)
 
         def reset_function():
             cr.gallery.detailed_view.zoom_view.reset()
@@ -88,6 +132,8 @@ class ImageUiLayer(UiLayer):
             "Enter fullscreen",
             R((0.95, h_step * 0), (0.05, 0.05)),
             assets.ui_buttons["fullscreen_enter"],
+            fullscreen_function,
+            right_pane_render_condition
         )
 
         zoom_in_button = Button(
@@ -95,7 +141,7 @@ class ImageUiLayer(UiLayer):
             R((0.95, h_step * 1), (0.05, 0.05)),
             assets.ui_buttons["zoom_in"],
             zoom_function(True),
-            right_pane_render_condition
+            right_pane_render_condition,
         )
 
         zoom_out_button = Button(
@@ -103,7 +149,7 @@ class ImageUiLayer(UiLayer):
             R((0.95, h_step * 2), (0.05, 0.05)),
             assets.ui_buttons["zoom_out"],
             zoom_function(False),
-            right_pane_render_condition
+            right_pane_render_condition,
         )
 
         reset_button = Button(
@@ -111,7 +157,7 @@ class ImageUiLayer(UiLayer):
             R((0.95, h_step * 3), (0.05, 0.05)),
             assets.ui_buttons["reset"],
             reset_function,
-            right_pane_render_condition
+            right_pane_render_condition,
         )
 
         self.buttons.extend(

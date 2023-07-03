@@ -5,7 +5,7 @@ import core.common.resources as cr
 
 
 class RelRect:
-    def __init__(self, source_function, *args,**kwargs):
+    def __init__(self, source_function, *args, **kwargs):
         if len(args) in [4, 2]:
             self.rect = FRect(*args)
         else:
@@ -13,8 +13,7 @@ class RelRect:
 
         self.use_param = False
         if "use_param" in kwargs:
-            self.use_param = kwargs['use_param']
-
+            self.use_param = kwargs["use_param"]
 
         self.init_rect = self.rect.copy()
 
@@ -45,7 +44,6 @@ class RelRect:
         else:
             raise ValueError("Bad function output.")
 
-
         self.__get_result.x = self.rect.x * w - 0.5 + pos_rel.x
         self.__get_result.w = self.rect.w * w + 1
         self.__get_result.y = self.rect.y * h - 0.5 + pos_rel.y
@@ -71,6 +69,7 @@ class RelRect:
 
         return cut_rect
 
+    # todo: adapt this method to the latest changes in use_param
     def get_in_rect(self, rect_size: Vector2, window_relative=False):
         win_ar = utils.get_aspect_ratio(cr.ws())
         mx = 1

@@ -45,9 +45,9 @@ class DetailedView:
         self.x_locked = False
         self.y_locked = False
 
-        self.zoom_texture = random.choice(assets.pics)
+        zoom_texture = random.choice(assets.pics)
 
-        self.zoom_view = ZoomView(self.image_box, self.zoom_texture)
+        self.zoom_view = ZoomView(self.image_box, zoom_texture)
 
         self.resize_boxes()
 

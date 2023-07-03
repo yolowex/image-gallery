@@ -12,7 +12,12 @@ class Button:
     __id = 0
 
     def __init__(
-        self, name: str, rel_rect: RelRect, image: Texture, on_click_action=None,render_condition=None
+        self,
+        name: str,
+        rel_rect: RelRect,
+        image: Texture,
+        on_click_action=None,
+        render_condition=None,
     ):
         self.id_ = Button.__id
         Button.__id += 1
@@ -49,12 +54,13 @@ class Button:
         ...
 
     def render(self):
-        if not (not callable(self.render_condition) or (
-                callable(self.render_condition) and self.render_condition())) :
+        if not (
+            not callable(self.render_condition)
+            or (callable(self.render_condition) and self.render_condition())
+        ):
             return
-
 
         self.image.draw(None, self.rel_rect.get())
 
         if cr.event_holder.should_render_debug:
-                self.render_debug()
+            self.render_debug()

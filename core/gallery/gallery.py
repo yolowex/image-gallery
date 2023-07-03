@@ -11,25 +11,28 @@ class Gallery:
     def __init__(self):
         self.detailed_view: DetailedView = DetailedView()
         self.fullscreen_view: FullscreenView = FullscreenView()
-        self.current_view: ViewType = ViewType.DETAILED
+        self.__current_view: ViewType = ViewType.DETAILED
+
+    def update_current_view(self,to:ViewType):
+        self.__current_view = to
 
     def check_events(self):
-        if self.current_view == ViewType.DETAILED:
+        if self.__current_view == ViewType.DETAILED:
             self.detailed_view.check_events()
-        elif self.current_view == ViewType.FULLSCREEN:
+        elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.check_events()
 
     def render_debug(self):
-        if self.current_view == ViewType.DETAILED:
+        if self.__current_view == ViewType.DETAILED:
             self.detailed_view.render_debug()
 
-        elif self.current_view == ViewType.FULLSCREEN:
+        elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.render_debug()
 
     def render(self):
-        if self.current_view == ViewType.DETAILED:
+        if self.__current_view == ViewType.DETAILED:
             self.detailed_view.render()
-        elif self.current_view == ViewType.FULLSCREEN:
+        elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.render()
 
         if cr.event_holder.should_render_debug:
