@@ -136,17 +136,20 @@ class ZoomView:
             if self.zoom < 1:
                 self.zoom = 1
 
-            # self.update_picture_rect()
-            #
-            # rel_stack = utils.stack_pin(
-            #     last_pic_rect,
-            #     last_pic_point_rel,
-            #     self.__picture_rect,
-            #     last_pic_point_rel,
-            # )
-            #
+            self.update_picture_rect()
+
+            rel_stack = utils.stack_pin(
+                last_pic_rect,
+                last_pic_point_rel,
+                self.__picture_rect,
+                last_pic_point_rel,
+            )
+
             # print(last_pic_point_rel,rel_stack)
-            # self.current_rel += rel_stack
+            self.current_rel += rel_stack
+
+            self.update_picture_rect()
+
 
         if pgl.K_r in cr.event_holder.pressed_keys:
             self.reset()
