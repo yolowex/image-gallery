@@ -20,8 +20,8 @@ installerPath="$here/installer"
 installerOutPath="$installerPath/inno.iss"
 shouldBuildExe=0
 shouldBuildInstaller=0
-extentions=("jpg" "gif" "webp" "png" "mp4" "mkv" "avi" )
-source_dirs=("test_assets")
+extensions=("jpg" "gif" "webp" "png" "mp4" "mkv" "avi" )
+source_dirs=("test_assets" "assets")
 appName="Foto Folio"
 appVersion="1.0"
 appPublisher="Great Sunshine Company"
@@ -64,13 +64,13 @@ EOF
 
 write_assoc_def() {
     number=$1
-    extention=$2
+    extension=$2
     outputfile=$3
-    echo "writing definition section for" $extention
+    echo "writing definition section for" $extension
     
 assoc_def=$(cat <<EOF
 ;
-#define MyAppAssocExt$number "$extention"
+#define MyAppAssocExt$number "$extension"
 #define MyAppAssocKey$number StringChange(MyAppAssocName, " ", "") + MyAppAssocExt$number
 EOF
     )
@@ -80,9 +80,9 @@ EOF
 
 write_assoc_reg() {
     number=$1
-    extention=$2
+    extension=$2
     outputfile=$3
-    echo "writing registry section for" $extention
+    echo "writing registry section for" $extension
     
     assoc_reg=$(cat <<EOF
 ;
@@ -125,10 +125,10 @@ EOF
 
     echo "$def_section_text" >> $installerOutPath
 
-    echo writing the definition section for program\'s associated extentions
+    echo writing the definition section for program\'s associated extensions
 
     i=0
-    for item in "${extentions[@]}"; do
+    for item in "${extensions[@]}"; do
         write_assoc_def $i ".$item" $installerOutPath
         ((i++))
     done
@@ -186,10 +186,10 @@ EOF
 
     echo "[Registry]" >> $installerOutPath
     
-    echo writing the registeration section for program\'s associated extentions 
+    echo writing the registeration section for program\'s associated extensions
 
     i=0
-    for item in "${extentions[@]}"; do
+    for item in "${extensions[@]}"; do
         write_assoc_reg $i ".$item" $installerOutPath
         ((i++))
     done
