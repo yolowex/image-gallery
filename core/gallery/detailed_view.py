@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import Colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from gui.image_ui_layer import ImageUiLayer
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
@@ -16,15 +17,7 @@ class DetailedView:
     def __init__(self):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
 
-        def test_func():
-            x = self.image_box.get()
-            return x.x,x.y,x.w, x.w
-
-        self.test_button = Button(
-            "test button",
-            RelRect(test_func, (0.0, 0.0), (0.1, 0.1)),
-            assets.ui_buttons["reset"],
-        )
+        self.image_ui_layer = ImageUiLayer()
 
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.1)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
@@ -119,21 +112,10 @@ class DetailedView:
 
         self.zoom_view.update()
 
-    def check_events(self):
-        self.test_button.check_events()
+    def check_mouse_events(self):
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
         clicked = cr.event_holder.mouse_pressed_keys[0]
-
-        if cr.event_holder.window_resized:
-            self.resize_boxes()
-
-        self.zoom_view.check_events()
-
-        if pgl.K_SPACE in cr.event_holder.pressed_keys:
-            self.zoom_view.image = random.choice(assets.pics)
-            self.zoom_view.reset()
-            self.zoom_view.update()
 
         if (
             m_rect.colliderect(self.image_box.get())
@@ -172,6 +154,22 @@ class DetailedView:
         if self.y_locked:
             self.resize_y_request = cr.event_holder.mouse_pos.y
 
+    def check_events(self):
+        if cr.event_holder.window_resized:
+            self.resize_boxes()
+
+        self.image_ui_layer.check_events()
+        if not self.image_ui_layer.any_hovered:
+            self.check_mouse_events()
+            self.zoom_view.check_events()
+        else:
+            self.zoom_view.is_grabbing = False
+
+        if pgl.K_SPACE in cr.event_holder.pressed_keys:
+            self.zoom_view.image = random.choice(assets.pics)
+            self.zoom_view.reset()
+            self.zoom_view.update()
+
         if self.x_locked or self.y_locked:
             self.resize_boxes()
 
@@ -190,8 +188,7 @@ class DetailedView:
         self.top_box.render(colors.GIMP_1, colors.GIMP_2)
         self.bottom_box.render(colors.GIMP_1, colors.GIMP_2)
 
-
-        self.test_button.render()
+        self.image_ui_layer.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

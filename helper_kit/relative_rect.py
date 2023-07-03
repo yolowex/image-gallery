@@ -29,15 +29,13 @@ class RelRect:
         fun_out = self.scale_source_function()
 
         if len(fun_out) == 2:
-            w,h = fun_out
+            w, h = fun_out
 
         elif len(fun_out) == 4:
-            pos_rel.x,pos_rel.y,w,h = fun_out
+            pos_rel.x, pos_rel.y, w, h = fun_out
 
         else:
             raise ValueError("Bad function output.")
-
-
 
         self.__get_result.x = self.rect.x * w - 0.5 + pos_rel.x
         self.__get_result.w = self.rect.w * w + 1

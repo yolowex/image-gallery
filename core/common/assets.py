@@ -18,6 +18,8 @@ def init_assets():
         for i in os.listdir(os.path.abspath("./test_assets"))
     ]
 
+    cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)
+
     expected_ui_buttons = 12
 
     ui_buttons_path = os.path.abspath("./assets/ui-buttons")
