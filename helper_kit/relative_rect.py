@@ -16,7 +16,7 @@ class RelRect:
         self.scale_source_function = source_function
         self.__get_result = FRect(0, 0, 0, 0)
 
-    def get(self, pos_rel=None) -> FRect:
+    def get(self) -> FRect:
         """
         Multiplies the dimensions of the rectangle with the values acquired from
         the source function and assigns the result to an existing rectangle. Please
@@ -24,13 +24,24 @@ class RelRect:
 
         :return: FRect pointer
         """
-        if pos_rel is None:
-            pos_rel = Vector2(0, 0)
 
-        w, h = self.scale_source_function()
-        self.__get_result.x = (self.rect.x + pos_rel.x) * w - 0.5
+        pos_rel = Vector2(0, 0)
+        fun_out = self.scale_source_function()
+
+        if len(fun_out) == 2:
+            w,h = fun_out
+
+        elif len(fun_out) == 4:
+            pos_rel.x,pos_rel.y,w,h = fun_out
+
+        else:
+            raise ValueError("Bad function output.")
+
+
+
+        self.__get_result.x = self.rect.x * w - 0.5 + pos_rel.x
         self.__get_result.w = self.rect.w * w + 1
-        self.__get_result.y = (self.rect.y + pos_rel.y) * h - 0.5
+        self.__get_result.y = self.rect.y * h - 0.5 + pos_rel.y
         self.__get_result.h = self.rect.h * h + 1
 
         return self.__get_result
@@ -143,8 +154,9 @@ class RelRect:
 
         return res
 
-    def render(self,bg_color:Color,border_color:Color=None,padding_color:Color=None):
-
+    def render(
+        self, bg_color: Color, border_color: Color = None, padding_color: Color = None
+    ):
         main_rect = self.get()
         padding_rect = None
 
@@ -169,11 +181,9 @@ class RelRect:
         cr.renderer.draw_color = bg_color
         cr.renderer.fill_rect(main_rect)
 
-
         if border_color is not None:
             cr.renderer.draw_color = border_color
             cr.renderer.draw_rect(self.get())
-
 
 
 if __name__ == "__main__":

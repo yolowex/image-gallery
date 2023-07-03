@@ -7,12 +7,24 @@ import core.common.resources as cr
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
+from gui.button import Button
+
 
 # todo: precisely position the boxes so there is no vacant space between them
 # done: add black formatter
 class DetailedView:
     def __init__(self):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
+
+        def test_func():
+            x = self.image_box.get()
+            return x.x,x.y,x.w, x.w
+
+        self.test_button = Button(
+            "test button",
+            RelRect(test_func, (0.0, 0.0), (0.1, 0.1)),
+            assets.ui_buttons["reset"],
+        )
 
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.1)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
@@ -108,6 +120,7 @@ class DetailedView:
         self.zoom_view.update()
 
     def check_events(self):
+        self.test_button.check_events()
         m_rect = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
         clicked = cr.event_holder.mouse_pressed_keys[0]
@@ -166,19 +179,19 @@ class DetailedView:
         ...
 
     def render(self):
-
-        self.image_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.image_box.render(colors.GIMP_1, colors.GIMP_2)
         self.zoom_view.render()
-        self.detail_box.render(colors.GIMP_1,colors.GIMP_2)
-        self.log_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
-        self.preview_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.detail_box.render(colors.GIMP_1, colors.GIMP_2)
+        self.log_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+        self.preview_box.render(colors.GIMP_1, colors.GIMP_2)
 
-        self.info_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
-        self.left_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
-        self.top_box.render(colors.GIMP_1,colors.GIMP_2)
-        self.bottom_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+        self.left_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+        self.top_box.render(colors.GIMP_1, colors.GIMP_2)
+        self.bottom_box.render(colors.GIMP_1, colors.GIMP_2)
 
 
+        self.test_button.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
