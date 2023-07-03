@@ -23,10 +23,10 @@ class ZoomView:
         self.current_rel = Vector2(0, 0)
         self.__picture_rect = FRect(0, 0, 0, 0)
 
-    def sync(self,target):
+    def sync(self, target):
         target.image = self.image
         target.zoom = self.zoom
-        target.current_rel = self.current_rel
+        target.current_rel = self.current_rel.copy()
         target.is_grabbing = False
 
     def reset(self):
@@ -40,8 +40,6 @@ class ZoomView:
         self.inner_image_rect = self.container_box.get_in_rect(
             Vector2(self.image.get_rect().size), window_relative=True
         )
-
-
 
     @property
     def x_grab_allowed(self) -> bool:

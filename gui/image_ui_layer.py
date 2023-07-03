@@ -17,14 +17,12 @@ class ImageUiLayer(UiLayer):
         self.init_right_pane()
         self.init_bottom_pane()
 
-
     @property
     def parent(self):
         if cr.gallery.get_current_view() == ViewType.DETAILED:
             return cr.gallery.detailed_view
 
         return cr.gallery.fullscreen_view
-
 
     def init_bottom_pane(self):
         def bottom_pane_render_condition():
@@ -111,8 +109,10 @@ class ImageUiLayer(UiLayer):
             return x.x, x.y, x.w, x.w
 
         def fullscreen_function():
-            cr.gallery.update_current_view(ViewType.FULLSCREEN)
-
+            if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
+                cr.gallery.update_current_view(ViewType.DETAILED)
+            else:
+                cr.gallery.update_current_view(ViewType.FULLSCREEN)
 
         def reset_function():
             self.parent.zoom_view.reset()
@@ -120,17 +120,26 @@ class ImageUiLayer(UiLayer):
 
         def zoom_function(in_: bool):
             def do_zoom():
+                text = "in"
                 current_zoom = self.parent.zoom_view.zoom
                 if in_:
                     current_zoom += 0.25
                 else:
+                    text = "out"
                     current_zoom -= 0.25
 
-                image_box = self.parent.image_box.get()
+                try:
+                    image_box = self.parent.image_box.get()
 
-                self.parent.zoom_view.do_zoom(
-                    current_zoom, Vector2(image_box.center)
-                )
+                    self.parent.zoom_view.do_zoom(
+                        current_zoom, Vector2(image_box.center)
+                    )
+                except Exception as e:
+                    cr.log.write_log(
+                        f"Could not perform zoom {text} while inside {cr.gallery.get_current_view()},"
+                        f"due to this error: {e}.",
+                        LogLevel.ERROR,
+                    )
 
             return do_zoom
 
@@ -139,11 +148,11 @@ class ImageUiLayer(UiLayer):
         h_step = 0.06
 
         fullscreen_button = Button(
-            "Enter fullscreen",
+            "Trigger fullscreen",
             R((0.95, h_step * 0), (0.05, 0.05)),
             assets.ui_buttons["fullscreen_enter"],
             fullscreen_function,
-            right_pane_render_condition
+            right_pane_render_condition,
         )
 
         zoom_in_button = Button(

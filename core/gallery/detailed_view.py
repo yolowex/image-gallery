@@ -51,7 +51,6 @@ class DetailedView:
 
         self.resize_boxes()
 
-
     def resize_boxes(self):
         X, Y = cr.ws()
         rect = FRect(self.image_pos, self.image_size)
