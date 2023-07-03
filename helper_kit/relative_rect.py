@@ -156,18 +156,19 @@ class RelRect:
                 shrunk_rect.w -= 10
 
             if shrunk_rect.h >= 20:
-                shrunk_rect.h -= 10
+                shrunk_rect.h -= 15
 
             shrunk_rect.center = lc
-            padding_rect = main_rect
-            main_rect = shrunk_rect
+            padding_rect = main_rect.copy()
+            main_rect = shrunk_rect.copy()
+
+        if padding_rect is not None:
+            cr.renderer.draw_color = padding_color
+            cr.renderer.fill_rect(self.get())
 
         cr.renderer.draw_color = bg_color
         cr.renderer.fill_rect(main_rect)
 
-        if padding_rect is not None:
-            cr.renderer.draw_color = padding_color
-            cr.renderer.fill_rect(padding_rect)
 
         if border_color is not None:
             cr.renderer.draw_color = border_color

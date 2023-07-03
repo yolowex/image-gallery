@@ -169,12 +169,12 @@ class DetailedView:
 
         self.image_box.render(colors.GIMP_1,colors.GIMP_2)
         self.zoom_view.render()
-        self.log_box.render(colors.GIMP_1,colors.GIMP_2)
         self.detail_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.log_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
         self.preview_box.render(colors.GIMP_1,colors.GIMP_2)
 
-        self.info_box.render(colors.GIMP_1,colors.GIMP_2)
-        self.left_box.render(colors.GIMP_1,colors.GIMP_2)
+        self.info_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
+        self.left_box.render(colors.GIMP_1,colors.GIMP_2,colors.GIMP_0)
         self.top_box.render(colors.GIMP_1,colors.GIMP_2)
         self.bottom_box.render(colors.GIMP_1,colors.GIMP_2)
 
