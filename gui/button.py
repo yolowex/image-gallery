@@ -35,8 +35,10 @@ class Button:
             if released:
                 if callable(self.on_click_action):
                     self.on_click_action()
-                    cr.log.write_log(f"Clicked on button: {self.name} with id: {self.id_}"
-                        ,LogLevel.DEBUG)
+                    cr.log.write_log(
+                        f"Clicked on button: {self.name} with id: {self.id_}",
+                        LogLevel.DEBUG,
+                    )
 
     def render_debug(self):
         ...

@@ -116,6 +116,36 @@ class ZoomView:
         """
         return self.__picture_rect.copy()
 
+    def do_zoom(self, new_zoom: float, pivot_point: Vector2, use_rel_point=False):
+        last_pic_rect = self.__picture_rect.copy()
+
+        if use_rel_point:
+            last_pic_point_rel = pivot_point
+        else:
+            last_pic_point_rel = utils.get_rel_point_in_rect(pivot_point, last_pic_rect)
+
+        self.zoom = new_zoom
+
+        if self.zoom < 1:
+            self.zoom = 1
+            self.current_rel = Vector2(0, 0)
+        if self.zoom > 20:
+            self.zoom = 20
+
+        self.update_picture_rect()
+
+        rel_stack = utils.stack_pin(
+            last_pic_rect,
+            last_pic_point_rel,
+            self.__picture_rect,
+            last_pic_point_rel,
+        )
+
+        # print(last_pic_point_rel,rel_stack)
+        self.current_rel += rel_stack
+
+        self.update_picture_rect()
+
     def check_events(self):
         self.update_picture_rect()
 
@@ -131,28 +161,8 @@ class ZoomView:
             and mr.colliderect(self.container_box.get())
             and mr.colliderect(self.get_picture_rect())
         ):
-            last_pic_rect = self.__picture_rect.copy()
-            last_pic_point_rel = utils.get_rel_point_in_rect(mp, last_pic_rect)
-            self.zoom *= 1 + mw * self.zoom_power
-            if self.zoom < 1:
-                self.zoom = 1
-                self.current_rel = Vector2(0, 0)
-            if self.zoom > 20:
-                self.zoom = 20
-
-            self.update_picture_rect()
-
-            rel_stack = utils.stack_pin(
-                last_pic_rect,
-                last_pic_point_rel,
-                self.__picture_rect,
-                last_pic_point_rel,
-            )
-
-            # print(last_pic_point_rel,rel_stack)
-            self.current_rel += rel_stack
-
-            self.update_picture_rect()
+            zoom = self.zoom * (1 + mw * self.zoom_power)
+            self.do_zoom(zoom, mp)
 
         if pgl.K_r in cr.event_holder.pressed_keys:
             self.reset()
