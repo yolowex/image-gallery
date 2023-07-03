@@ -132,7 +132,7 @@ class ZoomView:
         ):
             last_pic_rect = self.__picture_rect.copy()
             last_pic_point_rel = utils.get_rel_point_in_rect(mp, last_pic_rect)
-            self.zoom *= 1 + mw * 0.04
+            self.zoom *= 1 + mw * 0.1
             if self.zoom < 1:
                 self.zoom = 1
 
@@ -142,7 +142,8 @@ class ZoomView:
                 last_pic_rect,
                 last_pic_point_rel,
                 self.__picture_rect,
-                last_pic_point_rel,
+                last_pic_point_rel
+
             )
 
             # print(last_pic_point_rel,rel_stack)
