@@ -11,12 +11,18 @@ def init_assets():
 
     cr.log.write_log("Loading the test_assets from disk...", LogLevel.DEBUG)
 
+    # unsafe
     pics = [
         Texture.from_surface(
             cr.renderer, pg.image.load(os.path.abspath("./test_assets/" + i))
-        )
+        ) if i.split(".")[-1] != "webp" else None
         for i in os.listdir(os.path.abspath("./test_assets"))
     ]
+
+    pics = [
+        i for i in pics if i is not None
+    ]
+
 
     cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)
 
