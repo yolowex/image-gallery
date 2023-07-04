@@ -1,0 +1,39 @@
+bug#1 details:
+    level: critical
+    state: fixed
+
+    while switching to fullscreen view from the detailed view,
+    an error is raised. this happens when the zoom_in or zoom_out
+    buttons are unintentionally pressed.
+    it only happens on the first switch.
+
+    this was fixed by calling update and check_event methods before performing zoom in
+    and zoom out in the zoom_function.
+
+bug#2 details:
+    level: normal
+    state: fixed
+
+    while switching the gallery mode from detailed to fullscreen and vice versa,
+    the picture is not shown until the mouse is hovered over the image box.
+
+    this was fixed by calling update and check_event methods before performing zoom in
+    and zoom out in the zoom_function.
+
+bug#3 details:
+    level: normal
+    state: unsolved
+
+    while changing the current picture, the aspect ratio and size of the new picture is
+    the same as the last picture.
+
+    this can probably be fixed easily.
+
+bug#4 details:
+    level: critical
+    state: unsolved
+
+    this also happens while switching the gallery mode,
+    the pivot point of the zoom is changed and considerably pushed to the left,
+    and it's not even fixed by resetting the zoom view with ZoomView.reset.
+

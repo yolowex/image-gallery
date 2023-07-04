@@ -131,6 +131,14 @@ class ImageUiLayer(UiLayer):
                 try:
                     image_box = self.parent.image_box.get()
 
+
+                    """
+                    adding these two lines fixed bug#1 and bug#2.
+                    this is probably a bad solution.
+                    """
+                    self.parent.zoom_view.update()
+                    self.parent.zoom_view.check_events()
+
                     self.parent.zoom_view.do_zoom(
                         current_zoom, Vector2(image_box.center)
                     )
