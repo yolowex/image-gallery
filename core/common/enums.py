@@ -36,12 +36,12 @@ class ContentSourceType(Enum):
 
     """
 
-    PYGAME = ["png","jpg","jpeg","tiff","bmp","tga"]
-    PILLOW = ["gif","webp"]
-    OPENCV = ["avi","mp4","mpeg","mkv","mov","wmv","flv"]
+    PYGAME = ["png", "jpg", "jpeg", "tiff", "bmp", "tga"]
+    PILLOW = ["gif", "webp"]
+    OPENCV = ["avi", "mp4", "mpeg", "mkv", "mov", "wmv", "flv"]
 
 
-class ContentPlayType(Enum):
+class ContentType(Enum):
     PICTURE = 0
     GIF = 1
     VIDEO = 2

@@ -51,10 +51,13 @@ class Button:
 
                     try:
                         self.on_click_action()
-                        
+
                     except Exception as e:
-                        cr.log.write_log(f"Could not call on_click_action for {self.name} button"
-                                    "due to this error: {e}",LogLevel.ERROR)
+                        cr.log.write_log(
+                            f"Could not call on_click_action for {self.name} button"
+                            "due to this error: {e}",
+                            LogLevel.ERROR,
+                        )
 
     def render_debug(self):
         ...

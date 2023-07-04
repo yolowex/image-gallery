@@ -128,7 +128,6 @@ class ImageUiLayer(UiLayer):
                     text = "out"
                     current_zoom -= 0.25
 
-
                 image_box = self.parent.image_box.get()
                 """
                 adding these two lines fixed bug#1 and bug#2.
@@ -136,10 +135,7 @@ class ImageUiLayer(UiLayer):
                 """
                 self.parent.zoom_view.update()
                 self.parent.zoom_view.check_events()
-                self.parent.zoom_view.do_zoom(
-                    current_zoom, Vector2(image_box.center)
-                )
-
+                self.parent.zoom_view.do_zoom(current_zoom, Vector2(image_box.center))
 
             return do_zoom
 

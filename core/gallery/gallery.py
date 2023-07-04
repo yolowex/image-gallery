@@ -28,9 +28,6 @@ class Gallery:
             self.detailed_view.resize_boxes()
             cr.window.set_windowed()
 
-
-
-
     def check_events(self):
         if self.__current_view == ViewType.DETAILED:
             self.detailed_view.check_events()

@@ -7,6 +7,7 @@ import core.common.resources as cr
 from helper_kit.relative_rect import RelRect
 from core.common import utils
 
+
 class ZoomView:
     def __init__(self, container_box: RelRect, image: Texture):
         self.container_box = container_box
@@ -158,9 +159,8 @@ class ZoomView:
                 self.current_rel,
                 self.is_grabbing,
                 self.grab_src,
-                self.grab_dst
+                self.grab_dst,
             )
-
 
         self.update_picture_rect()
 
