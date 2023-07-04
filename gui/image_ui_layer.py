@@ -128,26 +128,18 @@ class ImageUiLayer(UiLayer):
                     text = "out"
                     current_zoom -= 0.25
 
-                try:
-                    image_box = self.parent.image_box.get()
 
+                image_box = self.parent.image_box.get()
+                """
+                adding these two lines fixed bug#1 and bug#2.
+                this is probably a bad solution.
+                """
+                self.parent.zoom_view.update()
+                self.parent.zoom_view.check_events()
+                self.parent.zoom_view.do_zoom(
+                    current_zoom, Vector2(image_box.center)
+                )
 
-                    """
-                    adding these two lines fixed bug#1 and bug#2.
-                    this is probably a bad solution.
-                    """
-                    self.parent.zoom_view.update()
-                    self.parent.zoom_view.check_events()
-
-                    self.parent.zoom_view.do_zoom(
-                        current_zoom, Vector2(image_box.center)
-                    )
-                except Exception as e:
-                    cr.log.write_log(
-                        f"Could not perform zoom {text} while inside {cr.gallery.get_current_view()},"
-                        f"due to this error: {e}.",
-                        LogLevel.ERROR,
-                    )
 
             return do_zoom
 

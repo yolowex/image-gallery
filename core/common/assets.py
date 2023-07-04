@@ -1,9 +1,12 @@
+import pygame
+
 from core.common.enums import LogLevel
 from core.common.names import *
 import core.common.resources as cr
 
 pics: list[Texture] = []
 ui_buttons: Dict[str, Texture] = {}
+test_assets_path = os.path.abspath("./test_assets")
 
 
 def init_assets():

@@ -44,11 +44,17 @@ class Button:
 
             if released:
                 if callable(self.on_click_action):
-                    self.on_click_action()
                     cr.log.write_log(
                         f"Clicked on button: {self.name} with id: {self.id_}",
                         LogLevel.DEBUG,
                     )
+
+                    try:
+                        self.on_click_action()
+                        
+                    except Exception as e:
+                        cr.log.write_log(f"Could not call on_click_action for {self.name} button"
+                                    "due to this error: {e}",LogLevel.ERROR)
 
     def render_debug(self):
         ...

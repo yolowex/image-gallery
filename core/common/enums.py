@@ -25,3 +25,23 @@ class AspectRatioGroup(Enum):
     RECTANGULAR = 0
     PORTRAIT = 1
     LANDSCAPE = 2
+
+
+class ContentSourceType(Enum):
+    """
+    this enum class maps every supported file format to 3 different
+    libraries that can load them. all of them are eventually converted
+    into a pygame.Surface, and then a pygame.__sdl2.Texture, so native
+    pygame type extensions are obviously loaded faster
+
+    """
+
+    PYGAME = ["png","jpg","jpeg","tiff","bmp","tga"]
+    PILLOW = ["gif","webp"]
+    OPENCV = ["avi","mp4","mpeg","mkv","mov","wmv","flv"]
+
+
+class ContentPlayType(Enum):
+    PICTURE = 0
+    GIF = 1
+    VIDEO = 2
