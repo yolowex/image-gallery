@@ -20,6 +20,8 @@ bug#2 details:
     this was fixed by calling update and check_event methods before performing zoom in
     and zoom out in the zoom_function.
 
+    this was further fixed by calling DetailedView.resize_boxes while switching to Detailed gallery mode.
+
 bug#3 details:
     level: normal
     state: unsolved
@@ -32,6 +34,8 @@ bug#3 details:
 bug#4 details:
     level: critical
     state: unsolved
+
+    this can't be reproduced.
 
     this also happens while switching the gallery mode,
     the pivot point of the zoom is changed and considerably pushed to the left,

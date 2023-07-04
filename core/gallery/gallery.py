@@ -21,9 +21,13 @@ class Gallery:
 
         if to == ViewType.FULLSCREEN:
             self.detailed_view.zoom_view.sync(self.fullscreen_view.zoom_view)
+            cr.window.set_fullscreen()
 
         elif to == ViewType.DETAILED:
             self.fullscreen_view.zoom_view.sync(self.detailed_view.zoom_view)
+            self.detailed_view.resize_boxes()
+            cr.window.set_windowed()
+
 
 
 
