@@ -3,17 +3,21 @@ import pygame
 from core.common.enums import LogLevel
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content import Content
 
 pics: list[Texture] = []
 ui_buttons: Dict[str, Texture] = {}
 test_assets_path = os.path.abspath("./test_assets")
-
+assets_path = os.path.abspath("./assets")
+content_placeholder: Optional[Content] = None
 
 def init_assets():
-    global pics, ui_buttons
+    global pics, ui_buttons,content_placeholder
 
     cr.log.write_log("Loading the test_assets from disk...", LogLevel.DEBUG)
 
+    content_placeholder = Content(path=assets_path + "/no_image.png")
+    content_placeholder.load()
     # unsafe
     pics = [
         Texture.from_surface(

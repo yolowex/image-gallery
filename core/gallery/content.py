@@ -1,3 +1,5 @@
+
+
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
@@ -9,12 +11,12 @@ from core.common import utils
 
 
 class Content:
-    def __init__(self,box:RelRect, path: str = None):
+    def __init__(self,box:RelRect = None, path: str = None):
         self.path: Optional[str] = path
         self.name = path.split("/")[-1]
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
-        self.type_ = Optional[ContentType] = None
+        self.type_ : Optional[ContentType] = None
         self.surface: Optional[Surface] = None
         self.texture: Optional[Texture] = None
 
@@ -53,7 +55,15 @@ class Content:
 
 
     def load(self):
-        ...
+        if self.source_type == ContentSourceType.PYGAME:
+            self.surface = pg.image.load(self.path)
+            self.texture = Texture.from_surface(cr.renderer,self.surface)
+
+            self.is_loaded = True
+
+        else:
+            cr.log.write_log(f"Could not load, we do not support {self.type_} file types yet.",
+                LogLevel.ERROR)
 
     def unload(self):
         ...

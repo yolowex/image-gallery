@@ -169,12 +169,11 @@ if __name__ == "__main__":
         pg.display.update()
 
 
-def listdir(path,target_formats:list[str]=None,include_no_format=False):
-    list_ = [path+"/"+i for i in os.listdir(path)]
+def listdir(path, target_formats: list[str] = None, include_no_format=False):
+    list_ = [path + "/" + i for i in os.listdir(path)]
 
     if target_formats is not None:
-
-        for index,i in list(enumerate(list_))[::-1]:
+        for index, i in list(enumerate(list_))[::-1]:
             name = i.split("/")[-1]
             x = name.split(".")
             if len(x) > 1:
@@ -187,6 +186,5 @@ def listdir(path,target_formats:list[str]=None,include_no_format=False):
             if extension not in target_formats:
                 list_.pop(index)
                 continue
-
 
     return list_

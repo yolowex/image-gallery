@@ -6,7 +6,8 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content import Content
 from helper_kit.relative_rect import RelRect
-from core.common import utils
+from core.common import utils, assets
+
 
 class ContentManager:
     """
@@ -15,7 +16,7 @@ class ContentManager:
 
     """
 
-    def __init__(self,path:str=None):
+    def __init__(self, path: str = None):
         self.path: Optional[str] = path
         # stores the index number of loaded contents which reside in the content_list
         self.loaded_content_stack: list[int] = []
@@ -25,16 +26,45 @@ class ContentManager:
 
         self.content_load_wing = 5
 
-
     def init_contents(self):
-        ...
+        self.content_list = utils.listdir(
+            self.path, constants.SUPPORTED_FILE_FORMATS, False
+        )
+        self.current_content_index = 0
+        self.load_contents()
 
     def load_contents(self):
-        ...
+        start = self.current_content_index - self.content_load_wing
+
+        if start < 0:
+            start = 0
+
+        end = self.current_content_index + self.content_load_wing
+        for i in self.content_list[start:end]:
+            i.load()
+
+    def content_stack_add(self, content_index: int) -> None:
+        """
+        Adds a new element to the content stack, in case the stack is filled,
+        the overflowed contents are unloaded from the RAM.
+
+        :return: None
+        """
+        self.loaded_content_stack.insert(0, content_index)
+        if len(self.loaded_content_stack) >= self.loaded_content_stack_max_size:
+            self.content_list[self.loaded_content_stack[-1]].unload()
+            self.loaded_content_stack.pop(-1)
 
     @property
     def current_content(self) -> Content:
-        ...
+        if self.current_content_index is not None:
+            target = self.content_list[self.current_content_index]
+            if target.is_loaded:
+                return target
+            else:
+                return assets.content_placeholder
+
+        return assets.content_placeholder
 
     def check_events(self):
         ...

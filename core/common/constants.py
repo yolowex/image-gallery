@@ -4,8 +4,19 @@ import core.common.resources as cr
 import platform
 
 SUPPORTED_FILE_FORMATS = [
-    "png","jpg","jpeg","tiff","gif","webp",
-    "avi","mp4","mpeg","mkv","mov","wmv","flv"
+    "png",
+    "jpg",
+    "jpeg",
+    "tiff",
+    "gif",
+    "webp",
+    "avi",
+    "mp4",
+    "mpeg",
+    "mkv",
+    "mov",
+    "wmv",
+    "flv",
 ]
 
 APP_NAME = "Foto Folio"
