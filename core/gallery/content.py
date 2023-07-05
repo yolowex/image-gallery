@@ -66,7 +66,9 @@ class Content:
                 LogLevel.ERROR)
 
     def unload(self):
-        ...
+        self.surface = None
+        self.texture = None
+        self.is_loaded = False
 
     def check_events(self):
         ...
