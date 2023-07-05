@@ -59,6 +59,9 @@ class Content:
             self.surface = pg.image.load(self.path)
             self.texture = Texture.from_surface(cr.renderer,self.surface)
 
+            # we destroy the surface because it is not needed anymore + it takes a lot of space
+            self.surface = None
+
             self.is_loaded = True
 
         else:
@@ -66,7 +69,6 @@ class Content:
                 LogLevel.ERROR)
 
     def unload(self):
-        self.surface = None
         self.texture = None
         self.is_loaded = False
 

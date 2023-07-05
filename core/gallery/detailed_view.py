@@ -46,9 +46,7 @@ class DetailedView:
         self.x_locked = False
         self.y_locked = False
 
-        zoom_texture = random.choice(assets.pics)
-
-        self.zoom_view = ZoomView(self.image_box, zoom_texture,self.content_manager)
+        self.zoom_view = ZoomView(self.image_box,self.content_manager)
 
         self.resize_boxes()
 
@@ -163,6 +161,11 @@ class DetailedView:
             self.resize_boxes()
 
         self.image_ui_layer.check_events()
+
+        if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
+            self.content_manager.was_updated = False
+            self.zoom_view.reset()
+
         self.zoom_view.update()
         if not self.image_ui_layer.any_hovered:
             self.zoom_view.check_events()

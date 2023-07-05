@@ -11,7 +11,7 @@ from core.common import utils
 
 
 class ZoomView:
-    def __init__(self, container_box: RelRect, content: Content,content_manager:ContentManager ):
+    def __init__(self, container_box: RelRect,content_manager:ContentManager ):
         self.content_manager = content_manager
 
         self.container_box = container_box
@@ -42,6 +42,7 @@ class ZoomView:
         self.grab_src = Vector2(0, 0)
         self.grab_dst = Vector2(0, 0)
         self.current_rel = Vector2(0, 0)
+
 
     def update(self):
         self.inner_image_rect = self.container_box.get_in_rect(
@@ -177,7 +178,7 @@ class ZoomView:
         mp = cr.event_holder.mouse_pos
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
 
-        # todo: implement precise zooming feature
+        # done: implement precise zooming feature
         if (
             mw != 0
             and mod
@@ -187,8 +188,9 @@ class ZoomView:
             zoom = self.zoom * (1 + mw * self.zoom_power)
             self.do_zoom(zoom, mp)
 
-        if pgl.K_r in cr.event_holder.pressed_keys:
-            self.reset()
+
+
+
 
         if mr.colliderect(self.get_picture_rect()) and mr.colliderect(
             self.container_box.get()

@@ -24,8 +24,10 @@ class ContentManager :
         self.loaded_content_stack_max_size = 100
         self.content_list: list[Content] = []
         self.current_content_index: Optional[int] = None
-
         self.content_load_wing = 5
+
+        # this is set to true if the current_content_index is updated (whenever goto is used)
+        self.was_updated = False
 
 
     def init_contents(self) :
@@ -51,9 +53,9 @@ class ContentManager :
             f", stack size: {len(self.loaded_content_stack)}",
             LogLevel.DEBUG)
 
-
-
         self.load_contents()
+
+        self.was_updated = True
 
 
     def go_next(self) :

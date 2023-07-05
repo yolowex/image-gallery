@@ -15,8 +15,8 @@ class FullscreenView:
     def __init__(self,content_manager:ContentManager):
         self.image_box = RelRect(cr.ws, (0, 0), (1, 1))
         self.content_manager = content_manager
-        zoom_texture = random.choice(assets.pics)
-        self.zoom_view = ZoomView(self.image_box, zoom_texture,self.content_manager)
+
+        self.zoom_view = ZoomView(self.image_box,self.content_manager)
         self.image_ui_layer = ImageUiLayer()
 
     def init(self):
@@ -24,7 +24,15 @@ class FullscreenView:
 
     def check_events(self):
         self.image_ui_layer.check_events()
+
+        if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
+            self.content_manager.was_updated = False
+            self.zoom_view.reset()
+
         self.zoom_view.update()
+
+
+
         if not self.image_ui_layer.any_hovered:
             self.zoom_view.check_events()
 

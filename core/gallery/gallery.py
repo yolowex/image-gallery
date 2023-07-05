@@ -38,6 +38,7 @@ class Gallery:
             cr.window.set_windowed()
 
     def check_events(self):
+        self.content_manager.check_events()
         if self.__current_view == ViewType.DETAILED:
             self.detailed_view.check_events()
         elif self.__current_view == ViewType.FULLSCREEN:
