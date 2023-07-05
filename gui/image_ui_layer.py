@@ -14,6 +14,9 @@ from core.common import utils, assets
 class ImageUiLayer(UiLayer):
     def __init__(self):
         super().__init__()
+
+
+    def init(self):
         self.init_right_pane()
         self.init_bottom_pane()
 
@@ -67,7 +70,7 @@ class ImageUiLayer(UiLayer):
             "Next",
             R((0.46 + w_step * 1, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_next"],
-            lambda: None,
+            cr.gallery.content_manager.go_next,
             bottom_pane_render_condition,
         )
 
@@ -75,7 +78,7 @@ class ImageUiLayer(UiLayer):
             "Previous",
             R((0.46 + w_step * -1, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_previous"],
-            lambda: None,
+            cr.gallery.content_manager.go_previous,
             bottom_pane_render_condition,
         )
 
@@ -83,14 +86,14 @@ class ImageUiLayer(UiLayer):
             "First",
             R((0.46 + w_step * -2, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_first"],
-            lambda: None,
+            cr.gallery.content_manager.go_first,
             bottom_pane_render_condition,
         )
         last_button = Button(
             "Last",
             R((0.46 + w_step * 2, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_last"],
-            lambda: None,
+            cr.gallery.content_manager.go_last,
             bottom_pane_render_condition,
         )
 
@@ -133,7 +136,6 @@ class ImageUiLayer(UiLayer):
                 adding these two lines fixed bug#1 and bug#2.
                 this is probably a bad solution.
                 """
-                self.parent.zoom_view.update()
                 self.parent.zoom_view.check_events()
                 self.parent.zoom_view.do_zoom(current_zoom, Vector2(image_box.center))
 

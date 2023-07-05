@@ -18,6 +18,9 @@ class Gallery:
         self.fullscreen_view: FullscreenView = FullscreenView(self.content_manager)
         self.__current_view: ViewType = ViewType.DETAILED
 
+    def init(self):
+        self.detailed_view.init()
+        self.fullscreen_view.init()
 
     def get_current_view(self):
         return self.__current_view

@@ -52,6 +52,9 @@ class DetailedView:
 
         self.resize_boxes()
 
+    def init(self):
+        self.image_ui_layer.init()
+
     def resize_boxes(self):
         X, Y = cr.ws()
         rect = FRect(self.image_pos, self.image_size)
@@ -111,7 +114,7 @@ class DetailedView:
             abs(image_pos.y + image_size.y - self.bottom_box.rect.y),
         )
 
-        self.zoom_view.update()
+
 
     def check_mouse_events(self):
         m_rect = cr.event_holder.mouse_rect
@@ -160,6 +163,7 @@ class DetailedView:
             self.resize_boxes()
 
         self.image_ui_layer.check_events()
+        self.zoom_view.update()
         if not self.image_ui_layer.any_hovered:
             self.zoom_view.check_events()
             self.check_mouse_events()

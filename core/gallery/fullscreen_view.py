@@ -19,10 +19,13 @@ class FullscreenView:
         self.zoom_view = ZoomView(self.image_box, zoom_texture,self.content_manager)
         self.image_ui_layer = ImageUiLayer()
 
+    def init(self):
+        self.image_ui_layer.init()
+
     def check_events(self):
         self.image_ui_layer.check_events()
+        self.zoom_view.update()
         if not self.image_ui_layer.any_hovered:
-            self.zoom_view.update()
             self.zoom_view.check_events()
 
     def render_debug(self):

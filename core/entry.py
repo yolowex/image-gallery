@@ -48,6 +48,7 @@ class Entry:
         assets.init_assets()
 
         cr.gallery = Gallery()
+        cr.gallery.init()
         cr.editor = Editor()
 
     def run(self):

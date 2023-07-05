@@ -48,6 +48,8 @@ class ZoomView:
             Vector2(self.content.texture.get_rect().size), window_relative=True
         )
 
+        self.update_picture_rect()
+
     @property
     def x_grab_allowed(self) -> bool:
         """
@@ -169,7 +171,6 @@ class ZoomView:
                 self.grab_dst,
             )
 
-        self.update_picture_rect()
 
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
