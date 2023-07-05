@@ -62,7 +62,7 @@ class Content:
             self.is_loaded = True
 
         else:
-            cr.log.write_log(f"Could not load, we do not support {self.type_} file types yet.",
+            cr.log.write_log(f"Could not load content, we do not support {self.extension} file types yet.",
                 LogLevel.ERROR)
 
     def unload(self):
