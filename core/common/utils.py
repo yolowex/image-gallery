@@ -1,4 +1,6 @@
 import datetime
+import os
+
 from pygame import Vector2, FRect
 
 
@@ -165,3 +167,26 @@ if __name__ == "__main__":
         pg.draw.circle(screen, STEEL_BLUE, abs_point_2, 6)
 
         pg.display.update()
+
+
+def listdir(path,target_formats:list[str]=None,include_no_format=False):
+    list_ = [path+"/"+i for i in os.listdir(path)]
+
+    if target_formats is not None:
+
+        for index,i in list(enumerate(list_))[::-1]:
+            name = i.split("/")[-1]
+            x = name.split(".")
+            if len(x) > 1:
+                extension = x[-1]
+            else:
+                if not include_no_format:
+                    list_.pop(index)
+                    continue
+
+            if extension not in target_formats:
+                list_.pop(index)
+                continue
+
+
+    return list_

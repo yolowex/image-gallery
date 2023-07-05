@@ -3,6 +3,11 @@ from core.common.names import *
 import core.common.resources as cr
 import platform
 
+SUPPORTED_FILE_FORMATS = [
+    "png","jpg","jpeg","tiff","gif","webp",
+    "avi","mp4","mpeg","mkv","mov","wmv","flv"
+]
+
 APP_NAME = "Foto Folio"
 APP_DATA_PATH = ""
 LOG_PATH = ""

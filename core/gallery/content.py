@@ -55,6 +55,9 @@ class Content:
     def load(self):
         ...
 
+    def unload(self):
+        ...
+
     def check_events(self):
         ...
 
