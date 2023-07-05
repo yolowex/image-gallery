@@ -39,6 +39,37 @@ class ContentManager:
         cr.log.write_log("All contents were initialized successfully!",LogLevel.DEBUG)
 
 
+
+    def goto(self,index):
+        le = len(self.content_list) -1
+        self.current_content_index = index
+
+        if self.current_content_index > le:
+            self.current_content_index = le
+            # some log here
+        if self.current_content_index < 0:
+            self.current_content_index = 0
+            # and some here
+
+        self.load_contents()
+
+    def go_next(self):
+        self.goto(self.current_content_index+1)
+
+    def go_previous(self) :
+        self.goto(self.current_content_index-1)
+
+    def go_first(self) :
+        self.goto(0)
+
+    def go_last(self):
+        self.goto(len(self.content_list)-1)
+
+
+
+
+
+
     def load_contents(self):
         start = self.current_content_index - self.content_load_wing
 
