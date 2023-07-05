@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import Colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content_manager import ContentManager
 from gui.image_ui_layer import ImageUiLayer
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
@@ -14,9 +15,9 @@ from gui.button import Button
 # todo: precisely position the boxes so there is no vacant space between them
 # done: add black formatter
 class DetailedView:
-    def __init__(self):
+    def __init__(self,content_manager:ContentManager):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
-
+        self.content_manager = content_manager
         self.image_ui_layer = ImageUiLayer()
 
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.1)
@@ -47,7 +48,7 @@ class DetailedView:
 
         zoom_texture = random.choice(assets.pics)
 
-        self.zoom_view = ZoomView(self.image_box, zoom_texture)
+        self.zoom_view = ZoomView(self.image_box, zoom_texture,self.content_manager)
 
         self.resize_boxes()
 
@@ -164,11 +165,6 @@ class DetailedView:
             self.check_mouse_events()
         else:
             self.zoom_view.is_grabbing = False
-
-        if pgl.K_SPACE in cr.event_holder.pressed_keys:
-            self.zoom_view.image = random.choice(assets.pics)
-            self.zoom_view.reset()
-            self.zoom_view.update()
 
         if self.x_locked or self.y_locked:
             self.resize_boxes()

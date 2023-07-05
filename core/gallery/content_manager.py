@@ -27,11 +27,17 @@ class ContentManager:
         self.content_load_wing = 5
 
     def init_contents(self):
-        self.content_list = utils.listdir(
+        cr.log.write_log("Initializing the contents...",LogLevel.DEBUG)
+        self.content_list = [Content(path=i) for i in
+            utils.listdir(
             self.path, constants.SUPPORTED_FILE_FORMATS, False
-        )
+        )]
+
+
         self.current_content_index = 0
         self.load_contents()
+        cr.log.write_log("All contents were initialized successfully!",LogLevel.DEBUG)
+
 
     def load_contents(self):
         start = self.current_content_index - self.content_load_wing

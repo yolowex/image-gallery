@@ -4,6 +4,7 @@ from core.common.enums import *
 import core.common.constants as constants
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content_manager import ContentManager
 from gui.image_ui_layer import ImageUiLayer
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
@@ -11,10 +12,11 @@ from core.common.constants import Colors
 
 
 class FullscreenView:
-    def __init__(self):
+    def __init__(self,content_manager:ContentManager):
         self.image_box = RelRect(cr.ws, (0, 0), (1, 1))
+        self.content_manager = content_manager
         zoom_texture = random.choice(assets.pics)
-        self.zoom_view = ZoomView(self.image_box, zoom_texture)
+        self.zoom_view = ZoomView(self.image_box, zoom_texture,self.content_manager)
         self.image_ui_layer = ImageUiLayer()
 
     def check_events(self):

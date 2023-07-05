@@ -1,17 +1,23 @@
+from core.common import assets
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content_manager import ContentManager
 from core.gallery.detailed_view import DetailedView
 from core.gallery.fullscreen_view import FullscreenView
 
 
 class Gallery:
     def __init__(self):
-        self.detailed_view: DetailedView = DetailedView()
-        self.fullscreen_view: FullscreenView = FullscreenView()
+        self.content_manager = ContentManager(assets.test_assets_path)
+        self.content_manager.init_contents()
+
+        self.detailed_view: DetailedView = DetailedView(self.content_manager)
+        self.fullscreen_view: FullscreenView = FullscreenView(self.content_manager)
         self.__current_view: ViewType = ViewType.DETAILED
+
 
     def get_current_view(self):
         return self.__current_view

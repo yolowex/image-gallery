@@ -4,14 +4,18 @@ import core.common.constants as constants
 from core.common.constants import Colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content import Content
+from core.gallery.content_manager import ContentManager
 from helper_kit.relative_rect import RelRect
 from core.common import utils
 
 
 class ZoomView:
-    def __init__(self, container_box: RelRect, image: Texture):
+    def __init__(self, container_box: RelRect, content: Content,content_manager:ContentManager ):
+        self.content_manager = content_manager
+
         self.container_box = container_box
-        self.image = image
+
         self.inner_image_rect = FRect(0, 0, 0, 0)
         self.zoom = 1
         self.zoom_power = 0.1
@@ -23,8 +27,11 @@ class ZoomView:
         self.current_rel = Vector2(0, 0)
         self.__picture_rect = FRect(0, 0, 0, 0)
 
+    @property
+    def content(self):
+        return self.content_manager.current_content
+
     def sync(self, target):
-        target.image = self.image
         target.zoom = self.zoom
         target.current_rel = self.current_rel.copy()
         target.is_grabbing = False
@@ -38,7 +45,7 @@ class ZoomView:
 
     def update(self):
         self.inner_image_rect = self.container_box.get_in_rect(
-            Vector2(self.image.get_rect().size), window_relative=True
+            Vector2(self.content.texture.get_rect().size), window_relative=True
         )
 
     @property
@@ -228,7 +235,7 @@ class ZoomView:
         # dst_rect = self.container_box.cut_rect_in(self.inner_image_rect)
         # todo: cut the picture in case it is bigger than the box size
 
-        self.image.draw(None, self.get_picture_rect())
+        self.content.render(self.get_picture_rect())
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
