@@ -19,6 +19,7 @@ class ThumbnailView:
         self.boxes: list[RelRect] = []
         self.scroll_value = 0
         self.size = len(self.content_manager.content_list)
+        self.scroll_locked = False
 
         self.update(first_call=True)
 
@@ -84,8 +85,14 @@ class ThumbnailView:
         pa = self.box.get()
         right_bound = -self.size + (pa.w // pa.h)
         held = cr.event_holder.mouse_held_keys[0]
+        pressed = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
 
-        if mr.colliderect(pa):
+        if (
+            mr.colliderect(pa)
+            or cr.event_holder.window_resized
+            or cr.gallery.detailed_view.just_resized_boxes
+        ):
             if (
                 mw != 0
                 or cr.event_holder.window_resized
@@ -98,14 +105,20 @@ class ThumbnailView:
                 if self.scroll_value < right_bound:
                     self.scroll_value = right_bound
 
+        if mr.colliderect(scroll_bar) and pressed:
+            self.scroll_locked = True
 
-        if mr.colliderect(scroll_bar) and held:
-            point_lerp = utils.inv_lerp(pa.x,pa.x+pa.w,mp.x)
-            self.scroll_value = int(
-                utils.lerp(0,right_bound,point_lerp)
-            )
+        if released:
+            self.scroll_locked = False
 
+        if self.scroll_locked:
+            point_lerp = utils.inv_lerp(pa.x, pa.x + pa.w, mp.x)
+            self.scroll_value = int(utils.lerp(0, right_bound, point_lerp))
 
+            if self.scroll_value > 0:
+                self.scroll_value = 0
+            if self.scroll_value < right_bound:
+                self.scroll_value = right_bound
 
     def check_events(self):
         self.update()
