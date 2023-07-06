@@ -24,6 +24,36 @@ class ThumbnailView:
         self.update(first_call=True)
 
 
+
+    @property
+    def __scroll_bar_rect(self):
+        pa = self.box.get()
+        h = self.__scroll_bar_height
+        x = pa.x
+        y = pa.bottom - h - 1
+        w = pa.w
+
+        return FRect(x,y,w,h)
+
+
+    @property
+    def __scroll_button_rect(self) :
+        pa = self.box.get()
+        bar_rect = self.__scroll_bar_rect
+
+        w = bar_rect.w / (self.size - (pa.w // pa.h) + 1)
+
+        rect = FRect(
+            bar_rect.x + w * abs(self.scroll_value),
+            bar_rect.y,
+            w,
+            bar_rect.h
+        )
+
+        return rect
+
+
+
     @property
     def __scroll_bar_height(self):
         pa = self.box.get()
@@ -64,7 +94,7 @@ class ThumbnailView:
 
         if mw != 0 or cr.event_holder.window_resized or cr.gallery.detailed_view.just_resized_boxes:
 
-            self.scroll_value += mw * 2
+            self.scroll_value += mw * 1
             if self.scroll_value > 0:
                 self.scroll_value = 0
 
@@ -76,9 +106,6 @@ class ThumbnailView:
 
 
 
-
-
-
     def check_events(self):
         self.update()
         self.check_scroll()
@@ -87,8 +114,16 @@ class ThumbnailView:
         ...
 
     def render(self):
+
+        cr.renderer.draw_color = constants.Colors.GIMP_1
+        cr.renderer.fill_rect(self.__scroll_bar_rect)
+
         cr.renderer.draw_color = constants.Colors.BEIGE
-        cr.renderer.draw_rect(self.box.get())
+        cr.renderer.draw_rect(self.__scroll_bar_rect)
+
+        cr.renderer.draw_color = constants.Colors.GIMP_2
+        cr.renderer.fill_rect(self.__scroll_button_rect)
+
 
         for box in self.boxes:
             box.render(constants.Colors.STEEL_BLUE,constants.Colors.BLACK,constants.Colors.PLUM)
