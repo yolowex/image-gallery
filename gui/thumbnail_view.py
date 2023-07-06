@@ -22,6 +22,7 @@ class ThumbnailView:
         self.scroll_locked = False
 
         self.update(first_call=True)
+        self.dont_reset_cursor = False
 
     @property
     def __scroll_bar_rect(self):
@@ -77,6 +78,32 @@ class ThumbnailView:
             box = RelRect(self.__src_fun, i, 0, 1, 1, use_param=True)
             self.boxes.append(box)
 
+
+    def check_scroll_bar_click(self):
+        pa = self.box.get()
+        mr = cr.event_holder.mouse_rect
+        clicked = cr.event_holder.mouse_pressed_keys[0]
+
+        for c, box in enumerate(self.boxes):
+            this = box.get()
+            if this.left < pa.left:
+                continue
+
+            if this.left > pa.right:
+                continue
+
+            content = self.content_manager.get_at(c)
+
+            in_rect = utils.shrinked_rect(
+                box.get_in_rect(Vector2(content.texture.get_rect().size)), 0.1
+            )
+
+            if mr.colliderect(in_rect) and clicked:
+                self.content_manager.goto(c)
+                self.dont_reset_cursor = True
+
+
+
     def check_scroll(self):
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
@@ -85,7 +112,7 @@ class ThumbnailView:
         pa = self.box.get()
         right_bound = -self.size + (pa.w // pa.h)
         held = cr.event_holder.mouse_held_keys[0]
-        pressed = cr.event_holder.mouse_pressed_keys[0]
+        clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
         should_update = False
         if (
@@ -102,7 +129,7 @@ class ThumbnailView:
 
                 should_update = True
 
-        if mr.colliderect(scroll_bar) and pressed:
+        if mr.colliderect(scroll_bar) and clicked:
             self.scroll_locked = True
 
         if released:
@@ -114,7 +141,7 @@ class ThumbnailView:
 
             should_update = True
 
-        if self.content_manager.was_updated:
+        if self.content_manager.was_updated and not self.dont_reset_cursor:
             self.scroll_value = -self.content_manager.current_content_index
 
             if self.scroll_value > 0:
@@ -131,8 +158,9 @@ class ThumbnailView:
             self.content_manager.load_contents(-int(self.scroll_value))
 
     def check_events(self):
+        self.dont_reset_cursor = False
         self.update()
-
+        self.check_scroll_bar_click()
         self.check_scroll()
 
     def render_debug(self):
