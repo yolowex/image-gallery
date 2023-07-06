@@ -59,7 +59,6 @@ class Content:
 
             # we destroy the surface because it is not needed anymore + it takes a lot of space
             self.surface = None
-
             self.is_loaded = True
 
         else:

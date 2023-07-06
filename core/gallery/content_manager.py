@@ -107,5 +107,11 @@ class ContentManager:
 
         return assets.content_placeholder
 
+    def get_at(self, index: int) -> Content:
+        if not self.content_list[index].is_loaded:
+            return assets.content_placeholder
+
+        return self.content_list[index]
+
     def check_events(self):
         ...

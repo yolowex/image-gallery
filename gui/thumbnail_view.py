@@ -128,6 +128,7 @@ class ThumbnailView:
         ...
 
     def render(self):
+        pa = self.box.get()
         cr.renderer.draw_color = constants.Colors.GIMP_1
         cr.renderer.fill_rect(self.__scroll_bar_rect)
 
@@ -137,15 +138,18 @@ class ThumbnailView:
         cr.renderer.draw_color = constants.Colors.GIMP_2
         cr.renderer.fill_rect(self.__scroll_button_rect)
 
-        for box in self.boxes:
-            if box.get().left < self.box.get().left:
+        for c, box in enumerate(self.boxes):
+            this = box.get()
+            if this.left < pa.left:
                 continue
 
-            box.render(
-                constants.Colors.STEEL_BLUE,
-                constants.Colors.BLACK,
-                constants.Colors.PLUM,
-            )
+            if this.left > pa.right:
+                continue
+
+            content = self.content_manager.get_at(c)
+
+            in_rect = box.get_in_rect(Vector2(content.texture.get_rect().size))
+            content.render(in_rect)
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

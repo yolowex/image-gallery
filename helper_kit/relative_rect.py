@@ -159,6 +159,9 @@ class RelRect:
         res.h *= mx
         res.center = self.rect.center
 
+        if self.use_param:
+            return self.scale_source_function(res)
+
         w, h = self.scale_source_function()
         res.x = res.x * w - 1
         res.w = res.w * w + 2
