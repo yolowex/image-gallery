@@ -70,17 +70,22 @@ class ContentManager:
     def go_last(self):
         self.goto(len(self.content_list) - 1)
 
-    def load_contents(self):
-        start = self.current_content_index - self.content_load_wing
+    def load_contents(self,index=None):
+        if index is None:
+            index = self.current_content_index
+
+        start = index - self.content_load_wing
 
         if start < 0:
             start = 0
 
-        end = self.current_content_index + self.content_load_wing
+        end = index + self.content_load_wing + 1
         c = 0
         for i in self.content_list[start:end]:
             self.content_stack_add(start + c)
-            i.load()
+            if not i.is_loaded:
+                i.load()
+
             c += 1
 
     def content_stack_add(self, content_index: int) -> None:
@@ -93,8 +98,12 @@ class ContentManager:
         if content_index not in self.loaded_content_stack:
             self.loaded_content_stack.append(content_index)
             if len(self.loaded_content_stack) > self.loaded_content_stack_max_size:
-                self.content_list[self.loaded_content_stack[-1]].unload()
-                self.loaded_content_stack.pop(0)
+                index = 0
+                if index == self.current_content_index:
+                    index = 1
+
+                self.content_list[self.loaded_content_stack[index]].unload()
+                self.loaded_content_stack.pop(index)
 
     @property
     def current_content(self) -> Content:
@@ -108,6 +117,7 @@ class ContentManager:
         return assets.content_placeholder
 
     def get_at(self, index: int) -> Content:
+
         if not self.content_list[index].is_loaded:
             return assets.content_placeholder
 

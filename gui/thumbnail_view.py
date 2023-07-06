@@ -87,7 +87,7 @@ class ThumbnailView:
         held = cr.event_holder.mouse_held_keys[0]
         pressed = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
-
+        should_update = False
         if (
             mr.colliderect(pa)
             or cr.event_holder.window_resized
@@ -105,6 +105,8 @@ class ThumbnailView:
                 if self.scroll_value < right_bound:
                     self.scroll_value = right_bound
 
+                should_update = True
+
         if mr.colliderect(scroll_bar) and pressed:
             self.scroll_locked = True
 
@@ -119,6 +121,11 @@ class ThumbnailView:
                 self.scroll_value = 0
             if self.scroll_value < right_bound:
                 self.scroll_value = right_bound
+
+            should_update = True
+
+        if should_update:
+            self.content_manager.load_contents(-int(self.scroll_value))
 
     def check_events(self):
         self.update()
