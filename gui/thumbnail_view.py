@@ -1,7 +1,7 @@
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
-from core.common.constants import Colors as colors
+from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
@@ -72,7 +72,7 @@ class ThumbnailView:
     def update(self, first_call=False):
         if not (self.content_manager.was_updated or first_call):
             return
-
+        self.boxes.clear()
         for i in range(self.size):
             box = RelRect(self.__src_fun, i, 0, 1, 1, use_param=True)
             self.boxes.append(box)
@@ -99,11 +99,6 @@ class ThumbnailView:
                 or cr.gallery.detailed_view.just_resized_boxes
             ):
                 self.scroll_value += mw * 1
-                if self.scroll_value > 0:
-                    self.scroll_value = 0
-
-                if self.scroll_value < right_bound:
-                    self.scroll_value = right_bound
 
                 should_update = True
 
@@ -117,33 +112,52 @@ class ThumbnailView:
             point_lerp = utils.inv_lerp(pa.x, pa.x + pa.w, mp.x)
             self.scroll_value = int(utils.lerp(0, right_bound, point_lerp))
 
+            should_update = True
+
+
+        if self.content_manager.was_updated:
+            self.scroll_value = -self.content_manager.current_content_index
+
             if self.scroll_value > 0:
                 self.scroll_value = 0
             if self.scroll_value < right_bound:
                 self.scroll_value = right_bound
 
-            should_update = True
-
         if should_update:
+
+            if self.scroll_value > 0:
+                self.scroll_value = 0
+            if self.scroll_value < right_bound:
+                self.scroll_value = right_bound
+
             self.content_manager.load_contents(-int(self.scroll_value))
+
+
 
     def check_events(self):
         self.update()
+
+
+
+
         self.check_scroll()
+
 
     def render_debug(self):
         ...
 
     def render(self):
         pa = self.box.get()
-        cr.renderer.draw_color = constants.Colors.GIMP_1
+        cr.renderer.draw_color = constants.colors.GIMP_1
         cr.renderer.fill_rect(self.__scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.Colors.BEIGE
+        cr.renderer.draw_color = constants.colors.BEIGE
         cr.renderer.draw_rect(self.__scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.Colors.GIMP_2
+        cr.renderer.draw_color = constants.colors.NEON
         cr.renderer.fill_rect(self.__scroll_button_rect)
+
+
 
         for c, box in enumerate(self.boxes):
             this = box.get()
@@ -153,10 +167,20 @@ class ThumbnailView:
             if this.left > pa.right:
                 continue
 
+
+            if c == self.content_manager.current_content_index:
+                box.render(
+                    constants.colors.GIMP_2,
+                    constants.colors.GIMP_0,
+                    constants.colors.NEON
+                )
+
             content = self.content_manager.get_at(c)
+
 
             in_rect = box.get_in_rect(Vector2(content.texture.get_rect().size))
             content.render(in_rect)
+
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

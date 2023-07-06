@@ -8,7 +8,7 @@ from core.gallery.content_manager import ContentManager
 from gui.image_ui_layer import ImageUiLayer
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
-from core.common.constants import Colors
+from core.common.constants import colors
 
 
 class FullscreenView:
@@ -26,7 +26,6 @@ class FullscreenView:
         self.image_ui_layer.check_events()
 
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
-            self.content_manager.was_updated = False
             self.zoom_view.reset()
 
         self.zoom_view.update()
@@ -38,7 +37,7 @@ class FullscreenView:
         ...
 
     def render(self):
-        self.image_box.render(Colors.GIMP_1, Colors.GIMP_2, Colors.GIMP_0)
+        self.image_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.zoom_view.render()
         self.image_ui_layer.render()
         if cr.event_holder.should_render_debug:

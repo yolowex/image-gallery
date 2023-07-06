@@ -1,7 +1,7 @@
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
-from core.common.constants import Colors as colors
+from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
@@ -158,7 +158,6 @@ class DetailedView:
         self.image_ui_layer.check_events()
 
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
-            self.content_manager.was_updated = False
             self.zoom_view.reset()
 
         self.zoom_view.update()

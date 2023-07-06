@@ -92,7 +92,7 @@ def export_platform_constants():
         cr.log.write_log("Warning: running on an unknown platform", LogLevel.INFO)
 
 
-class Colors:
+class colors:
     # Basic Colors
     WHITE = Color([255, 255, 255])
     BLACK = Color([0, 0, 0])
@@ -146,7 +146,7 @@ class Colors:
     DARK_SLATE_GRAY = Color([47, 79, 79])
     SPRING_GREEN = Color([0, 255, 127])
     FOREST_GREEN = Color([34, 139, 34])
-
+    NEON = Color(150,180,255)
     # GIMP colors
     GIMP_0 = Color("#3b3b3b")
     GIMP_1 = Color("#454545")

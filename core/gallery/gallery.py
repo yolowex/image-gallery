@@ -44,6 +44,8 @@ class Gallery:
         elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.check_events()
 
+        self.content_manager.was_updated = False
+
     def render_debug(self):
         if self.__current_view == ViewType.DETAILED:
             self.detailed_view.render_debug()

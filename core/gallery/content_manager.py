@@ -1,7 +1,7 @@
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
-from core.common.constants import Colors as colors
+from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content import Content
@@ -23,7 +23,7 @@ class ContentManager:
         self.loaded_content_stack_max_size = 100
         self.content_list: list[Content] = []
         self.current_content_index: Optional[int] = None
-        self.content_load_wing = 5
+        self.content_load_wing = 10
 
         # this is set to true if the current_content_index is updated (whenever goto is used)
         self.was_updated = False
@@ -117,11 +117,14 @@ class ContentManager:
         return assets.content_placeholder
 
     def get_at(self, index: int) -> Content:
+        try:
+            if not self.content_list[index].is_loaded:
+                return assets.content_placeholder
 
-        if not self.content_list[index].is_loaded:
+            return self.content_list[index]
+        except Exception as e:
             return assets.content_placeholder
 
-        return self.content_list[index]
 
     def check_events(self):
         ...
