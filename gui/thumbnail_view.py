@@ -18,6 +18,8 @@ class ThumbnailView:
         self.content_manager = content_manager
 
         self.boxes: list[RelRect] = []
+        self.scroll_value = 0
+        self.size = len(self.content_manager.content_list)
 
         self.update(first_call=True)
 
@@ -38,10 +40,10 @@ class ThumbnailView:
 
         h = pa.h - self.__scroll_bar_height
 
-        res.x = (pa.x + res.x * h) + 1
+        res.x = (pa.x + (res.x + self.scroll_value) * h) + 1
         res.y = (pa.y + res.y * h) + 1
-        res.w *= h
-        res.h *= h
+        res.w = res.w * h
+        res.h = res.h * h
         res.w -= 2
         res.h -= 2
 
@@ -52,18 +54,34 @@ class ThumbnailView:
         if not (self.content_manager.was_updated or first_call):
             return
 
-        print('boo yah')
-
-        size = len(self.content_manager.content_list)
-
-        for i in range(size):
+        for i in range(self.size):
             box = RelRect(self.__src_fun,i,0,1,1,use_param=True)
             self.boxes.append(box)
 
 
+    def check_scroll(self):
+        mw = cr.event_holder.mouse_wheel
+
+        if mw != 0 or cr.event_holder.window_resized or cr.gallery.detailed_view.just_resized_boxes:
+
+            self.scroll_value += mw * 2
+            if self.scroll_value > 0:
+                self.scroll_value = 0
+
+            pa = self.box.get()
+            right_bound = -self.size + (pa.w // pa.h)
+
+            if self.scroll_value < right_bound:
+                self.scroll_value = right_bound
+
+
+
+
+
+
     def check_events(self):
         self.update()
-
+        self.check_scroll()
 
     def render_debug(self):
         ...

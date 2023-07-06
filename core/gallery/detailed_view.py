@@ -48,7 +48,7 @@ class DetailedView:
         self.y_locked = False
         self.thumbnail_view = ThumbnailView(self.preview_box,self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
-
+        self.just_resized_boxes = False
         self.resize_boxes()
 
     def init(self):
@@ -57,7 +57,7 @@ class DetailedView:
     def resize_boxes(self):
         X, Y = cr.ws()
         rect = FRect(self.image_pos, self.image_size)
-
+        self.just_resized_boxes = True
         if self.x_locked:
             x_val = utils.inv_lerp(0, X, self.resize_x_request)
             if x_val < 0.1:
@@ -114,7 +114,6 @@ class DetailedView:
 
     def check_mouse_events(self):
         m_rect = cr.event_holder.mouse_rect
-        held = cr.event_holder.mouse_held_keys[0]
         clicked = cr.event_holder.mouse_pressed_keys[0]
 
         if (
@@ -155,11 +154,12 @@ class DetailedView:
             self.resize_y_request = cr.event_holder.mouse_pos.y
 
     def check_events(self):
+        self.just_resized_boxes = False
+
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
         self.image_ui_layer.check_events()
-        self.thumbnail_view.check_events()
 
 
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
@@ -175,6 +175,9 @@ class DetailedView:
 
         if self.x_locked or self.y_locked:
             self.resize_boxes()
+
+        self.thumbnail_view.check_events()
+
 
     def render_debug(self):
         ...
