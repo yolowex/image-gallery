@@ -188,3 +188,21 @@ def listdir(path, target_formats: list[str] = None, include_no_format=False):
                 continue
 
     return list_
+
+
+def shrinked_rect(rect: FRect, amount: float):
+    """
+    Accepts a rectangle and then makes it smaller by the
+    provided amount, and then returns it on the same
+    center it had before the transformation.
+
+    :param amount: a value between 0 and 1
+    :return: FRect
+    """
+
+    res = rect.copy()
+    lc = rect.center
+    res.w *= 1 - amount
+    res.h *= 1 - amount
+    res.center = lc
+    return res

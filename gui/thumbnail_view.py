@@ -114,7 +114,6 @@ class ThumbnailView:
 
             should_update = True
 
-
         if self.content_manager.was_updated:
             self.scroll_value = -self.content_manager.current_content_index
 
@@ -124,7 +123,6 @@ class ThumbnailView:
                 self.scroll_value = right_bound
 
         if should_update:
-
             if self.scroll_value > 0:
                 self.scroll_value = 0
             if self.scroll_value < right_bound:
@@ -132,16 +130,10 @@ class ThumbnailView:
 
             self.content_manager.load_contents(-int(self.scroll_value))
 
-
-
     def check_events(self):
         self.update()
 
-
-
-
         self.check_scroll()
-
 
     def render_debug(self):
         ...
@@ -157,8 +149,6 @@ class ThumbnailView:
         cr.renderer.draw_color = constants.colors.NEON
         cr.renderer.fill_rect(self.__scroll_button_rect)
 
-
-
         for c, box in enumerate(self.boxes):
             this = box.get()
             if this.left < pa.left:
@@ -167,20 +157,19 @@ class ThumbnailView:
             if this.left > pa.right:
                 continue
 
-
             if c == self.content_manager.current_content_index:
                 box.render(
                     constants.colors.GIMP_2,
                     constants.colors.GIMP_0,
-                    constants.colors.NEON
+                    constants.colors.NEON,
                 )
 
             content = self.content_manager.get_at(c)
 
-
-            in_rect = box.get_in_rect(Vector2(content.texture.get_rect().size))
+            in_rect = utils.shrinked_rect(
+                box.get_in_rect(Vector2(content.texture.get_rect().size)), 0.1
+            )
             content.render(in_rect)
-
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

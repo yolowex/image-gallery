@@ -70,7 +70,7 @@ class ContentManager:
     def go_last(self):
         self.goto(len(self.content_list) - 1)
 
-    def load_contents(self,index=None):
+    def load_contents(self, index=None):
         if index is None:
             index = self.current_content_index
 
@@ -124,7 +124,6 @@ class ContentManager:
             return self.content_list[index]
         except Exception as e:
             return assets.content_placeholder
-
 
     def check_events(self):
         ...
