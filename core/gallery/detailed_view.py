@@ -46,7 +46,7 @@ class DetailedView:
 
         self.x_locked = False
         self.y_locked = False
-        self.thumbnail_view = ThumbnailView(self.preview_box)
+        self.thumbnail_view = ThumbnailView(self.preview_box,self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
 
         self.resize_boxes()

@@ -6,6 +6,13 @@ import core.common.resources as cr
 
 class RelRect:
     def __init__(self, source_function, *args, **kwargs):
+        """
+        keywords:
+        use_param, determines if the source function should
+        be used with parameters
+
+        """
+
         if len(args) in [4, 2]:
             self.rect = FRect(*args)
         else:
