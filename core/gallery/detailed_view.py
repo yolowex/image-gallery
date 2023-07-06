@@ -24,7 +24,6 @@ class DetailedView:
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.05)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
 
-
         self.bottom_box: Optional[RelRect] = None
         self.detail_box: Optional[RelRect] = None
 
@@ -46,7 +45,7 @@ class DetailedView:
 
         self.x_locked = False
         self.y_locked = False
-        self.thumbnail_view = ThumbnailView(self.preview_box,self.content_manager)
+        self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.just_resized_boxes = False
         self.resize_boxes()
@@ -78,10 +77,7 @@ class DetailedView:
         image_pos = self.image_pos = Vector2(rect.x, rect.y)
         image_size = self.image_size = Vector2(rect.w, rect.h)
 
-
-        self.detail_box = RelRect(
-            cr.ws, image_pos.x, 0, image_size.x, 0.05
-        )
+        self.detail_box = RelRect(cr.ws, image_pos.x, 0, image_size.x, 0.05)
         self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
 
         self.image_box.rect = FRect(self.image_pos, self.image_size)
@@ -161,7 +157,6 @@ class DetailedView:
 
         self.image_ui_layer.check_events()
 
-
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
             self.content_manager.was_updated = False
             self.zoom_view.reset()
@@ -178,7 +173,6 @@ class DetailedView:
 
         self.thumbnail_view.check_events()
 
-
     def render_debug(self):
         ...
 
@@ -189,8 +183,6 @@ class DetailedView:
         self.detail_box.render(colors.GIMP_1, colors.GIMP_2)
         self.log_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.preview_box.render(colors.GIMP_1, colors.GIMP_2)
-
-
 
         self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.left_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)

@@ -11,9 +11,8 @@ from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
 
-
 class ThumbnailView:
-    def __init__(self, box: RelRect,content_manager:ContentManager):
+    def __init__(self, box: RelRect, content_manager: ContentManager):
         self.box = box
         self.content_manager = content_manager
 
@@ -23,8 +22,6 @@ class ThumbnailView:
 
         self.update(first_call=True)
 
-
-
     @property
     def __scroll_bar_rect(self):
         pa = self.box.get()
@@ -33,38 +30,30 @@ class ThumbnailView:
         y = pa.bottom - h - 1
         w = pa.w
 
-        return FRect(x,y,w,h)
-
+        return FRect(x, y, w, h)
 
     @property
-    def __scroll_button_rect(self) :
+    def __scroll_button_rect(self):
         pa = self.box.get()
         bar_rect = self.__scroll_bar_rect
 
         w = bar_rect.w / (self.size - (pa.w // pa.h) + 1)
 
-        rect = FRect(
-            bar_rect.x + w * abs(self.scroll_value),
-            bar_rect.y,
-            w,
-            bar_rect.h
-        )
+        rect = FRect(bar_rect.x + w * abs(self.scroll_value), bar_rect.y, w, bar_rect.h)
 
         return rect
-
-
 
     @property
     def __scroll_bar_height(self):
         pa = self.box.get()
 
         val = cr.ws().y * 0.01
-        if val > pa.h * 0.1 :
+        if val > pa.h * 0.1:
             val = pa.h * 0.1
 
         return val
 
-    def __src_fun(self,rect) :
+    def __src_fun(self, rect):
         res = rect.copy()
         pa = self.box.get()
 
@@ -79,30 +68,42 @@ class ThumbnailView:
 
         return res
 
-
-    def update(self,first_call=False):
+    def update(self, first_call=False):
         if not (self.content_manager.was_updated or first_call):
             return
 
         for i in range(self.size):
-            box = RelRect(self.__src_fun,i,0,1,1,use_param=True)
+            box = RelRect(self.__src_fun, i, 0, 1, 1, use_param=True)
             self.boxes.append(box)
-
 
     def check_scroll(self):
         mw = cr.event_holder.mouse_wheel
+        mr = cr.event_holder.mouse_rect
+        mp = Vector2(mr.center)
+        scroll_bar = self.__scroll_bar_rect
+        pa = self.box.get()
+        right_bound = -self.size + (pa.w // pa.h)
+        held = cr.event_holder.mouse_held_keys[0]
 
-        if mw != 0 or cr.event_holder.window_resized or cr.gallery.detailed_view.just_resized_boxes:
+        if mr.colliderect(pa):
+            if (
+                mw != 0
+                or cr.event_holder.window_resized
+                or cr.gallery.detailed_view.just_resized_boxes
+            ):
+                self.scroll_value += mw * 1
+                if self.scroll_value > 0:
+                    self.scroll_value = 0
 
-            self.scroll_value += mw * 1
-            if self.scroll_value > 0:
-                self.scroll_value = 0
+                if self.scroll_value < right_bound:
+                    self.scroll_value = right_bound
 
-            pa = self.box.get()
-            right_bound = -self.size + (pa.w // pa.h)
 
-            if self.scroll_value < right_bound:
-                self.scroll_value = right_bound
+        if mr.colliderect(scroll_bar) and held:
+            point_lerp = utils.inv_lerp(pa.x,pa.x+pa.w,mp.x)
+            self.scroll_value = int(
+                utils.lerp(0,right_bound,point_lerp)
+            )
 
 
 
@@ -114,7 +115,6 @@ class ThumbnailView:
         ...
 
     def render(self):
-
         cr.renderer.draw_color = constants.Colors.GIMP_1
         cr.renderer.fill_rect(self.__scroll_bar_rect)
 
@@ -124,9 +124,15 @@ class ThumbnailView:
         cr.renderer.draw_color = constants.Colors.GIMP_2
         cr.renderer.fill_rect(self.__scroll_button_rect)
 
-
         for box in self.boxes:
-            box.render(constants.Colors.STEEL_BLUE,constants.Colors.BLACK,constants.Colors.PLUM)
+            if box.get().left < self.box.get().left:
+                continue
+
+            box.render(
+                constants.Colors.STEEL_BLUE,
+                constants.Colors.BLACK,
+                constants.Colors.PLUM,
+            )
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
