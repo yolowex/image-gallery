@@ -11,31 +11,46 @@ from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
 
+
 class ThumbnailView:
     def __init__(self, box: RelRect,content_manager:ContentManager):
         self.box = box
         self.content_manager = content_manager
 
+        self.boxes: list[RelRect] = []
 
-        def fun(rect):
-            res = rect.copy()
-            pa = self.box.get()
+        self.update(first_call=True)
 
-            res.x  = (pa.x + res.x * pa.h)+1
-            res.y  = (pa.y + res.y * pa.h)+1
-            res.w *= pa.h
-            res.h *= pa.h
-            res.w -= 2
-            res.h -= 2
 
-            return res
+    def __src_fun(self,rect) :
+        res = rect.copy()
+        pa = self.box.get()
 
-        self.test_box = RelRect(fun,0,0,1,1,use_param=True)
-        self.test_box2 = RelRect(fun,1,0,1,1,use_param=True)
+        res.x = (pa.x + res.x * pa.h) + 1
+        res.y = (pa.y + res.y * pa.h) + 1
+        res.w *= pa.h
+        res.h *= pa.h
+        res.w -= 2
+        res.h -= 2
+
+        return res
+
+
+    def update(self,first_call=False):
+        if not (self.content_manager.was_updated or first_call):
+            return
+
+        print('boo yah')
+
+        size = len(self.content_manager.content_list)
+
+        for i in range(size):
+            box = RelRect(self.__src_fun,i,0,1,1,use_param=True)
+            self.boxes.append(box)
 
 
     def check_events(self):
-        ...
+        self.update()
 
 
     def render_debug(self):
@@ -44,8 +59,9 @@ class ThumbnailView:
     def render(self):
         cr.renderer.draw_color = constants.Colors.BEIGE
         cr.renderer.draw_rect(self.box.get())
-        self.test_box.render(constants.Colors.GOLD)
-        self.test_box2.render(constants.Colors.DARK_GREEN)
+
+        for box in self.boxes:
+            box.render(constants.Colors.STEEL_BLUE,constants.Colors.GIMP_0,constants.Colors.PLUM)
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
