@@ -35,7 +35,6 @@ class Button:
     def check_events(self):
         this = self.rel_rect.get()
         mr = cr.event_holder.mouse_rect
-        held = cr.event_holder.mouse_held_keys[0]
         pressed = cr.event_holder.mouse_pressed_keys[0]
         self.is_hovered = False
 
@@ -55,7 +54,7 @@ class Button:
                     except Exception as e:
                         cr.log.write_log(
                             f"Could not call on_click_action for {self.name} button"
-                            "due to this error: {e}",
+                            f"due to this error: {e}",
                             LogLevel.ERROR,
                         )
 

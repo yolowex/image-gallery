@@ -22,14 +22,26 @@ class ThumbnailView:
         self.update(first_call=True)
 
 
+    @property
+    def __scroll_bar_height(self):
+        pa = self.box.get()
+
+        val = cr.ws().y * 0.01
+        if val > pa.h * 0.1 :
+            val = pa.h * 0.1
+
+        return val
+
     def __src_fun(self,rect) :
         res = rect.copy()
         pa = self.box.get()
 
-        res.x = (pa.x + res.x * pa.h) + 1
-        res.y = (pa.y + res.y * pa.h) + 1
-        res.w *= pa.h
-        res.h *= pa.h
+        h = pa.h - self.__scroll_bar_height
+
+        res.x = (pa.x + res.x * h) + 1
+        res.y = (pa.y + res.y * h) + 1
+        res.w *= h
+        res.h *= h
         res.w -= 2
         res.h -= 2
 
@@ -61,7 +73,7 @@ class ThumbnailView:
         cr.renderer.draw_rect(self.box.get())
 
         for box in self.boxes:
-            box.render(constants.Colors.STEEL_BLUE,constants.Colors.GIMP_0,constants.Colors.PLUM)
+            box.render(constants.Colors.STEEL_BLUE,constants.Colors.BLACK,constants.Colors.PLUM)
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

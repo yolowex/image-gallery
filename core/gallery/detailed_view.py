@@ -21,10 +21,10 @@ class DetailedView:
         self.content_manager = content_manager
         self.image_ui_layer = ImageUiLayer()
 
-        self.image_pos: Optional[Vector2] = Vector2(0.2, 0.1)
+        self.image_pos: Optional[Vector2] = Vector2(0.2, 0.05)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
 
-        self.top_box: Optional[RelRect] = None
+
         self.bottom_box: Optional[RelRect] = None
         self.detail_box: Optional[RelRect] = None
 
@@ -78,21 +78,21 @@ class DetailedView:
         image_pos = self.image_pos = Vector2(rect.x, rect.y)
         image_size = self.image_size = Vector2(rect.w, rect.h)
 
-        self.top_box = RelRect(cr.ws, 0, 0, 1, 0.05)
+
         self.detail_box = RelRect(
-            cr.ws, image_pos.x, self.top_box.rect.bottom, image_size.x, 0.05
+            cr.ws, image_pos.x, 0, image_size.x, 0.05
         )
         self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
 
         self.image_box.rect = FRect(self.image_pos, self.image_size)
 
         left_box_width = image_pos.x
-        self.left_box = RelRect(cr.ws, 0, 0.1, left_box_width, image_size.y)
+        self.left_box = RelRect(cr.ws, 0, 0.05, left_box_width, image_size.y)
 
         self.info_box = RelRect(
             cr.ws,
             0,
-            self.top_box.rect.y + self.top_box.rect.h,
+            0,
             self.left_box.rect.w,
             0.05,
         )
@@ -191,7 +191,7 @@ class DetailedView:
 
         self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.left_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
-        self.top_box.render(colors.GIMP_1, colors.GIMP_2)
+
         self.bottom_box.render(colors.GIMP_1, colors.GIMP_2)
 
         self.image_ui_layer.render()
