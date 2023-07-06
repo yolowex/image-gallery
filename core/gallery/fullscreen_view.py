@@ -12,11 +12,11 @@ from core.common.constants import Colors
 
 
 class FullscreenView:
-    def __init__(self,content_manager:ContentManager):
+    def __init__(self, content_manager: ContentManager):
         self.image_box = RelRect(cr.ws, (0, 0), (1, 1))
         self.content_manager = content_manager
 
-        self.zoom_view = ZoomView(self.image_box,self.content_manager)
+        self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.image_ui_layer = ImageUiLayer()
 
     def init(self):
@@ -30,8 +30,6 @@ class FullscreenView:
             self.zoom_view.reset()
 
         self.zoom_view.update()
-
-
 
         if not self.image_ui_layer.any_hovered:
             self.zoom_view.check_events()

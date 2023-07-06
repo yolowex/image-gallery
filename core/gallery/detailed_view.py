@@ -6,6 +6,7 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
 from gui.image_ui_layer import ImageUiLayer
+from gui.thumbnail_view import ThumbnailView
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
@@ -15,7 +16,7 @@ from gui.button import Button
 # todo: precisely position the boxes so there is no vacant space between them
 # done: add black formatter
 class DetailedView:
-    def __init__(self,content_manager:ContentManager):
+    def __init__(self, content_manager: ContentManager):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
         self.content_manager = content_manager
         self.image_ui_layer = ImageUiLayer()
@@ -32,7 +33,7 @@ class DetailedView:
         self.left_box: Optional[RelRect] = None
         self.info_box: Optional[RelRect] = None
         self.log_box: Optional[RelRect] = None
-        self.preview_box: Optional[RelRect] = None
+        self.preview_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
 
         """
         these fields are used to resize the image box & the relative rectangles group.
@@ -45,8 +46,8 @@ class DetailedView:
 
         self.x_locked = False
         self.y_locked = False
-
-        self.zoom_view = ZoomView(self.image_box,self.content_manager)
+        self.thumbnail_view = ThumbnailView(self.preview_box)
+        self.zoom_view = ZoomView(self.image_box, self.content_manager)
 
         self.resize_boxes()
 
@@ -104,15 +105,12 @@ class DetailedView:
             abs(self.left_box.rect.y + self.left_box.rect.h - self.bottom_box.rect.y),
         )
 
-        self.preview_box = RelRect(
-            cr.ws,
+        self.preview_box.rect = FRect(
             image_pos.x,
             image_pos.y + image_size.y,
             image_size.x,
             abs(image_pos.y + image_size.y - self.bottom_box.rect.y),
         )
-
-
 
     def check_mouse_events(self):
         m_rect = cr.event_holder.mouse_rect
@@ -161,6 +159,8 @@ class DetailedView:
             self.resize_boxes()
 
         self.image_ui_layer.check_events()
+        self.thumbnail_view.check_events()
+
 
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
             self.content_manager.was_updated = False
@@ -182,9 +182,12 @@ class DetailedView:
     def render(self):
         self.image_box.render(colors.GIMP_1, colors.GIMP_2)
         self.zoom_view.render()
+
         self.detail_box.render(colors.GIMP_1, colors.GIMP_2)
         self.log_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.preview_box.render(colors.GIMP_1, colors.GIMP_2)
+
+
 
         self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
         self.left_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
@@ -192,6 +195,7 @@ class DetailedView:
         self.bottom_box.render(colors.GIMP_1, colors.GIMP_2)
 
         self.image_ui_layer.render()
+        self.thumbnail_view.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

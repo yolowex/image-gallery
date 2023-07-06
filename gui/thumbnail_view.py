@@ -10,9 +10,8 @@ from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
 
-
 class ThumbnailView:
-    def __init__(self,box:RelRect):
+    def __init__(self, box: RelRect):
         self.box = box
 
     def check_events(self):

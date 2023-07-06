@@ -10,8 +10,9 @@ test_assets_path = os.path.abspath("./test_assets")
 assets_path = os.path.abspath("./assets")
 content_placeholder: Optional[Content] = None
 
+
 def init_assets():
-    global  ui_buttons,content_placeholder
+    global ui_buttons, content_placeholder
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
     content_placeholder.load()

@@ -15,7 +15,6 @@ class ImageUiLayer(UiLayer):
     def __init__(self):
         super().__init__()
 
-
     def init(self):
         self.init_right_pane()
         self.init_bottom_pane()
