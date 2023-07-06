@@ -36,13 +36,13 @@ class Button:
         this = self.rel_rect.get()
         mr = cr.event_holder.mouse_rect
         held = cr.event_holder.mouse_held_keys[0]
-        released = cr.event_holder.mouse_released_keys[0]
+        pressed = cr.event_holder.mouse_pressed_keys[0]
         self.is_hovered = False
 
         if mr.colliderect(this):
             self.is_hovered = True
 
-            if released:
+            if pressed:
                 if callable(self.on_click_action):
                     cr.log.write_log(
                         f"Clicked on button: {self.name} with id: {self.id_}",
