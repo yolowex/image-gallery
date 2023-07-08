@@ -171,13 +171,22 @@ class RelRect:
         return res
 
     def render(
-        self, bg_color: Color, border_color: Color = None, padding_color: Color = None
+        self, bg_color: Color, border_color: Color = None, padding_color: Color = None,
+            rect:FRect=None
     ):
+
+
         main_rect = self.get()
+        if rect is not None:
+            main_rect = rect
+
         padding_rect = None
 
         if padding_color is not None:
             shrunk_rect = self.get()
+            if rect is not None :
+                shrunk_rect = rect.copy()
+
             lc = shrunk_rect.center
 
             if shrunk_rect.w >= 20:
@@ -192,14 +201,22 @@ class RelRect:
 
         if padding_rect is not None:
             cr.renderer.draw_color = padding_color
-            cr.renderer.fill_rect(self.get())
+            temp_rect = self.get()
+            if rect is not None :
+                temp_rect = rect.copy()
+
+            cr.renderer.fill_rect(temp_rect)
 
         cr.renderer.draw_color = bg_color
         cr.renderer.fill_rect(main_rect)
 
         if border_color is not None:
             cr.renderer.draw_color = border_color
-            cr.renderer.draw_rect(self.get())
+            temp_rect = self.get()
+            if rect is not None :
+                temp_rect = rect.copy()
+
+            cr.renderer.draw_rect(temp_rect)
 
 
 if __name__ == "__main__":

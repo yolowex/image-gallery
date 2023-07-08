@@ -10,9 +10,29 @@ from core.common import utils, assets
 
 
 class InfoView:
+
+
     def __init__(self, box: RelRect):
         self.box = box
         self.font: Font = assets.fonts["mid"]
+
+
+
+        def fun(rect):
+                res = rect.copy()
+                pa = self.box.get()
+
+                res.x += self.box.rect.x
+                res.y += self.box.rect.y
+
+                res.x *= pa.w
+                res.y *= pa.h
+                res.w *= pa.w
+                res.h *= pa.h
+
+                return res
+
+        self.fun = fun
 
         def make_fun(size):
             ar = utils.get_aspect_ratio(Vector2(size))
@@ -35,10 +55,10 @@ class InfoView:
         step_w = 1 / 3
 
         self.button_1_text = Texture.from_surface(
-            cr.renderer, self.font.render("Folders ", True, colors.WHITE)
+            cr.renderer, self.font.render("Folders", True, colors.WHITE)
         )
         self.button_2_text = Texture.from_surface(
-            cr.renderer, self.font.render("Info ", True, colors.WHITE)
+            cr.renderer, self.font.render("Info", True, colors.WHITE)
         )
         self.button_3_text = Texture.from_surface(
             cr.renderer, self.font.render("Edit", True, colors.WHITE)
@@ -71,13 +91,29 @@ class InfoView:
             use_param=True,
         )
 
+        self.box_list: list[RelRect] = [self.button_1_box,self.button_2_box,self.button_3_box]
+        self.selected_box_index = 1
+
+
+    @property
+    def selected_box(self) -> RelRect:
+        return self.box_list[self.selected_box_index]
+
     def check_events(self):
         ...
 
     def render(self):
+
+        self.selected_box.render(colors.GIMP_1,colors.NEON,
+            colors.GIMP_0,rect=self.fun(self.selected_box.rect))
+
+
         self.button_1_text.draw(None, self.button_1_box.get())
         self.button_2_text.draw(None, self.button_2_box.get())
         self.button_3_text.draw(None, self.button_3_box.get())
+
+
+
 
 
 # todo: find a better name for this class
