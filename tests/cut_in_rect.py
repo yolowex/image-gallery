@@ -13,15 +13,24 @@ rect = FRect(0, 0, w * 0.3, h * 0.3)
 
 
 while run:
+    pressed = False
     for i in pg.event.get():
         if i.type == pgl.QUIT or i.type == pgl.KEYDOWN and i.key == pgl.K_ESCAPE:
             run = False
+
+        if i.type == pgl.MOUSEBUTTONDOWN:
+            pressed = True
 
     screen.fill("gray")
 
     temp_rect = rect.copy()
     temp_rect.center = pg.mouse.get_pos()
     cut_rect = cut_rect_in(con_rect, temp_rect)
+
+    if pressed:
+        print(cut_rect[1])
+
+    cut_rect = cut_rect[0]
 
     pg.draw.rect(screen, Color("blue"), cut_rect)
     pg.draw.rect(screen, Color("red"), temp_rect, 3)

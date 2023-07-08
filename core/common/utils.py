@@ -226,6 +226,31 @@ def cut_rect_in(container_rect: FRect, rect: FRect):
     if r > container_rect.right:
         r = container_rect.right
 
-    rect = FRect(l, t, abs(l - r), abs(t - b))
+    res = FRect(l, t, abs(l - r), abs(t - b))
+
+    src_rect = FRect(
+        inv_lerp(rect.left,rect.right,res.left),
+        inv_lerp(rect.top,rect.bottom,res.top),
+        inv_lerp(rect.left,rect.right,res.right),
+        inv_lerp(rect.top,rect.bottom,res.bottom),
+    )
+
+    return res,src_rect
+
+
+def mult_rect(rect,w,h) -> FRect:
+    """
+    multiplies the size and position of a rectangle to
+    a certain width and height.
+
+    it also returns the modified rectangle to enable chaining.
+    :returns: FRect
+    """
+
+    rect.x *= w
+    rect.w *= w
+
+    rect.y *= h
+    rect.h *= h
 
     return rect

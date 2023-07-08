@@ -123,9 +123,17 @@ class InfoView:
             rect=self.fun(self.selected_box.rect),
         )
 
-        self.button_1_text.draw(None, self.button_1_box.get())
-        self.button_2_text.draw(None, self.button_2_box.get())
-        self.button_3_text.draw(None, self.button_3_box.get())
+        cut_1 = utils.cut_rect_in(self.fun(self.button_1_box.rect),self.button_1_box.get())
+        cut_2 = utils.cut_rect_in(self.fun(self.button_2_box.rect),self.button_2_box.get())
+        cut_3 = utils.cut_rect_in(self.fun(self.button_3_box.rect),self.button_3_box.get())
+
+        src_rect_1 = utils.mult_rect(cut_1[1],self.button_1_text.width,self.button_1_text.height)
+        src_rect_2 = utils.mult_rect(cut_2[1],self.button_2_text.width,self.button_2_text.height)
+        src_rect_3 = utils.mult_rect(cut_3[1],self.button_3_text.width,self.button_3_text.height)
+
+        self.button_1_text.draw(src_rect_1, cut_1[0])
+        self.button_2_text.draw(src_rect_2, cut_2[0])
+        self.button_3_text.draw(src_rect_3, cut_3[0])
 
 
 # todo: find a better name for this class
