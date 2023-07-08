@@ -5,6 +5,7 @@ from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
+from core.gallery.info_view import InfoView
 from gui.image_ui_layer import ImageUiLayer
 from gui.thumbnail_view import ThumbnailView
 from gui.zoom_view import ZoomView
@@ -35,7 +36,7 @@ class DetailedView:
         self.image_box = RelRect(cr.ws, (0, 0), (0, 0))
 
         self.left_box: Optional[RelRect] = None
-        self.info_box: Optional[RelRect] = None
+        self.info_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
         self.log_box: Optional[RelRect] = None
         self.preview_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
 
@@ -52,6 +53,8 @@ class DetailedView:
         self.y_locked = False
         self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
+        self.info_view = InfoView(self.info_box)
+
         self.just_resized_boxes = False
         self.resize_boxes()
 
@@ -90,8 +93,7 @@ class DetailedView:
         left_box_width = image_pos.x
         self.left_box = RelRect(cr.ws, 0, 0.05, left_box_width, image_size.y)
 
-        self.info_box = RelRect(
-            cr.ws,
+        self.info_box.rect = FRect(
             0,
             0,
             self.left_box.rect.w,
@@ -161,7 +163,7 @@ class DetailedView:
             self.resize_boxes()
 
         self.image_ui_layer.check_events()
-
+        self.info_view.check_events()
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
             self.zoom_view.reset()
 
@@ -195,6 +197,7 @@ class DetailedView:
 
         self.image_ui_layer.render()
         self.thumbnail_view.render()
+        self.info_view.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
