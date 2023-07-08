@@ -9,10 +9,14 @@ ui_buttons: Dict[str, Texture] = {}
 test_assets_path = os.path.abspath("./test_assets")
 assets_path = os.path.abspath("./assets")
 content_placeholder: Optional[Content] = None
+fonts = {}
 
 
 def init_assets():
     global ui_buttons, content_placeholder
+
+
+    fonts["mid"] = pg.font.SysFont("monospace",25)
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
     content_placeholder.load()

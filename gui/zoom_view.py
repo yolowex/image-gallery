@@ -162,14 +162,6 @@ class ZoomView:
         self.update_picture_rect()
 
     def check_events(self):
-        if pgl.K_f in cr.event_holder.pressed_keys:
-            print(
-                self.zoom,
-                self.current_rel,
-                self.is_grabbing,
-                self.grab_src,
-                self.grab_dst,
-            )
 
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect

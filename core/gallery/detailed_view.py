@@ -19,6 +19,11 @@ class DetailedView:
     def __init__(self, content_manager: ContentManager):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
         self.content_manager = content_manager
+
+
+        self.boxes_x_range = (0.2,0.7)
+        self.boxes_y_range = (0.6,0.8)
+
         self.image_ui_layer = ImageUiLayer()
 
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.05)
@@ -59,19 +64,19 @@ class DetailedView:
         self.just_resized_boxes = True
         if self.x_locked:
             x_val = utils.inv_lerp(0, X, self.resize_x_request)
-            if x_val < 0.1:
-                x_val = 0.1
-            if x_val > 0.65:
-                x_val = 0.65
+            if x_val < self.boxes_x_range[0]:
+                x_val = self.boxes_x_range[0]
+            if x_val > self.boxes_x_range[1]:
+                x_val = self.boxes_x_range[1]
             rect.x = x_val
             rect.w = abs(1 - rect.x)
 
         if self.y_locked:
             y_val = utils.inv_lerp(0, Y, self.resize_y_request)
-            if y_val > 0.8:
-                y_val = 0.8
-            if y_val < 0.6:
-                y_val = 0.6
+            if y_val > self.boxes_y_range[1]:
+                y_val = self.boxes_y_range[1]
+            if y_val < self.boxes_y_range[0]:
+                y_val = self.boxes_y_range[0]
             rect.h = abs(rect.y - y_val)
 
         image_pos = self.image_pos = Vector2(rect.x, rect.y)

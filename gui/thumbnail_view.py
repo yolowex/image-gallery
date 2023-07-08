@@ -39,7 +39,9 @@ class ThumbnailView:
         pa = self.box.get()
         bar_rect = self.__scroll_bar_rect
 
-        w = bar_rect.w / (self.size - (pa.w // pa.h) + 1)
+        val = (self.size - (pa.w // pa.h) + 1)
+        if not val: val=1
+        w = bar_rect.w / val
 
         rect = FRect(bar_rect.x + w * abs(self.scroll_value), bar_rect.y, w, bar_rect.h)
 
@@ -111,7 +113,6 @@ class ThumbnailView:
         scroll_bar = self.__scroll_bar_rect
         pa = self.box.get()
         right_bound = -self.size + (pa.w // pa.h)
-        held = cr.event_holder.mouse_held_keys[0]
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
         should_update = False
