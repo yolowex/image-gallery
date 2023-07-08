@@ -163,7 +163,6 @@ class ZoomView:
         self.update_picture_rect()
 
     def check_events(self):
-
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
         mp = cr.event_holder.mouse_pos

@@ -45,3 +45,16 @@ class ContentType(Enum):
     PICTURE = 0
     GIF = 1
     VIDEO = 2
+
+
+class FileType(Enum):
+    """
+    this is a helper enum class for FolderView,
+    it's job is to distinguish the different file and directory types here.
+    """
+
+    DIR = 0
+    FILE = 1
+    FILE_PIC = 2
+    FILE_GIF = 3
+    FILE_MOV = 4

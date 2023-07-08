@@ -221,11 +221,11 @@ def cut_rect_in(container_rect: FRect, rect: FRect):
     if l < container_rect.left:
         l = container_rect.left
 
-    if b > container_rect.bottom :
+    if b > container_rect.bottom:
         b = container_rect.bottom
-    if r > container_rect.right :
+    if r > container_rect.right:
         r = container_rect.right
 
-    rect = FRect(l,t,abs(l-r),abs(t-b))
+    rect = FRect(l, t, abs(l - r), abs(t - b))
 
     return rect

@@ -58,8 +58,6 @@ class RelRect:
 
         return self.__get_result
 
-
-
     # todo: adapt this method to the latest changes in use_param
     def get_in_rect(self, rect_size: Vector2, window_relative=False):
         win_ar = utils.get_aspect_ratio(cr.ws())
@@ -155,11 +153,12 @@ class RelRect:
         return res
 
     def render(
-        self, bg_color: Color, border_color: Color = None, padding_color: Color = None,
-            rect:FRect=None
+        self,
+        bg_color: Color,
+        border_color: Color = None,
+        padding_color: Color = None,
+        rect: FRect = None,
     ):
-
-
         main_rect = self.get()
         if rect is not None:
             main_rect = rect
@@ -168,7 +167,7 @@ class RelRect:
 
         if padding_color is not None:
             shrunk_rect = self.get()
-            if rect is not None :
+            if rect is not None:
                 shrunk_rect = rect.copy()
 
             lc = shrunk_rect.center
@@ -186,7 +185,7 @@ class RelRect:
         if padding_rect is not None:
             cr.renderer.draw_color = padding_color
             temp_rect = self.get()
-            if rect is not None :
+            if rect is not None:
                 temp_rect = rect.copy()
 
             cr.renderer.fill_rect(temp_rect)
@@ -197,7 +196,7 @@ class RelRect:
         if border_color is not None:
             cr.renderer.draw_color = border_color
             temp_rect = self.get()
-            if rect is not None :
+            if rect is not None:
                 temp_rect = rect.copy()
 
             cr.renderer.draw_rect(temp_rect)

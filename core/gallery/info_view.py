@@ -10,33 +10,30 @@ from core.common import utils, assets
 
 
 class InfoView:
-
-
     def __init__(self, box: RelRect):
         self.box = box
         self.font: Font = assets.fonts["mid"]
 
-
-
         def fun(rect):
-                res = rect.copy()
-                pa = self.box.get()
+            res = rect.copy()
+            pa = self.box.get()
 
-                res.x += self.box.rect.x
-                res.y += self.box.rect.y
+            res.x += self.box.rect.x
+            res.y += self.box.rect.y
 
-                res.x *= pa.w
-                res.y *= pa.h
-                res.w *= pa.w
-                res.h *= pa.h
+            res.x *= pa.w
+            res.y *= pa.h
+            res.w *= pa.w
+            res.h *= pa.h
 
-                return res
+            return res
 
         self.fun = fun
 
         # this is probably the dirties code I've ever written in my entire life
         def make_fun(size):
             ar = utils.get_aspect_ratio(Vector2(size))
+
             def fun(rect):
                 res = rect.copy()
                 pa = self.box.get()
@@ -46,7 +43,7 @@ class InfoView:
 
                 res.x *= pa.w
                 res.y *= pa.h
-                res.w *= (pa.h / ar.y)
+                res.w *= pa.h / ar.y
                 res.h *= pa.h
 
                 return res
@@ -64,7 +61,6 @@ class InfoView:
         self.button_3_text = Texture.from_surface(
             cr.renderer, self.font.render("Edit", True, colors.WHITE)
         )
-
 
         self.button_1_box = RelRect(
             make_fun(self.button_1_text.get_rect().size),
@@ -91,43 +87,45 @@ class InfoView:
             use_param=True,
         )
 
-        self.box_list: list[RelRect] = [self.button_1_box,self.button_2_box,self.button_3_box]
+        self.box_list: list[RelRect] = [
+            self.button_1_box,
+            self.button_2_box,
+            self.button_3_box,
+        ]
         self.selected_box_index = 1
-
 
     @property
     def selected_box(self) -> RelRect:
         return self.box_list[self.selected_box_index]
-
 
     def check_click(self):
         mr = cr.event_holder.mouse_rect
         click = cr.event_holder.mouse_pressed_keys[0]
 
         if click:
-            for c,box in enumerate(self.box_list):
+            for c, box in enumerate(self.box_list):
                 rect = self.fun(box.rect)
                 if mr.colliderect(rect):
                     self.selected_box_index = c
-                    cr.log.write_log(f"Updated current info_view index to {c}",LogLevel.DEBUG)
+                    cr.log.write_log(
+                        f"Updated current info_view index to {c}", LogLevel.DEBUG
+                    )
                     break
-
 
     def check_events(self):
         self.check_click()
 
     def render(self):
-
-        self.selected_box.render(colors.GIMP_1,colors.NEON,
-            colors.GIMP_0,rect=self.fun(self.selected_box.rect))
-
+        self.selected_box.render(
+            colors.GIMP_1,
+            colors.NEON,
+            colors.GIMP_0,
+            rect=self.fun(self.selected_box.rect),
+        )
 
         self.button_1_text.draw(None, self.button_1_box.get())
         self.button_2_text.draw(None, self.button_2_box.get())
         self.button_3_text.draw(None, self.button_3_box.get())
-
-
-
 
 
 # todo: find a better name for this class
