@@ -77,12 +77,12 @@ class Content:
     def render_debug(self):
         ...
 
-    def render(self, rect: FRect = None):
+    def render(self, dst_rect: FRect = None,src_rect: FRect=None):
         if not self.is_loaded:
             cr.log.write_log("Content is not loaded, cannot render!", LogLevel.WARNING)
             return
 
-        if self.box is None and rect is None:
+        if self.box is None and dst_rect is None:
             cr.log.write_log(
                 "Content.box is not defined yet and a rect is not provided too"
                 ", cannot render!",
@@ -90,13 +90,14 @@ class Content:
             )
             return
 
-        if rect is not None:
-            self.texture.draw(None, rect)
+        if dst_rect is not None:
+
+            self.texture.draw(src_rect, dst_rect)
 
         else:
             if self.type_ == ContentType.PICTURE:
                 size = Vector2(self.texture.get_rect().size)
-                self.texture.draw(None, self.box.get_in_rect(size, True))
+                self.texture.draw(src_rect, self.box.get_in_rect(size, True))
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
