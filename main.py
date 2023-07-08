@@ -3,7 +3,6 @@ from core.log import Log
 import platform
 import traceback
 import os
-import pathlib
 
 current_platform = platform.system()
 app_name = "Foto Folio"

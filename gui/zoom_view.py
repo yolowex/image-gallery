@@ -87,6 +87,7 @@ class ZoomView:
         """
         grab_diff = self.grab_dst - self.grab_src
         l_rect = self.inner_image_rect.copy()
+
         con_rect = self.container_box.get()
 
         if self.x_grab_allowed:

@@ -8,7 +8,6 @@ from core.gallery.content import Content
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
-# todo: find a better name for this class
 class InfoView:
     def __init__(self):
         self.font = assets.fonts['mid']
@@ -21,3 +20,16 @@ class InfoView:
 
     def render(self):
         ...
+
+
+
+
+
+
+
+
+
+
+
+
+# todo: find a better name for this class

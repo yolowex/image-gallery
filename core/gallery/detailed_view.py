@@ -22,7 +22,7 @@ class DetailedView:
 
 
         self.boxes_x_range = (0.2,0.7)
-        self.boxes_y_range = (0.6,0.8)
+        self.boxes_y_range = (0.5,0.85)
 
         self.image_ui_layer = ImageUiLayer()
 
