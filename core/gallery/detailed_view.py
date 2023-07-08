@@ -5,6 +5,7 @@ from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
+from core.gallery.folder_view import FolderView
 from core.gallery.info_view import InfoView
 from gui.image_ui_layer import ImageUiLayer
 from gui.thumbnail_view import ThumbnailView
@@ -34,7 +35,7 @@ class DetailedView:
 
         self.image_box = RelRect(cr.ws, (0, 0), (0, 0))
 
-        self.left_box: Optional[RelRect] = None
+        self.left_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
         self.info_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
 
         self.preview_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
@@ -53,6 +54,7 @@ class DetailedView:
         self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
+        self.folder_view = FolderView(self.left_box,self.content_manager)
 
         self.just_resized_boxes = False
         self.resize_boxes()
@@ -90,7 +92,7 @@ class DetailedView:
         self.image_box.rect = FRect(self.image_pos, self.image_size)
 
         left_box_width = image_pos.x
-        self.left_box = RelRect(cr.ws, 0, 0.05, left_box_width, 0.9)
+        self.left_box.rect = FRect( 0, 0.05, left_box_width, 0.9)
 
         self.info_box.rect = FRect(
             0,
@@ -154,6 +156,7 @@ class DetailedView:
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
+        self.folder_view.check_events()
         self.image_ui_layer.check_events()
         self.info_view.check_events()
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
@@ -190,7 +193,7 @@ class DetailedView:
         self.image_ui_layer.render()
         self.thumbnail_view.render()
         self.info_view.render()
-
+        self.folder_view.render()
         if cr.event_holder.should_render_debug:
             self.render_debug()
 

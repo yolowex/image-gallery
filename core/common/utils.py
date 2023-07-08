@@ -254,3 +254,19 @@ def mult_rect(rect,w,h) -> FRect:
     rect.h *= h
 
     return rect
+
+def contains_int(list_):
+    return any([type(i)==int for i in list_])
+
+
+def flatten_dictionary(dictionary, parent_key='', separator='.'):
+    flattened_dict = {}
+    for key, value in dictionary.items():
+        new_key = f"{parent_key}{separator}{key}" if parent_key else key
+        if isinstance(value, dict) and contains_int(list(value.keys())):
+            flattened_dict.update(flatten_dictionary(value, new_key, separator))
+        else:
+            if isinstance(key,int):
+                flattened_dict[new_key] = value
+
+    return flattened_dict
