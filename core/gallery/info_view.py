@@ -34,6 +34,7 @@ class InfoView:
 
         self.fun = fun
 
+        # this is probably the dirties code I've ever written in my entire life
         def make_fun(size):
             ar = utils.get_aspect_ratio(Vector2(size))
             def fun(rect):
@@ -64,7 +65,6 @@ class InfoView:
             cr.renderer, self.font.render("Edit", True, colors.WHITE)
         )
 
-        # this is probably the dirties code I've ever written in my whole life
 
         self.button_1_box = RelRect(
             make_fun(self.button_1_text.get_rect().size),
@@ -99,8 +99,22 @@ class InfoView:
     def selected_box(self) -> RelRect:
         return self.box_list[self.selected_box_index]
 
+
+    def check_click(self):
+        mr = cr.event_holder.mouse_rect
+        click = cr.event_holder.mouse_pressed_keys[0]
+
+        if click:
+            for c,box in enumerate(self.box_list):
+                rect = self.fun(box.rect)
+                if mr.colliderect(rect):
+                    self.selected_box_index = c
+                    cr.log.write_log(f"Updated current info_view index to {c}",LogLevel.DEBUG)
+                    break
+
+
     def check_events(self):
-        ...
+        self.check_click()
 
     def render(self):
 
