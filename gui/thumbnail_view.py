@@ -39,8 +39,9 @@ class ThumbnailView:
         pa = self.box.get()
         bar_rect = self.__scroll_bar_rect
 
-        val = (self.size - (pa.w // pa.h) + 1)
-        if not val: val=1
+        val = self.size - (pa.w // pa.h) + 1
+        if not val:
+            val = 1
         w = bar_rect.w / val
 
         rect = FRect(bar_rect.x + w * abs(self.scroll_value), bar_rect.y, w, bar_rect.h)
@@ -80,7 +81,6 @@ class ThumbnailView:
             box = RelRect(self.__src_fun, i, 0, 1, 1, use_param=True)
             self.boxes.append(box)
 
-
     def check_scroll_bar_click(self):
         pa = self.box.get()
         mr = cr.event_holder.mouse_rect
@@ -103,8 +103,6 @@ class ThumbnailView:
             if mr.colliderect(in_rect) and clicked:
                 self.content_manager.goto(c)
                 self.dont_reset_cursor = True
-
-
 
     def check_scroll(self):
         mw = cr.event_holder.mouse_wheel

@@ -21,9 +21,8 @@ class DetailedView:
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
         self.content_manager = content_manager
 
-
-        self.boxes_x_range = (0.2,0.7)
-        self.boxes_y_range = (0.5,0.85)
+        self.boxes_x_range = (0.2, 0.7)
+        self.boxes_y_range = (0.5, 0.85)
 
         self.image_ui_layer = ImageUiLayer()
 
@@ -37,7 +36,7 @@ class DetailedView:
 
         self.left_box: Optional[RelRect] = None
         self.info_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
-        self.log_box: Optional[RelRect] = None
+
         self.preview_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
 
         """
@@ -91,21 +90,13 @@ class DetailedView:
         self.image_box.rect = FRect(self.image_pos, self.image_size)
 
         left_box_width = image_pos.x
-        self.left_box = RelRect(cr.ws, 0, 0.05, left_box_width, image_size.y)
+        self.left_box = RelRect(cr.ws, 0, 0.05, left_box_width, 0.9)
 
         self.info_box.rect = FRect(
             0,
             0,
             self.left_box.rect.w,
             0.05,
-        )
-
-        self.log_box = RelRect(
-            cr.ws,
-            0,
-            self.left_box.rect.y + self.left_box.rect.h,
-            self.left_box.rect.w,
-            abs(self.left_box.rect.y + self.left_box.rect.h - self.bottom_box.rect.y),
         )
 
         self.preview_box.rect = FRect(
@@ -130,9 +121,10 @@ class DetailedView:
                 self.x_locked = True
                 self.y_locked = True
 
-        elif m_rect.colliderect(self.image_box.get()) and m_rect.colliderect(
-            self.left_box.get()
-        ):
+        elif (
+            m_rect.colliderect(self.image_box.get())
+            or m_rect.colliderect(self.preview_box.get())
+        ) and m_rect.colliderect(self.left_box.get()):
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_SIZEWE
             if clicked:
                 self.x_locked = True
@@ -187,7 +179,7 @@ class DetailedView:
         self.zoom_view.render()
 
         self.detail_box.render(colors.GIMP_1, colors.GIMP_2)
-        self.log_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+
         self.preview_box.render(colors.GIMP_1, colors.GIMP_2)
 
         self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)

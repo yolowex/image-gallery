@@ -8,11 +8,11 @@ from core.gallery.content import Content
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
-class InfoView:
-    def __init__(self,box:RelRect):
-        self.box = box
-        self.font = assets.fonts['mid']
 
+class InfoView:
+    def __init__(self, box: RelRect):
+        self.box = box
+        self.font = assets.fonts["mid"]
 
     def check_events(self):
         ...
@@ -20,16 +20,6 @@ class InfoView:
     def render(self):
         cr.renderer.draw_color = colors.INDIGO
         cr.renderer.fill_rect(self.box.get())
-
-
-
-
-
-
-
-
-
-
 
 
 # todo: find a better name for this class

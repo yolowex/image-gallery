@@ -8,6 +8,7 @@ from core.gallery.content import Content
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
+
 class FolderView:
     def __init__(self):
         ...
