@@ -96,7 +96,7 @@ class ThumbnailView:
 
             content = self.content_manager.get_at(c)
 
-            in_rect = utils.shrinked_rect(
+            in_rect = utils.shrunk_rect(
                 box.get_in_rect(Vector2(content.texture.get_rect().size)), 0.1
             )
 
@@ -193,7 +193,7 @@ class ThumbnailView:
 
             content = self.content_manager.get_at(c)
 
-            in_rect = utils.shrinked_rect(
+            in_rect = utils.shrunk_rect(
                 box.get_in_rect(Vector2(content.texture.get_rect().size)), 0.1
             )
             content.render(in_rect)

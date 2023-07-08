@@ -58,23 +58,7 @@ class RelRect:
 
         return self.__get_result
 
-    def cut_rect_in(self, rect: FRect):
-        cut_rect = rect.copy()
-        this = self.get()
 
-        if cut_rect.x < this.x:
-            cut_rect.x = this.x
-
-        if cut_rect.y < this.y:
-            cut_rect.y = this.y
-
-        if cut_rect.x + cut_rect.w > this.x + this.w:
-            cut_rect.w = this.w
-
-        if cut_rect.y + cut_rect.h > this.y + this.h:
-            cut_rect.h = this.h
-
-        return cut_rect
 
     # todo: adapt this method to the latest changes in use_param
     def get_in_rect(self, rect_size: Vector2, window_relative=False):

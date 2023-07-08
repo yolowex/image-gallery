@@ -190,7 +190,7 @@ def listdir(path, target_formats: list[str] = None, include_no_format=False):
     return list_
 
 
-def shrinked_rect(rect: FRect, amount: float):
+def shrunk_rect(rect: FRect, amount: float):
     """
     Accepts a rectangle and then makes it smaller by the
     provided amount, and then returns it on the same
@@ -206,3 +206,26 @@ def shrinked_rect(rect: FRect, amount: float):
     res.h *= 1 - amount
     res.center = lc
     return res
+
+
+def cut_rect_in(container_rect: FRect, rect: FRect):
+    cut_rect = rect.copy()
+
+    t = cut_rect.top
+    b = cut_rect.bottom
+    r = cut_rect.right
+    l = cut_rect.left
+
+    if t < container_rect.top:
+        t = container_rect.top
+    if l < container_rect.left:
+        l = container_rect.left
+
+    if b > container_rect.bottom :
+        b = container_rect.bottom
+    if r > container_rect.right :
+        r = container_rect.right
+
+    rect = FRect(l,t,abs(l-r),abs(t-b))
+
+    return rect
