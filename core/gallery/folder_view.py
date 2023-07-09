@@ -66,6 +66,8 @@ class FolderView:
         self.content_width = 0
         self.scroll_x_value = 0.0
         self.scroll_y_value = 0.0
+        self.scroll_x_locked = False
+        self.scroll_y_locked = False
 
         self.init_texts()
 
@@ -215,7 +217,10 @@ class FolderView:
         ar = utils.get_aspect_ratio(self.box.rect.size)
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
+        mp = Vector2(mr.center)
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
+        clicked = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
 
         if mr.colliderect(pa) :
             if mw :
@@ -238,6 +243,52 @@ class FolderView:
                     bottom_bound = -self.content_height + 0.95
                     if self.scroll_y_value < bottom_bound :
                         self.scroll_y_value = bottom_bound
+
+
+
+        if clicked:
+            v_bar = self.__vertical_scroll_bar_rect
+            h_bar = self.__horizontal_scroll_bar_rect
+
+            if mr.colliderect(v_bar):
+                self.scroll_x_locked = True
+
+            if mr.colliderect(h_bar):
+                self.scroll_y_locked = True
+
+        if released:
+            self.scroll_x_locked = False
+            self.scroll_y_locked = False
+
+
+
+        if self.scroll_x_locked:
+            bar = self.__vertical_scroll_bar_rect
+            bottom_bound = -self.content_height + 0.95
+            val = utils.inv_lerp(bar.top, bar.bottom, mp.y)
+            self.scroll_y_value = utils.lerp(0, bottom_bound, val)
+            if self.scroll_y_value > 0 :
+                self.scroll_y_value = 0
+            if self.scroll_y_value < bottom_bound :
+                self.scroll_y_value = bottom_bound
+
+        if self.scroll_y_locked:
+            bar = self.__horizontal_scroll_bar_rect
+            right_bound = self.content_width
+
+            val = utils.inv_lerp(bar.left, bar.right, mp.x)
+            self.scroll_x_value = -utils.lerp(0, right_bound, val)
+
+
+
+            if self.scroll_x_value > 0 :
+                self.scroll_x_value = 0
+
+            right_bound = -self.content_width + (self.box.rect.h / ar.y)
+            if self.scroll_x_value < right_bound :
+                self.scroll_x_value = right_bound
+
+
 
 
         if self.content_width < 1/ar.y:
