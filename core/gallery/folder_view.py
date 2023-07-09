@@ -205,6 +205,8 @@ class FolderView:
         self.text_box_list.append((texture, box,file_item))
 
     def sync_texts(self):
+        self.content_height = 0
+        self.content_width = 0
         di = self.disk_cursor.contents_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
