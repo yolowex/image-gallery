@@ -13,34 +13,6 @@ from core.common import utils, assets
 
 f = FileType
 
-test_dict = {}
-
-
-def make_test_dict(dict_, depth=0):
-    mx = 7
-    d = depth + 1
-    if depth >= mx:
-        d = mx
-
-    egg = 2
-
-    if depth >= mx:
-        return
-
-    for i in range(egg):
-        t = random.choice([f.FILE, f.DIR, f.DIR, f.DIR])
-        t = t.DIR
-
-        item = {"name": f"{t.name.lower()}-{i}-{depth}", "file_type": t}
-        dict_[i] = item
-
-        if item["file_type"] == f.DIR:
-            make_test_dict(item, depth + 1)
-
-
-make_test_dict(test_dict)
-
-
 def iterate_on_flattened(dict_, function, depth=0):
     if "name" in dict_.keys():
         function(dict_, depth)
