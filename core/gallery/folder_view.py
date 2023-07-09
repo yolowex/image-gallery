@@ -18,26 +18,26 @@ test_dict = {}
 def make_test_dict(dict_, depth=0):
     mx = 5
     d = depth + 1
-    if depth >= mx: d = mx
+    if depth >= mx:
+        d = mx
 
     egg = 2
 
-    if depth >= mx: return
+    if depth >= mx:
+        return
 
     for i in range(egg):
         t = random.choice([f.FILE, f.DIR, f.DIR, f.DIR])
         t = t.DIR
 
-        item = {
-            "name": f"{t.name.lower()}-{i}-{depth}",
-            "file_type": t}
+        item = {"name": f"{t.name.lower()}-{i}-{depth}", "file_type": t}
         dict_[i] = item
 
         if item["file_type"] == f.DIR:
-            make_test_dict(item,depth+1)
+            make_test_dict(item, depth + 1)
+
 
 make_test_dict(test_dict)
-
 
 
 def iterate_on_flattened(dict_, function, depth=0):
@@ -69,6 +69,46 @@ class FolderView:
 
         self.init_texts()
 
+    @property
+    def __vertical_scroll_bar_width(self):
+        pa = self.box.get()
+
+        val = cr.ws().y * 0.01
+        if val > pa.h * 0.1:
+            val = pa.h * 0.1
+
+        return val
+
+    @property
+    def __vertical_scroll_bar_rect(self):
+        pa = self.box.get()
+        w = self.__vertical_scroll_bar_width
+        y = pa.y
+        x = pa.left
+        h = pa.h
+
+        return FRect(x, y, w, h)
+
+    @property
+    def __vertical_scroll_button_rect(self):
+        pa = self.box.get()
+        bar_rect = self.__vertical_scroll_bar_rect
+
+        bottom_bound = -self.content_height + 0.95
+
+        h = self.box.rect.h / self.content_height * pa.h
+
+        lerp_value = utils.inv_lerp(0,abs(bottom_bound),abs(self.scroll_y_value))
+
+        rect = FRect(
+            bar_rect.x,
+            utils.lerp(bar_rect.top,bar_rect.bottom-h,lerp_value),
+            bar_rect.w,
+            h,
+        )
+
+        return rect
+
     def __make_fun(self, size):
         ar = utils.get_aspect_ratio(Vector2(size))
 
@@ -84,6 +124,8 @@ class FolderView:
             res.w *= pa.h / ar.y
             res.h *= pa.h
 
+            res.x += self.__vertical_scroll_bar_width
+
             return res
 
         return fun
@@ -91,7 +133,7 @@ class FolderView:
     def __make_text(self, file_item: dict, depth):
         le = len(self.text_box_list)
         text = file_item["name"]
-        surface = self.font.render(text, True, colors.WHITE,colors.BLACK)
+        surface = self.font.render(text, True, colors.WHITE, colors.BLACK)
         ar = utils.get_aspect_ratio(Vector2(surface.get_size()))
         texture = Texture.from_surface(cr.renderer, surface)
 
@@ -115,12 +157,10 @@ class FolderView:
 
         self.text_box_list.append((texture, box))
 
-
     def init_texts(self):
         di = test_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
-        print(self.content_width,self.content_height)
         # self.scroll_x_value = -self.content_width
         # self.scroll_y_value = -self.content_height * 0.95
 
@@ -134,19 +174,17 @@ class FolderView:
         if mr.colliderect(pa):
             if mw:
                 if mod:
-                    self.scroll_x_value += mw * 0.02
+                    self.scroll_x_value += mw * 0.025
 
-                    if self.scroll_x_value > 0 :
+                    if self.scroll_x_value > 0:
                         self.scroll_x_value = 0
 
                     right_bound = -self.content_width + (self.box.rect.h / ar.y)
-                    if self.scroll_x_value < right_bound :
+                    if self.scroll_x_value < right_bound:
                         self.scroll_x_value = right_bound
 
-                    print(self.scroll_x_value,self.content_width,right_bound)
-
                 else:
-                    self.scroll_y_value += mw * 0.06
+                    self.scroll_y_value += mw * 0.04
 
                     if self.scroll_y_value > 0:
                         self.scroll_y_value = 0
@@ -155,13 +193,9 @@ class FolderView:
                     if self.scroll_y_value < bottom_bound:
                         self.scroll_y_value = bottom_bound
 
-
-
-
-
-
     def render(self):
         pa = self.box.get()
+
         for text, box in self.text_box_list:
             this = box.get()
 
@@ -177,7 +211,16 @@ class FolderView:
             if this.right < pa.left:
                 continue
 
-            cut = utils.cut_rect_in(pa,this)
-            mult = utils.mult_rect(cut[1],text.width,text.height)
+            cut = utils.cut_rect_in(pa, this)
+            mult = utils.mult_rect(cut[1], text.width, text.height)
 
             text.draw(mult, cut[0])
+
+        cr.renderer.draw_color = constants.colors.GIMP_1
+        cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
+
+        cr.renderer.draw_color = constants.colors.BEIGE
+        cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
+
+        cr.renderer.draw_color = constants.colors.NEON
+        cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
