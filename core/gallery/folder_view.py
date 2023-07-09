@@ -16,16 +16,17 @@ test_dict = {}
 
 
 def make_test_dict(dict_, depth=0):
-    mx = 4
+    mx = 5
     d = depth + 1
     if depth >= mx: d = mx
 
-    egg = 3
+    egg = 2
 
     if depth >= mx: return
 
     for i in range(egg):
         t = random.choice([f.FILE, f.DIR, f.DIR, f.DIR])
+        t = t.DIR
 
         item = {
             "name": f"{t.name.lower()}-{i}-{depth}",
@@ -59,7 +60,8 @@ class FolderView:
         self.text_box_list: list[tuple[Texture, RelRect]] = []
 
         self.item_height = 0.025
-        self.indent_w = 0.05
+        self.items_height_margin = 0.005
+        self.indent_w = 0.1
         self.content_height = 0
         self.content_width = 0
         self.scroll_x_value = 0.0
@@ -90,19 +92,20 @@ class FolderView:
         le = len(self.text_box_list)
         text = file_item["name"]
         surface = self.font.render(text, True, colors.WHITE,colors.BLACK)
+        ar = utils.get_aspect_ratio(Vector2(surface.get_size()))
         texture = Texture.from_surface(cr.renderer, surface)
 
         box = RelRect(
             self.__make_fun(texture.get_rect().size),
             self.indent_w * depth,
-            self.item_height * le,
+            (self.item_height + self.items_height_margin) * le,
             self.item_height,
             self.item_height,
             use_param=True,
         )
 
         big_h = abs(box.rect.bottom)
-        big_w = abs(box.rect.right)
+        big_w = abs(box.rect.left + (box.rect.w / ar.y))
 
         if big_h > self.content_height:
             self.content_height = big_h
@@ -123,6 +126,7 @@ class FolderView:
 
     def check_events(self):
         pa = self.box.get()
+        ar = utils.get_aspect_ratio(self.box.rect.size)
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
@@ -135,12 +139,11 @@ class FolderView:
                     if self.scroll_x_value > 0 :
                         self.scroll_x_value = 0
 
-
-                    right_bound = -self.content_width
+                    right_bound = -self.content_width + (self.box.rect.h / ar.y)
                     if self.scroll_x_value < right_bound :
                         self.scroll_x_value = right_bound
 
-                    print(self.scroll_x_value,self.content_width,self.box.rect.w,right_bound)
+                    print(self.scroll_x_value,self.content_width,right_bound)
 
                 else:
                     self.scroll_y_value += mw * 0.06
