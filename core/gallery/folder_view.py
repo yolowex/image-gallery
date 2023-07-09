@@ -16,11 +16,11 @@ test_dict = {}
 
 
 def make_test_dict(dict_, depth=0):
-    mx = 5
+    mx = 4
     d = depth + 1
     if depth >= mx: d = mx
 
-    egg = random.randint(d,mx)
+    egg = 3
 
     if depth >= mx: return
 
@@ -101,8 +101,8 @@ class FolderView:
             use_param=True,
         )
 
-        big_h = abs(self.box.rect.top - box.rect.bottom)
-        big_w = abs(self.box.rect.left - box.rect.right)
+        big_h = abs(box.rect.bottom)
+        big_w = abs(box.rect.right)
 
         if big_h > self.content_height:
             self.content_height = big_h
@@ -118,6 +118,8 @@ class FolderView:
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
         print(self.content_width,self.content_height)
+        # self.scroll_x_value = -self.content_width
+        # self.scroll_y_value = -self.content_height * 0.95
 
     def check_events(self):
         pa = self.box.get()
@@ -134,7 +136,7 @@ class FolderView:
                         self.scroll_x_value = 0
 
 
-                    right_bound = -abs(self.box.rect.right - self.content_width)
+                    right_bound = -self.content_width
                     if self.scroll_x_value < right_bound :
                         self.scroll_x_value = right_bound
 
@@ -146,11 +148,11 @@ class FolderView:
                     if self.scroll_y_value > 0:
                         self.scroll_y_value = 0
 
-                    bottom_bound = -abs(self.box.rect.h - self.content_height)
+                    bottom_bound = -self.content_height + 0.95
                     if self.scroll_y_value < bottom_bound:
                         self.scroll_y_value = bottom_bound
 
-                    print(self.scroll_x_value,bottom_bound)
+
 
 
 
