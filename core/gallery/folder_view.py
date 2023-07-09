@@ -16,7 +16,7 @@ test_dict = {}
 
 
 def make_test_dict(dict_, depth=0):
-    mx = 5
+    mx = 3
     d = depth + 1
     if depth >= mx:
         d = mx
@@ -98,6 +98,10 @@ class FolderView:
 
         h = self.box.rect.h / self.content_height * pa.h
 
+        if h > pa.h:
+            h = pa.h
+
+
         lerp_value = utils.inv_lerp(0,abs(bottom_bound),abs(self.scroll_y_value))
 
         rect = FRect(
@@ -164,34 +168,46 @@ class FolderView:
         # self.scroll_x_value = -self.content_width
         # self.scroll_y_value = -self.content_height * 0.95
 
-    def check_events(self):
+
+    def check_scroll(self):
         pa = self.box.get()
         ar = utils.get_aspect_ratio(self.box.rect.size)
         mw = cr.event_holder.mouse_wheel
         mr = cr.event_holder.mouse_rect
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
 
-        if mr.colliderect(pa):
-            if mw:
-                if mod:
+        if mr.colliderect(pa) :
+            if mw :
+                if mod :
                     self.scroll_x_value += mw * 0.025
 
-                    if self.scroll_x_value > 0:
+                    if self.scroll_x_value > 0 :
                         self.scroll_x_value = 0
 
                     right_bound = -self.content_width + (self.box.rect.h / ar.y)
-                    if self.scroll_x_value < right_bound:
+                    if self.scroll_x_value < right_bound :
                         self.scroll_x_value = right_bound
 
-                else:
+                else :
                     self.scroll_y_value += mw * 0.04
 
-                    if self.scroll_y_value > 0:
+                    if self.scroll_y_value > 0 :
                         self.scroll_y_value = 0
 
                     bottom_bound = -self.content_height + 0.95
-                    if self.scroll_y_value < bottom_bound:
+                    if self.scroll_y_value < bottom_bound :
                         self.scroll_y_value = bottom_bound
+
+
+        if self.content_height < 1/ar.y:
+            self.scroll_x_value = 0
+
+        if self.content_width < 1:
+            self.scroll_y_value = 0
+
+
+    def check_events(self):
+        self.check_scroll()
 
     def render(self):
         pa = self.box.get()
