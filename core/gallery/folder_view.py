@@ -32,9 +32,9 @@ class FolderView:
 
         self.text_box_list: list[tuple[Texture, RelRect,dict]] = []
 
-        self.item_height = 0.025
+        self.item_height = 0.035
         self.items_height_margin = 0.005
-        self.indent_w = 0.1
+        self.indent_w = 0.05
         self.content_height = 0
         self.content_width = 0
         self.scroll_x_value = 0.0
