@@ -58,7 +58,7 @@ class FolderView:
         self.content_manager = content_manager
         self.font = assets.fonts["mid"]
 
-        self.text_box_list: list[tuple[Texture, RelRect]] = []
+        self.text_box_list: list[tuple[Texture, RelRect,dict]] = []
 
         self.item_height = 0.025
         self.items_height_margin = 0.005
@@ -72,7 +72,7 @@ class FolderView:
 
         self.disk_cursor = DiskCursor()
 
-        self.init_texts()
+        self.sync_texts()
 
     @property
     def __horizontal_scroll_bar_height(self):
@@ -202,9 +202,9 @@ class FolderView:
         if big_w > self.content_width:
             self.content_width = big_w
 
-        self.text_box_list.append((texture, box))
+        self.text_box_list.append((texture, box,file_item))
 
-    def init_texts(self):
+    def sync_texts(self):
         di = self.disk_cursor.contents_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
@@ -285,13 +285,57 @@ class FolderView:
         if self.content_height < 1:
             self.scroll_y_value = 0
 
+
+    def check_click(self):
+        pa = self.box.get()
+        ar = utils.get_aspect_ratio(self.box.rect.size)
+        mw = cr.event_holder.mouse_wheel
+        mr = cr.event_holder.mouse_rect
+        mp = Vector2(mr.center)
+        mod = pgl.K_LCTRL in cr.event_holder.held_keys
+        clicked = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
+
+        if clicked:
+
+            for text, box, item in self.text_box_list :
+                this = box.get()
+
+                if this.top > pa.bottom :
+                    continue
+
+                if this.bottom < pa.top :
+                    continue
+
+                if this.left > pa.right :
+                    continue
+
+                if this.right < pa.left :
+                    continue
+
+
+                if mr.colliderect(this):
+                    if item["file_type"] == f.DIR:
+                        if not item['is_loaded']:
+                            self.disk_cursor.expand_folder_at(item['address'])
+                            self.sync_texts()
+                        else:
+                            self.disk_cursor.collapse_folder_at(item['address'])
+                            self.sync_texts()
+
+                    elif item["file_type"] == f.FILE:
+                        print(f"{item['name']} is a file")
+
+
+
     def check_events(self):
+        self.check_click()
         self.check_scroll()
 
     def render(self):
         pa = self.box.get()
 
-        for text, box in self.text_box_list:
+        for text, box, _ in self.text_box_list:
             this = box.get()
 
             if this.top > pa.bottom:

@@ -62,15 +62,39 @@ class DiskCursor:
     def add_folder(self, path: str):
         ...
 
+    def get_item_by_address(self,address):
+        keys = [int(i) for i in address.split("-")]
+        item = self.contents_dict
+        for i in keys :
+            item = item[i]
+
+        return item
+
+    def expand_folder_at(self,address):
+        self.expand_folder(self.get_item_by_address(address))
+
     def expand_folder(self, item: dict):
+        item['is_loaded'] = True
         sub_items = utils.listdir(item["path"],include_hidden_files=False)
 
         for sub_item in sub_items:
             self.add_item_at(sub_item,item,item['address'])
 
 
+
+
+
+    def collapse_folder_at(self,address):
+        self.collapse_folder(self.get_item_by_address(address))
+
     def collapse_folder(self, item: dict):
-        ...
+        item['is_loaded'] = False
+
+        for i in list(item.keys()):
+            if isinstance(i,int):
+                del(item[i])
+
+
 
     def init_contents(self):
         for path in constants.CONTENT_ROOT_LIST:
@@ -82,4 +106,4 @@ class DiskCursor:
             if item["file_type"] == f.DIR:
                 self.expand_folder(item)
 
-        print(self.contents_dict)
+        cr.log.write_log("Successfully initialized all content roots",LogLevel.DEBUG)
