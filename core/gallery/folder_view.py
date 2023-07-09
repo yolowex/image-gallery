@@ -86,6 +86,7 @@ class FolderView:
         return FRect(x, y, w, h)
 
 
+    # todo: fix the position of the horizontal scroll button rect
     @property
     def __horizontal_scroll_button_rect(self) :
         pa = self.box.get()
