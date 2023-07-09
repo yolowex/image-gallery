@@ -30,7 +30,7 @@ class Entry:
 
 
         icon = pg.image.load("./assets/icon.png")
-        pg.display.set_icon(icon)
+        cr.window.set_icon(icon)
 
 
         current_platform = platform.system()

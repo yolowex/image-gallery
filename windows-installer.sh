@@ -15,6 +15,7 @@ fi
 
 
 buildPath="$here/build"
+iconPath="$here/assets/icon.png"
 pythonEntryPath="$here/main.py"
 installerPath="$here/installer"
 installerOutPath="$installerPath/inno.iss"
@@ -260,7 +261,7 @@ if [ $shouldBuildExe -eq 1 ]; then
     mkdir $buildPath
     cd $buildPath
     echo "I'm in $(pwd)"
-    pyinstaller $pythonEntryPath --onefile
+    pyinstaller $pythonEntryPath --onefile --windowed --icon=$iconPath 
 
     rm -rf "$buildPath\build"
     rm "$buildPath\main.spec"
