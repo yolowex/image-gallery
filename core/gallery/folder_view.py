@@ -16,12 +16,12 @@ test_dict = {}
 
 
 def make_test_dict(dict_, depth=0):
-    mx = 4
+    mx = 7
     d = depth + 1
     if depth >= mx:
         d = mx
 
-    egg = 3
+    egg = 2
 
     if depth >= mx:
         return
@@ -86,14 +86,14 @@ class FolderView:
         return FRect(x, y, w, h)
 
 
-    # todo: fix the position of the horizontal scroll button rect
+    # done: fix the position of the horizontal scroll button rect
     @property
     def __horizontal_scroll_button_rect(self) :
         pa = self.box.get()
         ar = utils.get_aspect_ratio(self.box.rect.size)
         bar_rect = self.__horizontal_scroll_bar_rect
 
-        right_bound = 1 / ar.y
+        right_bound = self.content_width
 
 
         w = self.box.rect.w / self.content_width * pa.w
@@ -104,7 +104,7 @@ class FolderView:
         lerp_value = utils.inv_lerp(0, abs(right_bound), abs(self.scroll_x_value))
 
         rect = FRect(
-            utils.lerp(bar_rect.left, bar_rect.right - w, lerp_value),
+            utils.lerp(bar_rect.left, bar_rect.right , lerp_value),
             bar_rect.y,
             w,
             bar_rect.h )
