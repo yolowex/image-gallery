@@ -60,8 +60,8 @@ class FolderView:
 
         self.item_height = 0.025
         self.indent_w = 0.05
-        self.view_height = 0
-        self.view_width = 0
+        self.content_height = 0
+        self.content_width = 0
         self.scroll_x_value = 0.0
         self.scroll_y_value = 0.0
 
@@ -104,11 +104,11 @@ class FolderView:
         big_h = abs(self.box.rect.top - box.rect.bottom)
         big_w = abs(self.box.rect.left - box.rect.right)
 
-        if big_h > self.view_height:
-            self.view_height = big_h
+        if big_h > self.content_height:
+            self.content_height = big_h
 
-        if big_w > self.view_width:
-            self.view_width = big_w
+        if big_w > self.content_width:
+            self.content_width = big_w
 
         self.text_box_list.append((texture, box))
 
@@ -117,10 +117,43 @@ class FolderView:
         di = test_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
-        print(self.view_width,self.view_height)
+        print(self.content_width,self.content_height)
 
     def check_events(self):
-        ...
+        pa = self.box.get()
+        mw = cr.event_holder.mouse_wheel
+        mr = cr.event_holder.mouse_rect
+        mod = pgl.K_LCTRL in cr.event_holder.held_keys
+
+        if mr.colliderect(pa):
+            if mw:
+                if mod:
+                    self.scroll_x_value += mw * 0.02
+
+                    if self.scroll_x_value > 0 :
+                        self.scroll_x_value = 0
+
+
+                    right_bound = -abs(self.box.rect.right - self.content_width)
+                    if self.scroll_x_value < right_bound :
+                        self.scroll_x_value = right_bound
+
+                    print(self.scroll_x_value,self.content_width,self.box.rect.w,right_bound)
+
+                else:
+                    self.scroll_y_value += mw * 0.06
+
+                    if self.scroll_y_value > 0:
+                        self.scroll_y_value = 0
+
+                    bottom_bound = -abs(self.box.rect.h - self.content_height)
+                    if self.scroll_y_value < bottom_bound:
+                        self.scroll_y_value = bottom_bound
+
+                    print(self.scroll_x_value,bottom_bound)
+
+
+
 
     def render(self):
         pa = self.box.get()
