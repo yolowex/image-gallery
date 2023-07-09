@@ -1,3 +1,4 @@
+from core.common import utils
 from core.common.enums import LogLevel
 from core.common.names import *
 import core.common.resources as cr
@@ -37,12 +38,24 @@ MACOS_VERSION = ""
 MACOS_BUILD_NUMBER = ""
 MACOS_ARCHITECTURE = ""
 
+DISPLAY_SIZE = None
+DISPLAY_ASPECT_RATIO = None
 
 def export_platform_constants():
     global IS_WINDOWS, WINDOWS_BUILD_NUMBER, WINDOWS_SERVICE_PACK, WINDOWS_RELEASE_VERSION
     global IS_LINUX, LINUX_DISTRIBUTION, LINUX_KERNEL_VERSION
     global IS_MAC, MACOS_VERSION, MACOS_BUILD_NUMBER, MACOS_ARCHITECTURE
     global LOCAL_APPS_DATA
+    global DISPLAY_SIZE,DISPLAY_ASPECT_RATIO
+
+
+    inf = pg.display.Info()
+    DISPLAY_SIZE = Vector2(
+        inf.current_w,
+        inf.current_h
+    )
+
+    DISPLAY_ASPECT_RATIO = utils.get_aspect_ratio(DISPLAY_SIZE)
 
     current_platform = platform.system()
 

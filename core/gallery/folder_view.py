@@ -16,12 +16,12 @@ test_dict = {}
 
 
 def make_test_dict(dict_, depth=0):
-    mx = 3
+    mx = 4
     d = depth + 1
     if depth >= mx:
         d = mx
 
-    egg = 2
+    egg = 3
 
     if depth >= mx:
         return
@@ -69,6 +69,47 @@ class FolderView:
 
         self.init_texts()
 
+
+    @property
+    def __horizontal_scroll_bar_height(self) :
+        return self.__vertical_scroll_bar_width
+
+
+    @property
+    def __horizontal_scroll_bar_rect(self) :
+        pa = self.box.get()
+        h = self.__horizontal_scroll_bar_height
+        w = pa.w * 0.99
+        y = pa.y + pa.h - h
+        x = pa.left
+
+        return FRect(x, y, w, h)
+
+
+    @property
+    def __horizontal_scroll_button_rect(self) :
+        pa = self.box.get()
+        ar = utils.get_aspect_ratio(self.box.rect.size)
+        bar_rect = self.__horizontal_scroll_bar_rect
+
+        right_bound = 1 / ar.y
+
+
+        w = self.box.rect.w / self.content_width * pa.w
+
+        if w > pa.w :
+            w = pa.w
+
+        lerp_value = utils.inv_lerp(0, abs(right_bound), abs(self.scroll_x_value))
+
+        rect = FRect(
+            utils.lerp(bar_rect.left, bar_rect.right - w, lerp_value),
+            bar_rect.y,
+            w,
+            bar_rect.h )
+
+        return rect
+
     @property
     def __vertical_scroll_bar_width(self):
         pa = self.box.get()
@@ -85,7 +126,7 @@ class FolderView:
         w = self.__vertical_scroll_bar_width
         y = pa.y
         x = pa.left
-        h = pa.h
+        h = pa.h - self.__horizontal_scroll_bar_rect.h
 
         return FRect(x, y, w, h)
 
@@ -165,8 +206,7 @@ class FolderView:
         di = test_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
-        # self.scroll_x_value = -self.content_width
-        # self.scroll_y_value = -self.content_height * 0.95
+
 
 
     def check_scroll(self):
@@ -199,10 +239,10 @@ class FolderView:
                         self.scroll_y_value = bottom_bound
 
 
-        if self.content_height < 1/ar.y:
+        if self.content_width < 1/ar.y:
             self.scroll_x_value = 0
 
-        if self.content_width < 1:
+        if self.content_height < 1:
             self.scroll_y_value = 0
 
 
@@ -240,3 +280,12 @@ class FolderView:
 
         cr.renderer.draw_color = constants.colors.NEON
         cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
+
+        cr.renderer.draw_color = constants.colors.GIMP_1
+        cr.renderer.fill_rect(self.__horizontal_scroll_bar_rect)
+
+        cr.renderer.draw_color = constants.colors.BEIGE
+        cr.renderer.draw_rect(self.__horizontal_scroll_bar_rect)
+
+        cr.renderer.draw_color = constants.colors.NEON
+        cr.renderer.fill_rect(self.__horizontal_scroll_button_rect)
