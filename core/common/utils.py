@@ -229,16 +229,16 @@ def cut_rect_in(container_rect: FRect, rect: FRect):
     res = FRect(l, t, abs(l - r), abs(t - b))
 
     src_rect = FRect(
-        inv_lerp(rect.left,rect.right,res.left),
-        inv_lerp(rect.top,rect.bottom,res.top),
-        inv_lerp(rect.left,rect.right,res.right),
-        inv_lerp(rect.top,rect.bottom,res.bottom),
+        inv_lerp(rect.left, rect.right, res.left),
+        inv_lerp(rect.top, rect.bottom, res.top),
+        inv_lerp(rect.left, rect.right, res.right),
+        inv_lerp(rect.top, rect.bottom, res.bottom),
     )
 
-    return res,src_rect
+    return res, src_rect
 
 
-def mult_rect(rect,w,h) -> FRect:
+def mult_rect(rect, w, h) -> FRect:
     """
     multiplies the size and position of a rectangle to
     a certain width and height.
@@ -255,18 +255,19 @@ def mult_rect(rect,w,h) -> FRect:
 
     return rect
 
+
 def contains_int(list_):
-    return any([type(i)==int for i in list_])
+    return any([type(i) == int for i in list_])
 
 
-def flatten_dictionary(dictionary, parent_key='', separator='.'):
+def flatten_dictionary(dictionary, parent_key="", separator="."):
     flattened_dict = {}
     for key, value in dictionary.items():
         new_key = f"{parent_key}{separator}{key}" if parent_key else key
         if isinstance(value, dict) and contains_int(list(value.keys())):
             flattened_dict.update(flatten_dictionary(value, new_key, separator))
         else:
-            if isinstance(key,int):
+            if isinstance(key, int):
                 flattened_dict[new_key] = value
 
     return flattened_dict

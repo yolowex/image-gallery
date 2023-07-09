@@ -77,7 +77,7 @@ class Content:
     def render_debug(self):
         ...
 
-    def render(self, dst_rect: FRect = None,src_rect: FRect=None):
+    def render(self, dst_rect: FRect = None, src_rect: FRect = None):
         if not self.is_loaded:
             cr.log.write_log("Content is not loaded, cannot render!", LogLevel.WARNING)
             return
@@ -91,7 +91,6 @@ class Content:
             return
 
         if dst_rect is not None:
-
             self.texture.draw(src_rect, dst_rect)
 
         else:

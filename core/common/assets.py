@@ -9,7 +9,7 @@ ui_buttons: Dict[str, Texture] = {}
 test_assets_path = os.path.abspath("./test_assets")
 assets_path = os.path.abspath("./assets")
 content_placeholder: Optional[Content] = None
-fonts: Dict[str,Font] = {}
+fonts: Dict[str, Font] = {}
 
 
 def init_assets():

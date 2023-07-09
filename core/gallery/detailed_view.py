@@ -54,7 +54,7 @@ class DetailedView:
         self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
-        self.folder_view = FolderView(self.left_box,self.content_manager)
+        self.folder_view = FolderView(self.left_box, self.content_manager)
 
         self.just_resized_boxes = False
         self.resize_boxes()
@@ -92,7 +92,7 @@ class DetailedView:
         self.image_box.rect = FRect(self.image_pos, self.image_size)
 
         left_box_width = image_pos.x
-        self.left_box.rect = FRect( 0, 0.05, left_box_width, 0.9)
+        self.left_box.rect = FRect(0, 0.05, left_box_width, 0.9)
 
         self.info_box.rect = FRect(
             0,
