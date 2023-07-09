@@ -59,7 +59,11 @@ class FolderView:
         self.text_box_list: list[tuple[Texture, RelRect]] = []
 
         self.item_height = 0.025
-        self.indent_w = 0.045
+        self.indent_w = 0.05
+        self.view_height = 0
+        self.view_width = 0
+        self.scroll_x_value = 0.0
+        self.scroll_y_value = 0.0
 
         self.init_texts()
 
@@ -70,8 +74,8 @@ class FolderView:
             res = rect.copy()
             pa = self.box.get()
 
-            res.x += self.box.rect.x
-            res.y += self.box.rect.y
+            res.x += self.box.rect.x + self.scroll_x_value
+            res.y += self.box.rect.y + self.scroll_y_value
 
             res.x *= pa.h
             res.y *= pa.h
@@ -85,7 +89,7 @@ class FolderView:
     def __make_text(self, file_item: dict, depth):
         le = len(self.text_box_list)
         text = file_item["name"]
-        surface = self.font.render(text, True, colors.WHITE)
+        surface = self.font.render(text, True, colors.WHITE,colors.BLACK)
         texture = Texture.from_surface(cr.renderer, surface)
 
         box = RelRect(
@@ -97,16 +101,45 @@ class FolderView:
             use_param=True,
         )
 
+        big_h = abs(self.box.rect.top - box.rect.bottom)
+        big_w = abs(self.box.rect.left - box.rect.right)
+
+        if big_h > self.view_height:
+            self.view_height = big_h
+
+        if big_w > self.view_width:
+            self.view_width = big_w
+
         self.text_box_list.append((texture, box))
+
 
     def init_texts(self):
         di = test_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
+        print(self.view_width,self.view_height)
 
     def check_events(self):
         ...
 
     def render(self):
+        pa = self.box.get()
         for text, box in self.text_box_list:
-            text.draw(None, box.get())
+            this = box.get()
+
+            if this.top > pa.bottom:
+                continue
+
+            if this.bottom < pa.top:
+                continue
+
+            if this.left > pa.right:
+                continue
+
+            if this.right < pa.left:
+                continue
+
+            cut = utils.cut_rect_in(pa,this)
+            mult = utils.mult_rect(cut[1],text.width,text.height)
+
+            text.draw(mult, cut[0])

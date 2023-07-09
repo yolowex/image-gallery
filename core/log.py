@@ -20,7 +20,7 @@ class Log:
 
     def __init__(self, path: str):
         self.path = path
-        self.level: LogLevel = LogLevel.DEBUG
+        self.level: LogLevel = LogLevel.INFO
 
         if os.path.exists(self.path):
             os.remove(self.path)
