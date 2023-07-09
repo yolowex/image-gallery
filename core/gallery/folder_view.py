@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.disk_cursor import DiskCursor
 from core.gallery.content import Content
 from core.gallery.content_manager import ContentManager
 from helper_kit.relative_rect import RelRect
@@ -69,16 +70,16 @@ class FolderView:
         self.scroll_x_locked = False
         self.scroll_y_locked = False
 
+        self.disk_cursor = DiskCursor()
+
         self.init_texts()
 
-
     @property
-    def __horizontal_scroll_bar_height(self) :
+    def __horizontal_scroll_bar_height(self):
         return self.__vertical_scroll_bar_width
 
-
     @property
-    def __horizontal_scroll_bar_rect(self) :
+    def __horizontal_scroll_bar_rect(self):
         pa = self.box.get()
         h = self.__horizontal_scroll_bar_height
         w = pa.w * 0.99
@@ -87,29 +88,28 @@ class FolderView:
 
         return FRect(x, y, w, h)
 
-
     # done: fix the position of the horizontal scroll button rect
     @property
-    def __horizontal_scroll_button_rect(self) :
+    def __horizontal_scroll_button_rect(self):
         pa = self.box.get()
         ar = utils.get_aspect_ratio(self.box.rect.size)
         bar_rect = self.__horizontal_scroll_bar_rect
 
         right_bound = self.content_width
 
-
         w = self.box.rect.w / self.content_width * pa.w
 
-        if w > pa.w :
+        if w > pa.w:
             w = pa.w
 
         lerp_value = utils.inv_lerp(0, abs(right_bound), abs(self.scroll_x_value))
 
         rect = FRect(
-            utils.lerp(bar_rect.left, bar_rect.right , lerp_value),
+            utils.lerp(bar_rect.left, bar_rect.right, lerp_value),
             bar_rect.y,
             w,
-            bar_rect.h )
+            bar_rect.h,
+        )
 
         return rect
 
@@ -145,12 +145,11 @@ class FolderView:
         if h > pa.h:
             h = pa.h
 
-
-        lerp_value = utils.inv_lerp(0,abs(bottom_bound),abs(self.scroll_y_value))
+        lerp_value = utils.inv_lerp(0, abs(bottom_bound), abs(self.scroll_y_value))
 
         rect = FRect(
             bar_rect.x,
-            utils.lerp(bar_rect.top,bar_rect.bottom-h,lerp_value),
+            utils.lerp(bar_rect.top, bar_rect.bottom - h, lerp_value),
             bar_rect.w,
             h,
         )
@@ -206,11 +205,9 @@ class FolderView:
         self.text_box_list.append((texture, box))
 
     def init_texts(self):
-        di = test_dict
+        di = self.disk_cursor.contents_dict
         self.text_box_list.clear()
         iterate_on_flattened(di, self.__make_text)
-
-
 
     def check_scroll(self):
         pa = self.box.get()
@@ -222,29 +219,27 @@ class FolderView:
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
 
-        if mr.colliderect(pa) :
-            if mw :
-                if mod :
+        if mr.colliderect(pa):
+            if mw:
+                if mod:
                     self.scroll_x_value += mw * 0.025
 
-                    if self.scroll_x_value > 0 :
+                    if self.scroll_x_value > 0:
                         self.scroll_x_value = 0
 
                     right_bound = -self.content_width + (self.box.rect.h / ar.y)
-                    if self.scroll_x_value < right_bound :
+                    if self.scroll_x_value < right_bound:
                         self.scroll_x_value = right_bound
 
-                else :
+                else:
                     self.scroll_y_value += mw * 0.04
 
-                    if self.scroll_y_value > 0 :
+                    if self.scroll_y_value > 0:
                         self.scroll_y_value = 0
 
                     bottom_bound = -self.content_height + 0.95
-                    if self.scroll_y_value < bottom_bound :
+                    if self.scroll_y_value < bottom_bound:
                         self.scroll_y_value = bottom_bound
-
-
 
         if clicked:
             v_bar = self.__vertical_scroll_bar_rect
@@ -260,16 +255,14 @@ class FolderView:
             self.scroll_x_locked = False
             self.scroll_y_locked = False
 
-
-
         if self.scroll_x_locked:
             bar = self.__vertical_scroll_bar_rect
             bottom_bound = -self.content_height + 0.95
             val = utils.inv_lerp(bar.top, bar.bottom, mp.y)
             self.scroll_y_value = utils.lerp(0, bottom_bound, val)
-            if self.scroll_y_value > 0 :
+            if self.scroll_y_value > 0:
                 self.scroll_y_value = 0
-            if self.scroll_y_value < bottom_bound :
+            if self.scroll_y_value < bottom_bound:
                 self.scroll_y_value = bottom_bound
 
         if self.scroll_y_locked:
@@ -279,24 +272,18 @@ class FolderView:
             val = utils.inv_lerp(bar.left, bar.right, mp.x)
             self.scroll_x_value = -utils.lerp(0, right_bound, val)
 
-
-
-            if self.scroll_x_value > 0 :
+            if self.scroll_x_value > 0:
                 self.scroll_x_value = 0
 
             right_bound = -self.content_width + (self.box.rect.h / ar.y)
-            if self.scroll_x_value < right_bound :
+            if self.scroll_x_value < right_bound:
                 self.scroll_x_value = right_bound
 
-
-
-
-        if self.content_width < 1/ar.y:
+        if self.content_width < 1 / ar.y:
             self.scroll_x_value = 0
 
         if self.content_height < 1:
             self.scroll_y_value = 0
-
 
     def check_events(self):
         self.check_scroll()
