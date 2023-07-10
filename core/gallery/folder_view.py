@@ -45,6 +45,10 @@ class FolderView:
         self.selected_item: Optional[tuple[RelRect,dict]] = None
         self.disk_cursor = DiskCursor()
 
+        self.pictures_color = colors.FOREST_GREEN
+        self.videos_color = colors.NAVY
+        self.folders_color = colors.WHITE.lerp(colors.BLACK,0.1)
+
         self.sync_texts()
 
     @property
@@ -159,13 +163,14 @@ class FolderView:
             if extension not in constants.SUPPORTED_FILE_FORMATS:
                 return False
             elif extension in constants.SUPPORTED_PICTURE_FORMATS:
-                color = colors.BLUE
+                color = self.pictures_color
             elif extension in constants.SUPPORTED_VIDEO_FORMATS:
-                color = colors.GREEN
+                color = self.videos_color
             else:
-                color = colors.HOT_PINK
+                raise TypeError(f"Weird extension type error: {extension}")
+
         else:
-            color = colors.WHITE
+            color = self.folders_color
 
 
 
