@@ -48,6 +48,7 @@ class FolderView:
         self.pictures_color = colors.FOREST_GREEN
         self.videos_color = colors.NAVY
         self.folders_color = colors.WHITE.lerp(colors.BLACK,0.1)
+        self.error_color = colors.RED.lerp(colors.BLUE,0.25)
 
         self.sync_texts()
 
@@ -171,6 +172,9 @@ class FolderView:
 
         else:
             color = self.folders_color
+
+        if file_item['error']:
+            color = self.error_color
 
 
 

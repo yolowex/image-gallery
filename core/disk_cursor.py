@@ -20,7 +20,9 @@ class DiskCursor:
 
     def add_item_at(self, path: str, dict_: dict, parent_address=None):
         if not os.path.exists(path):
-            raise FileNotFoundError(f"Could not find {path}")
+            # raise FileNotFoundError(f"Could not find {path}")
+            cr.log.write_log(f"Could not find {path}",LogLevel.ERROR)
+            return
 
         is_dir = os.path.isdir(path)
         is_file = os.path.isfile(path)
@@ -52,6 +54,7 @@ class DiskCursor:
             "extension": extension,
             "file_type": file_type,
             "meta": meta,
+            "error":False
         }
 
         if is_dir:
@@ -75,10 +78,19 @@ class DiskCursor:
 
     def expand_folder(self, item: dict):
         item['is_loaded'] = True
-        sub_items = utils.listdir(item["path"],include_hidden_files=False)
 
-        for sub_item in sub_items:
-            self.add_item_at(sub_item,item,item['address'])
+        try:
+            sub_items = utils.listdir(item["path"],include_hidden_files=False)
+            sub_items.sort(key=lambda x: x.split("/")[-1].lower())
+        except OSError as e:
+            cr.log.write_log(f"Could not list all sub items of {item['path']} due to"
+                        f"this error: {e}",LogLevel.ERROR)
+
+            item['error'] = f"Error: {e}"
+            return
+
+        for sub_item in sub_items :
+            self.add_item_at(sub_item, item, item['address'])
 
 
 
