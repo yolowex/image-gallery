@@ -58,3 +58,12 @@ class FileType(Enum):
     FILE_PIC = 2
     FILE_GIF = 3
     FILE_MOV = 4
+
+
+class SelectedInfoView(Enum):
+    FOLDERS = 0
+    INFO = 1
+    EDIT = 2
+
+
+SelectedInfoView_All = [SelectedInfoView.FOLDERS,SelectedInfoView.INFO,SelectedInfoView.EDIT]
