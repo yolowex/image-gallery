@@ -156,9 +156,13 @@ class DetailedView:
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
-        self.folder_view.check_events()
+
+
         self.image_ui_layer.check_events()
         self.info_view.check_events()
+        if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
+            self.folder_view.check_events()
+
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
             self.zoom_view.reset()
 
@@ -193,7 +197,10 @@ class DetailedView:
         self.image_ui_layer.render()
         self.thumbnail_view.render()
         self.info_view.render()
-        self.folder_view.render()
+
+        if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
+            self.folder_view.render()
+
         if cr.event_holder.should_render_debug:
             self.render_debug()
 
