@@ -28,7 +28,9 @@ class DiskCursor:
         is_file = os.path.isfile(path)
 
         if not is_dir and not is_file:
-            raise OSError(f"Weird item type: {path}")
+            # raise OSError(f"Weird item type: {path}")
+            cr.log.write_log(f"Weird item type: {path}",LogLevel.ERROR)
+
 
         le = len(dict_.keys())
         name = path.split("/")[-1]

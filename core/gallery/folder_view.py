@@ -47,8 +47,11 @@ class FolderView:
 
         self.pictures_color = colors.FOREST_GREEN
         self.videos_color = colors.NAVY
-        self.folders_color = colors.WHITE.lerp(colors.BLACK,0.1)
+        self.unloaded_folders_color = colors.WHITE.lerp(colors.BLACK,0.2)
+        self.loaded_folders_color = colors.WHITE.lerp(colors.BLACK,0.0)
+
         self.error_color = colors.RED.lerp(colors.BLUE,0.25)
+        self.selection_box_color = colors.OLIVE
 
         self.sync_texts()
 
@@ -171,7 +174,10 @@ class FolderView:
                 raise TypeError(f"Weird extension type error: {extension}")
 
         else:
-            color = self.folders_color
+            if file_item['is_loaded']:
+                color = self.loaded_folders_color
+            else:
+                color = self.unloaded_folders_color
 
         if file_item['error']:
             color = self.error_color
@@ -391,7 +397,7 @@ class FolderView:
         if self.selected_item is not None:
             box, item = self.selected_item
             rect = box.get()
-            cr.renderer.draw_color = constants.colors.NEON
+            cr.renderer.draw_color = self.selection_box_color
             if pa.colliderect(rect):
                 cut = utils.cut_rect_in(pa,rect)
                 cr.renderer.draw_rect(cut[0])

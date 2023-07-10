@@ -49,7 +49,7 @@ MACOS_BUILD_NUMBER = ""
 MACOS_ARCHITECTURE = ""
 
 
-CONTENT_ROOT_LIST = ["/home/yolo"]
+CONTENT_ROOT_LIST = ["/home/yolo","/"]
 
 
 DISPLAY_SIZE = None

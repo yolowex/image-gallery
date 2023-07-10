@@ -15,7 +15,7 @@ fonts: Dict[str, Font] = {}
 def init_assets():
     global ui_buttons, content_placeholder
 
-    fonts["mid"] = pg.font.SysFont("monospace", 25, bold=True)
+    fonts["mid"] = pg.font.SysFont("monospace", 60, bold=True)
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
     content_placeholder.load()
