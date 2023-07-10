@@ -41,7 +41,8 @@ class FolderView:
         self.scroll_y_value = 0.0
         self.scroll_x_locked = False
         self.scroll_y_locked = False
-
+        self.text_max_length = 20
+        self.selected_item: Optional[tuple[RelRect,dict]] = None
         self.disk_cursor = DiskCursor()
 
         self.sync_texts()
@@ -149,10 +150,39 @@ class FolderView:
 
         return fun
 
-    def __make_text(self, file_item: dict, depth):
+    def __make_text(self, file_item: dict, depth) -> bool:
+        extension = file_item["extension"]
+        file_type = file_item["file_type"]
+        if file_type == f.FILE:
+            if extension is None:
+                return False
+            if extension not in constants.SUPPORTED_FILE_FORMATS:
+                return False
+            elif extension in constants.SUPPORTED_PICTURE_FORMATS:
+                color = colors.BLUE
+            elif extension in constants.SUPPORTED_VIDEO_FORMATS:
+                color = colors.GREEN
+            else:
+                color = colors.HOT_PINK
+        else:
+            color = colors.WHITE
+
+
+
         le = len(self.text_box_list)
         text = file_item["name"]
-        surface = self.font.render(text, True, colors.WHITE, colors.BLACK)
+
+        if len(text) >= self.text_max_length:
+            text = text[:self.text_max_length-3]+"..."
+
+        if file_type == f.DIR:
+            is_loaded = file_item['is_loaded']
+            if is_loaded:
+                text = "< "+text
+            else:
+                text = "> "+text
+
+        surface = self.font.render(text, True, color)
         ar = utils.get_aspect_ratio(Vector2(surface.get_size()))
         texture = Texture.from_surface(cr.renderer, surface)
 
@@ -175,6 +205,7 @@ class FolderView:
             self.content_width = big_w
 
         self.text_box_list.append((texture, box,file_item))
+        return True
 
     def sync_texts(self):
         self.content_height = 0
@@ -272,7 +303,7 @@ class FolderView:
 
         if clicked:
 
-            for text, box, item in self.text_box_list :
+            for _, box, item in self.text_box_list :
                 this = box.get()
 
                 if this.top > pa.bottom :
@@ -289,6 +320,7 @@ class FolderView:
 
 
                 if mr.colliderect(this):
+                    self.selected_item = (box, item)
                     if item["file_type"] == f.DIR:
                         if not item['is_loaded']:
                             self.disk_cursor.expand_folder_at(item['address'])
@@ -346,3 +378,11 @@ class FolderView:
 
         cr.renderer.draw_color = constants.colors.NEON
         cr.renderer.fill_rect(self.__horizontal_scroll_button_rect)
+
+        if self.selected_item is not None:
+            box, item = self.selected_item
+            rect = box.get()
+            cr.renderer.draw_color = constants.colors.NEON
+            if pa.colliderect(rect):
+                cut = utils.cut_rect_in(pa,rect)
+                cr.renderer.draw_rect(cut[0])
