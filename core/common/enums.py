@@ -66,4 +66,8 @@ class SelectedInfoView(Enum):
     EDIT = 2
 
 
-SelectedInfoView_All = [SelectedInfoView.FOLDERS,SelectedInfoView.INFO,SelectedInfoView.EDIT]
+SelectedInfoView_All = [
+    SelectedInfoView.FOLDERS,
+    SelectedInfoView.INFO,
+    SelectedInfoView.EDIT,
+]

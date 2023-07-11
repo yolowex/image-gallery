@@ -28,10 +28,8 @@ class Entry:
         cr.mouse = Mouse()
         cr.event_holder = EventHolder()
 
-
         icon = pg.image.load("./assets/icon.png")
         cr.window.set_icon(icon)
-
 
         current_platform = platform.system()
 

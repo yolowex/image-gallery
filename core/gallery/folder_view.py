@@ -13,6 +13,7 @@ from core.common import utils, assets
 
 f = FileType
 
+
 def iterate_on_flattened(dict_, function, depth=0):
     if "name" in dict_.keys():
         function(dict_, depth)
@@ -30,7 +31,7 @@ class FolderView:
         self.content_manager = content_manager
         self.font = assets.fonts["mid"]
 
-        self.text_box_list: list[tuple[Texture, RelRect,dict]] = []
+        self.text_box_list: list[tuple[Texture, RelRect, dict]] = []
 
         self.item_height = 0.035
         self.items_height_margin = 0.005
@@ -42,15 +43,15 @@ class FolderView:
         self.scroll_x_locked = False
         self.scroll_y_locked = False
         self.text_max_length = 20
-        self.selected_item: Optional[tuple[RelRect,dict]] = None
+        self.selected_item: Optional[tuple[RelRect, dict]] = None
         self.disk_cursor = DiskCursor()
 
         self.pictures_color = colors.FOREST_GREEN
         self.videos_color = colors.NAVY
-        self.unloaded_folders_color = colors.WHITE.lerp(colors.BLACK,0.2)
-        self.loaded_folders_color = colors.WHITE.lerp(colors.BLACK,0.0)
+        self.unloaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.2)
+        self.loaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.0)
 
-        self.error_color = colors.RED.lerp(colors.BLUE,0.25)
+        self.error_color = colors.RED.lerp(colors.BLUE, 0.25)
         self.selection_box_color = colors.OLIVE
 
         self.sync_texts()
@@ -174,28 +175,26 @@ class FolderView:
                 raise TypeError(f"Weird extension type error: {extension}")
 
         else:
-            if file_item['is_loaded']:
+            if file_item["is_loaded"]:
                 color = self.loaded_folders_color
             else:
                 color = self.unloaded_folders_color
 
-        if file_item['error']:
+        if file_item["error"]:
             color = self.error_color
-
-
 
         le = len(self.text_box_list)
         text = file_item["name"]
 
         if len(text) >= self.text_max_length:
-            text = text[:self.text_max_length-3]+"..."
+            text = text[: self.text_max_length - 3] + "..."
 
         if file_type == f.DIR:
-            is_loaded = file_item['is_loaded']
+            is_loaded = file_item["is_loaded"]
             if is_loaded:
-                text = "< "+text
+                text = "< " + text
             else:
-                text = "> "+text
+                text = "> " + text
 
         surface = self.font.render(text, True, color)
         ar = utils.get_aspect_ratio(Vector2(surface.get_size()))
@@ -219,7 +218,7 @@ class FolderView:
         if big_w > self.content_width:
             self.content_width = big_w
 
-        self.text_box_list.append((texture, box,file_item))
+        self.text_box_list.append((texture, box, file_item))
         return True
 
     def sync_texts(self):
@@ -305,7 +304,6 @@ class FolderView:
         if self.content_height < 1:
             self.scroll_y_value = 0
 
-
     def check_click(self):
         pa = self.box.get()
         ar = utils.get_aspect_ratio(self.box.rect.size)
@@ -317,37 +315,33 @@ class FolderView:
         released = cr.event_holder.mouse_released_keys[0]
 
         if clicked:
-
-            for _, box, item in self.text_box_list :
+            for _, box, item in self.text_box_list:
                 this = box.get()
 
-                if this.top > pa.bottom :
+                if this.top > pa.bottom:
                     continue
 
-                if this.bottom < pa.top :
+                if this.bottom < pa.top:
                     continue
 
-                if this.left > pa.right :
+                if this.left > pa.right:
                     continue
 
-                if this.right < pa.left :
+                if this.right < pa.left:
                     continue
-
 
                 if mr.colliderect(this):
                     self.selected_item = (box, item)
                     if item["file_type"] == f.DIR:
-                        if not item['is_loaded']:
-                            self.disk_cursor.expand_folder_at(item['address'])
+                        if not item["is_loaded"]:
+                            self.disk_cursor.expand_folder_at(item["address"])
                             self.sync_texts()
                         else:
-                            self.disk_cursor.collapse_folder_at(item['address'])
+                            self.disk_cursor.collapse_folder_at(item["address"])
                             self.sync_texts()
 
                     elif item["file_type"] == f.FILE:
                         print(f"{item['name']} is a file")
-
-
 
     def check_events(self):
         self.check_click()
@@ -399,5 +393,5 @@ class FolderView:
             rect = box.get()
             cr.renderer.draw_color = self.selection_box_color
             if pa.colliderect(rect):
-                cut = utils.cut_rect_in(pa,rect)
+                cut = utils.cut_rect_in(pa, rect)
                 cr.renderer.draw_rect(cut[0])

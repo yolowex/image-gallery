@@ -7,15 +7,21 @@ import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
 from core.gallery.detailed_view import DetailedView
 from core.gallery.fullscreen_view import FullscreenView
+from gui.hover_man import HoverMan
 
 
 class Gallery:
     def __init__(self):
         self.content_manager = ContentManager(assets.test_assets_path)
+        self.hover_man = HoverMan()
         self.content_manager.init_contents()
 
-        self.detailed_view: DetailedView = DetailedView(self.content_manager)
-        self.fullscreen_view: FullscreenView = FullscreenView(self.content_manager)
+        self.detailed_view: DetailedView = DetailedView(
+            self.content_manager, self.hover_man
+        )
+        self.fullscreen_view: FullscreenView = FullscreenView(
+            self.content_manager, self.hover_man
+        )
         self.__current_view: ViewType = ViewType.DETAILED
 
     def init(self):
@@ -44,6 +50,8 @@ class Gallery:
         elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.check_events()
 
+        self.hover_man.check_events()
+
         self.content_manager.was_updated = False
 
     def render_debug(self):
@@ -58,6 +66,8 @@ class Gallery:
             self.detailed_view.render()
         elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.render()
+
+        self.hover_man.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

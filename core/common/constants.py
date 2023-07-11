@@ -5,17 +5,7 @@ import core.common.resources as cr
 import platform
 
 
-
-
-SUPPORTED_PICTURE_FORMATS = [
-    "png",
-    "jpg",
-    "jpeg",
-    "webp",
-    "tiff",
-    "bmp",
-    "gif"
-]
+SUPPORTED_PICTURE_FORMATS = ["png", "jpg", "jpeg", "webp", "tiff", "bmp", "gif"]
 
 SUPPORTED_VIDEO_FORMATS = [
     "avi",
@@ -49,7 +39,7 @@ MACOS_BUILD_NUMBER = ""
 MACOS_ARCHITECTURE = ""
 
 
-CONTENT_ROOT_LIST = ["/home/yolo","/"]
+CONTENT_ROOT_LIST = ["/home/yolo", "/"]
 
 
 DISPLAY_SIZE = None

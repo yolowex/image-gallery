@@ -104,11 +104,11 @@ class InfoView:
         click = cr.event_holder.mouse_pressed_keys[0]
 
         if click:
-            for c, box,enum in zip(range(len(self.box_list)),self.box_list,SelectedInfoView_All):
-
+            for c, box, enum in zip(
+                range(len(self.box_list)), self.box_list, SelectedInfoView_All
+            ):
                 rect = self.fun(box.rect)
                 if mr.colliderect(rect):
-                    print(enum)
                     self.selected_box_index = enum
                     cr.log.write_log(
                         f"Updated current info_view index to {c}", LogLevel.DEBUG

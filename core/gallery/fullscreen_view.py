@@ -5,6 +5,7 @@ import core.common.constants as constants
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
+from gui.hover_man import HoverMan
 from gui.image_ui_layer import ImageUiLayer
 from gui.zoom_view import ZoomView
 from helper_kit.relative_rect import RelRect
@@ -12,9 +13,10 @@ from core.common.constants import colors
 
 
 class FullscreenView:
-    def __init__(self, content_manager: ContentManager):
+    def __init__(self, content_manager: ContentManager, hover_man: HoverMan):
         self.image_box = RelRect(cr.ws, (0, 0), (1, 1))
         self.content_manager = content_manager
+        self.hover_man = hover_man
 
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.image_ui_layer = ImageUiLayer()

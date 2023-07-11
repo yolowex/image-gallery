@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import pygame as pg
 from pygame import Vector2, FRect
 
 
@@ -192,10 +193,8 @@ def listdir(
                 list_.pop(index)
                 continue
 
-
     if not include_hidden_files:
-        list_ = [i for i in list_ if i.split("/")[-1][0]!="."]
-
+        list_ = [i for i in list_ if i.split("/")[-1][0] != "."]
 
     return list_
 
@@ -281,3 +280,7 @@ def flatten_dictionary(dictionary, parent_key="", separator="."):
                 flattened_dict[new_key] = value
 
     return flattened_dict
+
+
+def now():
+    return pg.time.get_ticks() / 1000
