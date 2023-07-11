@@ -6,7 +6,7 @@ import core.common.resources as cr
 from core.gallery.content import Content
 
 ui_buttons: Dict[str, Texture] = {}
-test_assets_path = os.path.abspath("./assets")
+
 assets_path = os.path.abspath("./assets")
 content_placeholder: Optional[Content] = None
 app_content: Optional[Content] = None

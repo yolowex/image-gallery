@@ -12,7 +12,7 @@ from gui.hover_man import HoverMan
 
 class Gallery:
     def __init__(self):
-        self.content_manager = ContentManager(assets.test_assets_path)
+        self.content_manager = ContentManager("")
         self.hover_man = HoverMan()
         self.content_manager.init_contents()
 

@@ -53,7 +53,7 @@ class ContentManager:
                     file_type=FileType.FILE,
                 )
             ]
-        except OSError and PermissionError as e:
+        except OSError or PermissionError or FileNotFoundError as e:
             cr.log.write_log(
                 f"Insufficient permission to open {self.path}, error: {e}",
                 LogLevel.ERROR,
