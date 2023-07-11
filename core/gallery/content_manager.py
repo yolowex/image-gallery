@@ -53,6 +53,9 @@ class ContentManager:
                     file_type=FileType.FILE,
                 )
             ]
+
+            self.content_list.sort(key=lambda x: x.name)
+
         except OSError or PermissionError or FileNotFoundError as e:
             cr.log.write_log(
                 f"Insufficient permission to open {self.path}, error: {e}",
