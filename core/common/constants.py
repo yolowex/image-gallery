@@ -3,6 +3,7 @@ from core.common.enums import LogLevel
 from core.common.names import *
 import core.common.resources as cr
 import platform
+from pathlib import Path
 
 
 SUPPORTED_PICTURE_FORMATS = ["png", "jpg", "jpeg", "webp", "tiff", "bmp", "gif"]
@@ -69,7 +70,27 @@ def export_platform_constants():
 
     if IS_WINDOWS:
         CONTENT_ROOT_LIST = [  ]
+        command = "wmic logicaldisk get caption"
+        result = subprocess.run(command, capture_output=True, text=True)
 
+
+        user_folders = ["desktop","downloads","pictures","videos"]
+
+        for i in user_folders:
+            
+            path = Path.home() / i
+            if os.path.exists(path):
+                CONTENT_ROOT_LIST.append(path.resolve().as_posix())
+    
+
+        drives = result.stdout.strip().split('\n')[1:]
+        drives = [i for i in drives if i != ""]
+
+        for drive in drives:
+            x = drive.strip()
+            if len(x)>0:
+                if x[0].lower()!="c":
+                    CONTENT_ROOT_LIST.append(x)
 
         version_info = platform.win32_ver()
         WINDOWS_RELEASE_VERSION = version_info[0]
