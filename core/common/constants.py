@@ -107,6 +107,8 @@ def export_platform_constants():
 
 
 class colors:
+    GLASS = Color([0, 0, 0, 0])
+
     # Basic Colors
     WHITE = Color([255, 255, 255])
     BLACK = Color([0, 0, 0])
