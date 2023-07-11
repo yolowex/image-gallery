@@ -50,8 +50,6 @@ class FolderView:
         self.selected_item: Optional[tuple[RelRect, dict]] = None
         self.disk_cursor = DiskCursor()
 
-        self.pictures_color = colors.FOREST_GREEN
-        self.videos_color = colors.NAVY
         self.unloaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.2)
         self.loaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.0)
 
@@ -164,25 +162,12 @@ class FolderView:
         return fun
 
     def __make_text(self, file_item: dict, depth) -> bool:
-        extension = file_item["extension"]
-        file_type = file_item["file_type"]
-        if file_type == f.FILE:
-            if extension is None:
-                return False
-            if extension not in constants.SUPPORTED_FILE_FORMATS:
-                return False
-            elif extension in constants.SUPPORTED_PICTURE_FORMATS:
-                color = self.pictures_color
-            elif extension in constants.SUPPORTED_VIDEO_FORMATS:
-                color = self.videos_color
-            else:
-                raise TypeError(f"Weird extension type error: {extension}")
 
+
+        if file_item["is_loaded"]:
+            color = self.loaded_folders_color
         else:
-            if file_item["is_loaded"]:
-                color = self.loaded_folders_color
-            else:
-                color = self.unloaded_folders_color
+            color = self.unloaded_folders_color
 
         if file_item["error"]:
             color = self.error_color
@@ -193,12 +178,12 @@ class FolderView:
         if len(text) >= self.text_max_length:
             text = text[: self.text_max_length - 3] + "..."
 
-        if file_type == f.DIR:
-            is_loaded = file_item["is_loaded"]
-            if is_loaded:
-                text = "< " + text
-            else:
-                text = "> " + text
+
+        is_loaded = file_item["is_loaded"]
+        if is_loaded:
+            text = "< " + text
+        else:
+            text = "> " + text
 
         surface = self.font.render(text, True, color)
         ar = utils.get_aspect_ratio(Vector2(surface.get_size()))
@@ -336,16 +321,15 @@ class FolderView:
 
                 if mr.colliderect(this):
                     self.selected_item = (box, item)
-                    if item["file_type"] == f.DIR:
-                        if not item["is_loaded"]:
-                            self.disk_cursor.expand_folder_at(item["address"])
-                            self.sync_texts()
-                        else:
-                            self.disk_cursor.collapse_folder_at(item["address"])
-                            self.sync_texts()
 
-                    elif item["file_type"] == f.FILE:
-                        print(f"{item['name']} is a file")
+                    if not item["is_loaded"]:
+                        self.disk_cursor.expand_folder_at(item["address"])
+                        self.sync_texts()
+                    else:
+                        self.disk_cursor.collapse_folder_at(item["address"])
+                        self.sync_texts()
+
+
 
     def check_hover(self):
         pa = self.box.get()
