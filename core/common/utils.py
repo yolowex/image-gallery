@@ -5,7 +5,7 @@ import pygame as pg
 from pygame import Vector2, FRect
 
 
-from core.common.enums import AspectRatioGroup
+from core.common.enums import AspectRatioGroup, FileType
 
 
 # this function is supposed to be used for log files, this is probably a bad name.
@@ -175,8 +175,15 @@ def listdir(
     target_formats: list[str] = None,
     include_no_format=False,
     include_hidden_files=True,
+    file_type: FileType=FileType.ALL
 ):
     list_ = [path + "/" + i for i in os.listdir(path)]
+
+    if file_type == FileType.FILE:
+        list_ = [i for i in list_ if os.path.isfile(i)]
+
+    if file_type == FileType.DIR:
+        list_ = [i for i in list_ if os.path.isdir(i)]
 
     if target_formats is not None:
         for index, i in list(enumerate(list_))[::-1]:

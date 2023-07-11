@@ -32,7 +32,8 @@ class ContentManager:
         cr.log.write_log("Initializing the contents...", LogLevel.DEBUG)
         self.content_list = [
             Content(path=i)
-            for i in utils.listdir(self.path, constants.SUPPORTED_FILE_FORMATS, False)
+            for i in utils.listdir(self.path, constants.SUPPORTED_FILE_FORMATS, False
+                ,file_type=FileType.FILE)
         ]
 
         self.current_content_index = 0
@@ -108,6 +109,9 @@ class ContentManager:
     @property
     def current_content(self) -> Content:
         if self.current_content_index is not None:
+            if not len(self.content_list):
+                return assets.app_content
+
             target = self.content_list[self.current_content_index]
             if target.is_loaded:
                 return target

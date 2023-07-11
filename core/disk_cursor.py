@@ -26,6 +26,9 @@ class DiskCursor:
         is_dir = os.path.isdir(path)
         is_file = os.path.isfile(path)
 
+        if is_file:
+            raise ValueError("Only directories can be added to FolderView!")
+
         if not is_dir and not is_file:
             # raise OSError(f"Weird item type: {path}")
             cr.log.write_log(f"Weird item type: {path}", LogLevel.ERROR)
@@ -39,9 +42,7 @@ class DiskCursor:
         if len(var) > 1:
             extension = var[-1]
 
-        file_type = f.FILE
-        if is_dir:
-            file_type = f.DIR
+        file_type = f.DIR
 
         address = str(le)
         if parent_address is not None:
@@ -55,10 +56,8 @@ class DiskCursor:
             "file_type": file_type,
             "meta": meta,
             "error": False,
+            "is_loaded" : False
         }
-
-        if is_dir:
-            item["is_loaded"] = False
 
         dict_[le] = item
 
@@ -80,7 +79,7 @@ class DiskCursor:
         item["is_loaded"] = True
 
         try:
-            sub_items = utils.listdir(item["path"], include_hidden_files=False)
+            sub_items = utils.listdir(item["path"], include_hidden_files=False,file_type=f.DIR)
             sub_items.sort(key=lambda x: x.split("/")[-1].lower())
         except OSError as e:
             cr.log.write_log(
@@ -111,8 +110,6 @@ class DiskCursor:
 
         for key in self.contents_dict:
             item = self.contents_dict[key]
-
-            if item["file_type"] == f.DIR:
-                self.expand_folder(item)
+            self.expand_folder(item)
 
         cr.log.write_log("Successfully initialized all content roots", LogLevel.DEBUG)

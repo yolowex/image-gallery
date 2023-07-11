@@ -6,20 +6,25 @@ import core.common.resources as cr
 from core.gallery.content import Content
 
 ui_buttons: Dict[str, Texture] = {}
-test_assets_path = os.path.abspath("./test_assets")
+test_assets_path = os.path.abspath("./assets")
 assets_path = os.path.abspath("./assets")
 content_placeholder: Optional[Content] = None
+app_content: Optional[Content] = None
+
 fonts: Dict[str, Font] = {}
 
 
 def init_assets():
-    global ui_buttons, content_placeholder
+    global ui_buttons, content_placeholder,app_content
 
     fonts["small"] = pg.font.SysFont("monospace", 20, bold=True)
     fonts["mid"] = pg.font.SysFont("monospace", 60, bold=True)
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
     content_placeholder.load()
+
+    app_content = Content(path=assets_path + "/icon.png")
+    app_content.load()
     # unsafe
 
     cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)

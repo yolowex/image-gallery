@@ -222,7 +222,7 @@ class ZoomView:
 
     def render(self):
         # dst_rect = self.container_box.cut_rect_in(self.inner_image_rect)
-        # todo: cut the picture in case it is bigger than the box size
+        # canceled: cut the picture in case it is bigger than the box size
 
         self.content.render(self.get_picture_rect())
 

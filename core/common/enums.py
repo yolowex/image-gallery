@@ -53,6 +53,7 @@ class FileType(Enum):
     it's job is to distinguish the different file and directory types here.
     """
 
+    ALL = -1
     DIR = 0
     FILE = 1
     FILE_PIC = 2
