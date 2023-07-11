@@ -69,27 +69,24 @@ def export_platform_constants():
     cr.log.write_log("Current platform: " + current_platform, LogLevel.INFO)
 
     if IS_WINDOWS:
-        CONTENT_ROOT_LIST = [  ]
+        CONTENT_ROOT_LIST = []
         command = "wmic logicaldisk get caption"
         result = subprocess.run(command, capture_output=True, text=True)
 
-
-        user_folders = ["desktop","downloads","pictures","videos"]
+        user_folders = ["desktop", "downloads", "pictures", "videos"]
 
         for i in user_folders:
-            
             path = Path.home() / i
             if os.path.exists(path):
                 CONTENT_ROOT_LIST.append(path.resolve().as_posix())
-    
 
-        drives = result.stdout.strip().split('\n')[1:]
+        drives = result.stdout.strip().split("\n")[1:]
         drives = [i for i in drives if i != ""]
 
         for drive in drives:
             x = drive.strip()
-            if len(x)>0:
-                if x[0].lower()!="c":
+            if len(x) > 0:
+                if x[0].lower() != "c":
                     CONTENT_ROOT_LIST.append(x)
 
         version_info = platform.win32_ver()
@@ -103,7 +100,21 @@ def export_platform_constants():
         cr.log.write_log("Build Number:" + WINDOWS_BUILD_NUMBER, LogLevel.INFO)
 
     elif IS_LINUX:
-        CONTENT_ROOT_LIST = [ "/home/yolo" ]
+
+        user_folders = ["Desktop", "Downloads", "Pictures", "Videos"]
+
+        CONTENT_ROOT_LIST = [
+        ]
+
+        home = os.path.expanduser("~")
+        for i in user_folders:
+            path = pathlib.Path(home + "/" + i).resolve().as_posix().__str__()
+            if os.path.exists(path):
+                CONTENT_ROOT_LIST.append(path)
+
+        CONTENT_ROOT_LIST.append(home)
+
+
         LINUX_DISTRIBUTION = (
             subprocess.check_output(["lsb_release", "-d"])
             .decode("utf-8")
