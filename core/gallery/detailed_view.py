@@ -65,6 +65,7 @@ class DetailedView:
 
     def init(self):
         self.image_ui_layer.init()
+        self.folder_view.init()
 
     def resize_boxes(self):
         X, Y = cr.ws()

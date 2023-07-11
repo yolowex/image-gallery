@@ -28,6 +28,7 @@ class Gallery:
         self.detailed_view.init()
         self.fullscreen_view.init()
 
+
     def get_current_view(self):
         return self.__current_view
 

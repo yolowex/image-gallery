@@ -62,6 +62,9 @@ class FolderView:
         self.error_color = colors.RED.lerp(colors.BLUE, 0.25)
         self.selection_box_color = colors.OLIVE
 
+
+    def init(self):
+        self.disk_cursor.init()
         self.sync_texts()
 
     @property

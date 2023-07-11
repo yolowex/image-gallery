@@ -39,7 +39,7 @@ MACOS_BUILD_NUMBER = ""
 MACOS_ARCHITECTURE = ""
 
 
-CONTENT_ROOT_LIST = ["/home/yolo", "/"]
+CONTENT_ROOT_LIST = []
 
 
 DISPLAY_SIZE = None
@@ -52,6 +52,7 @@ def export_platform_constants():
     global IS_MAC, MACOS_VERSION, MACOS_BUILD_NUMBER, MACOS_ARCHITECTURE
     global LOCAL_APPS_DATA
     global DISPLAY_SIZE, DISPLAY_ASPECT_RATIO
+    global CONTENT_ROOT_LIST
 
     inf = pg.display.Info()
     DISPLAY_SIZE = Vector2(inf.current_w, inf.current_h)
@@ -67,6 +68,9 @@ def export_platform_constants():
     cr.log.write_log("Current platform: " + current_platform, LogLevel.INFO)
 
     if IS_WINDOWS:
+        CONTENT_ROOT_LIST = [  ]
+
+
         version_info = platform.win32_ver()
         WINDOWS_RELEASE_VERSION = version_info[0]
         WINDOWS_SERVICE_PACK = version_info[1]
@@ -78,6 +82,7 @@ def export_platform_constants():
         cr.log.write_log("Build Number:" + WINDOWS_BUILD_NUMBER, LogLevel.INFO)
 
     elif IS_LINUX:
+        CONTENT_ROOT_LIST = [ "/home/yolo" ]
         LINUX_DISTRIBUTION = (
             subprocess.check_output(["lsb_release", "-d"])
             .decode("utf-8")
