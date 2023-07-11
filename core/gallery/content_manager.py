@@ -107,7 +107,7 @@ class ContentManager:
         c = 0
         for i in self.content_list[start:end]:
             self.content_stack_add(start + c)
-            if not i.is_loaded:
+            if not i.is_loaded and not i.failed_to_load:
                 i.load()
 
             c += 1

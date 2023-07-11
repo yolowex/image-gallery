@@ -20,7 +20,7 @@ class Content:
 
         self.is_loaded: bool = False
         self.box: RelRect = box
-
+        self.failed_to_load = False
         self.process_type()
 
     def process_type(self):
@@ -54,8 +54,13 @@ class Content:
 
     def load(self):
         if self.source_type == ContentSourceType.PYGAME:
-            self.surface = pg.image.load(self.path)
-            self.texture = Texture.from_surface(cr.renderer, self.surface)
+            try:
+                self.surface = pg.image.load(self.path)
+                self.texture = Texture.from_surface(cr.renderer, self.surface)
+            except pg.error as e:
+                cr.log.write_log(f"Could not load {self.path} due to this error: {e}",LogLevel.ERROR)
+                self.failed_to_load = True
+                return
 
             # we destroy the surface because it is not needed anymore + it takes a lot of space
             self.surface = None
@@ -78,6 +83,7 @@ class Content:
         ...
 
     def render(self, dst_rect: FRect = None, src_rect: FRect = None):
+        
         if not self.is_loaded:
             cr.log.write_log("Content is not loaded, cannot render!", LogLevel.WARNING)
             return
