@@ -56,7 +56,7 @@ class DiskCursor:
             "file_type": file_type,
             "meta": meta,
             "error": False,
-            "is_loaded" : False
+            "is_loaded": False,
         }
 
         dict_[le] = item
@@ -79,7 +79,9 @@ class DiskCursor:
         item["is_loaded"] = True
 
         try:
-            sub_items = utils.listdir(item["path"], include_hidden_files=False,file_type=f.DIR)
+            sub_items = utils.listdir(
+                item["path"], include_hidden_files=False, file_type=f.DIR
+            )
             sub_items.sort(key=lambda x: x.split("/")[-1].lower())
         except OSError as e:
             cr.log.write_log(

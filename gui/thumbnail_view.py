@@ -24,6 +24,15 @@ class ThumbnailView:
         self.update(first_call=True)
         self.dont_reset_cursor = False
 
+    def reinit(self):
+        self.boxes.clear()
+        self.scroll_value = 0
+        self.size = len(self.content_manager.content_list)
+        self.scroll_locked = False
+
+        self.update(first_call=True)
+        self.dont_reset_cursor = False
+
     @property
     def __scroll_bar_rect(self):
         pa = self.box.get()

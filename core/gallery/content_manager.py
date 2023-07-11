@@ -28,13 +28,36 @@ class ContentManager:
         # this is set to true if the current_content_index is updated (whenever goto is used)
         self.was_updated = False
 
+    def reinit(self, path: str = None):
+        self.path: Optional[str] = path
+
+        self.loaded_content_stack.clear()
+
+        self.content_list.clear()
+        self.current_content_index: Optional[int] = None
+        self.content_load_wing = 10
+
+        self.was_updated = False
+        self.init_contents()
+
     def init_contents(self):
         cr.log.write_log("Initializing the contents...", LogLevel.DEBUG)
-        self.content_list = [
-            Content(path=i)
-            for i in utils.listdir(self.path, constants.SUPPORTED_FILE_FORMATS, False
-                ,file_type=FileType.FILE)
-        ]
+
+        try:
+            self.content_list = [
+                Content(path=i)
+                for i in utils.listdir(
+                    self.path,
+                    constants.SUPPORTED_FILE_FORMATS,
+                    False,
+                    file_type=FileType.FILE,
+                )
+            ]
+        except OSError and PermissionError as e:
+            cr.log.write_log(
+                f"Insufficient permission to open {self.path}, error: {e}",
+                LogLevel.ERROR,
+            )
 
         self.current_content_index = 0
         self.load_contents()

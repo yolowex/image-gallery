@@ -175,7 +175,7 @@ def listdir(
     target_formats: list[str] = None,
     include_no_format=False,
     include_hidden_files=True,
-    file_type: FileType=FileType.ALL
+    file_type: FileType = FileType.ALL,
 ):
     list_ = [path + "/" + i for i in os.listdir(path)]
 

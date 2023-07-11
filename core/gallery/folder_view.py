@@ -8,6 +8,7 @@ from core.disk_cursor import DiskCursor
 from core.gallery.content import Content
 from core.gallery.content_manager import ContentManager
 from gui.hover_man import HoverMan
+from gui.thumbnail_view import ThumbnailView
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
@@ -28,11 +29,16 @@ def iterate_on_flattened(dict_, function, depth=0):
 
 class FolderView:
     def __init__(
-        self, box: RelRect, content_manager: ContentManager, hover_man: HoverMan
+        self,
+        box: RelRect,
+        content_manager: ContentManager,
+        hover_man: HoverMan,
+        thumbnail_view: ThumbnailView,
     ):
         self.box = box
         self.content_manager = content_manager
         self.hover_man = hover_man
+        self.thumbnail_view = thumbnail_view
         self.font = assets.fonts["mid"]
 
         self.text_box_list: list[tuple[Texture, RelRect, dict]] = []
@@ -162,8 +168,6 @@ class FolderView:
         return fun
 
     def __make_text(self, file_item: dict, depth) -> bool:
-
-
         if file_item["is_loaded"]:
             color = self.loaded_folders_color
         else:
@@ -177,7 +181,6 @@ class FolderView:
 
         if len(text) >= self.text_max_length:
             text = text[: self.text_max_length - 3] + "..."
-
 
         is_loaded = file_item["is_loaded"]
         if is_loaded:
@@ -322,14 +325,15 @@ class FolderView:
                 if mr.colliderect(this):
                     self.selected_item = (box, item)
 
+                    self.content_manager.reinit(item["path"])
+                    self.thumbnail_view.reinit()
+
                     if not item["is_loaded"]:
                         self.disk_cursor.expand_folder_at(item["address"])
                         self.sync_texts()
                     else:
                         self.disk_cursor.collapse_folder_at(item["address"])
                         self.sync_texts()
-
-
 
     def check_hover(self):
         pa = self.box.get()
