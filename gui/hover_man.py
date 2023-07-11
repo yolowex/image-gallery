@@ -35,6 +35,9 @@ class HoverMan:
 
     @property
     def rect(self):
+        if self.texture is None:
+            return FRect(0,0,0,0)
+
         size = self.texture.get_rect().size
         rect = FRect(self.top_left, size)
         return rect
