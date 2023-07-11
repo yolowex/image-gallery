@@ -56,7 +56,9 @@ class DetailedView:
         self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
-        self.folder_view = FolderView(self.left_box, self.content_manager)
+        self.folder_view = FolderView(
+            self.left_box, self.content_manager, self.hover_man
+        )
 
         self.just_resized_boxes = False
         self.resize_boxes()

@@ -31,7 +31,7 @@ class HoverMan:
         # padding values are a percentage of the window's size dimensions
         self.padding_x = 0.025
         self.padding_y = 0.025
-        self.top_left = Vector2(0,0)
+        self.top_left = Vector2(0, 0)
 
     @property
     def rect(self):
@@ -57,9 +57,13 @@ class HoverMan:
 
         return text
 
-    def init_text(self, p_text: str = None):
-        if p_text is not None:
-            self.text = p_text
+    def update_text(self, text):
+        if not self.should_render:
+            self.text = text
+
+    def init_text(self):
+        if self.text is None:
+            return
 
         ws = cr.ws()
         self.top_left = cr.event_holder.mouse_pos.copy()
@@ -82,16 +86,17 @@ class HoverMan:
 
     def update_should_render(self):
         mr = cr.event_holder.mouse_rect
-        if self.should_render:
-            self.should_render = mr.colliderect(self.rect)
+        mw = cr.event_holder.mouse_wheel
+        mc = cr.event_holder.mouse_pressed_keys
 
+        if self.should_render:
+            self.should_render = mr.colliderect(self.rect) and not (mw != 0 or any(mc))
+            if not self.should_render:
+                self.mouse_move_timer = utils.now()
         else:
             self.should_render = (
-                    utils.now() > self.mouse_move_timer + self.mouse_move_trigger_time)
-
-
-
-
+                utils.now() > self.mouse_move_timer + self.mouse_move_trigger_time
+            )
 
     def check_events(self):
         self.last_should_render = self.should_render
@@ -105,10 +110,11 @@ class HoverMan:
                 self.init_text()
 
     def render(self):
-        if self.should_render:
+        if self.text is None:
+            return
 
+        if self.should_render:
             self.texture.draw(None, self.rect)
 
             cr.renderer.draw_color = self.border_color
             cr.renderer.draw_rect(self.rect)
-

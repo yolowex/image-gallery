@@ -7,6 +7,7 @@ import core.common.resources as cr
 from core.disk_cursor import DiskCursor
 from core.gallery.content import Content
 from core.gallery.content_manager import ContentManager
+from gui.hover_man import HoverMan
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
@@ -26,9 +27,12 @@ def iterate_on_flattened(dict_, function, depth=0):
 
 
 class FolderView:
-    def __init__(self, box: RelRect, content_manager: ContentManager):
+    def __init__(
+        self, box: RelRect, content_manager: ContentManager, hover_man: HoverMan
+    ):
         self.box = box
         self.content_manager = content_manager
+        self.hover_man = hover_man
         self.font = assets.fonts["mid"]
 
         self.text_box_list: list[tuple[Texture, RelRect, dict]] = []
@@ -343,7 +347,37 @@ class FolderView:
                     elif item["file_type"] == f.FILE:
                         print(f"{item['name']} is a file")
 
+    def check_hover(self):
+        pa = self.box.get()
+        ar = utils.get_aspect_ratio(self.box.rect.size)
+        mw = cr.event_holder.mouse_wheel
+        mr = cr.event_holder.mouse_rect
+        mp = Vector2(mr.center)
+        mod = pgl.K_LCTRL in cr.event_holder.held_keys
+        clicked = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
+
+        if not cr.event_holder.mouse_moved:
+            for _, box, item in self.text_box_list:
+                this = box.get()
+
+                if this.top > pa.bottom:
+                    continue
+
+                if this.bottom < pa.top:
+                    continue
+
+                if this.left > pa.right:
+                    continue
+
+                if this.right < pa.left:
+                    continue
+
+                if mr.colliderect(this):
+                    self.hover_man.update_text(item["name"])
+
     def check_events(self):
+        self.check_hover()
         self.check_click()
         self.check_scroll()
 
