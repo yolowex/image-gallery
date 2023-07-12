@@ -1,24 +1,69 @@
-from core.common.names import *
+# standard
+import os
+import sys
+import time
+import random
+import subprocess
+import traceback
+import json
+import datetime
+import pathlib
+import platform
+
+from typing import Optional, List, Dict, Union
+
+# third party
+import pygame as pg
+import pygame.locals as pgl
+from pygame import Color, Font, FRect, Vector2, Surface
+
+from pygame._sdl2 import Renderer, Texture, Window  # noqa
+
+from PIL import Image
+
 
 import cv2
 import numpy
 from moviepy.editor import VideoFileClip
 import threading
-import tempfile
 # Get the video file
-video_path = '/home/yolo/Videos/backup2/quleditor.mp4'
-video_path = '/home/yolo/Series/oshi-no-ko/Oshi no Ko - 03.[SS][1080][AioFilm.com].mkv'
+
+ffmpeg_path = os.path.abspath('../ffmpeg/bin/ffmpeg.exe')
+video_path = os.path.abspath('../test_assets/movie.mkv')
 opencv_video = cv2.VideoCapture(video_path)
+
+tempdir = "./tmp"
+# if platform.system() == "Windows":
+#     tempdir = os.environ.get("LOCALAPPDATA") + "/Foto Folio"
+
+
 
 moviepy_video = VideoFileClip(video_path)
 moviepy_audio = moviepy_video.audio
 
 temp_audio_file = None
 done_loading = False
+
+def write_audiofile(in_video_path,out_audio_path,ffmpeg_path) -> bool:
+
+    command = f"\"{ffmpeg_path}\" -y -i \"{in_video_path}\" -vn " \
+                            f"-acodec libmp3lame -qscale:a 2 \"{out_audio_path}\""
+    reuslt = True
+    try:
+        subprocess.check_call(command, shell=True)
+        print("Command executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Command failed with return code {e.returncode}.")
+        reuslt = False
+
+    return reuslt
+
 def make_temp_sound_file():
     global temp_audio_file,done_loading
-    temp_audio_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=True)
-    moviepy_audio.write_audiofile(temp_audio_file.name,fps=22050)
+    temp_audio_file = "./tmp/test.mp3"
+    if not write_audiofile(video_path,temp_audio_file,ffmpeg_path):
+        raise OSError("Could not make the temp file")
+    # moviepy_audio.write_audiofile(temp_audio_file.name,fps=22050)
     done_loading = True
 
 
@@ -47,23 +92,13 @@ opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
 total_time = opencv_video.get(cv2.CAP_PROP_FRAME_COUNT) / fps
 audio_codec = int(opencv_video.get(cv2.CAP_PROP_FOURCC))
 
-# init the mixer
-# pg.mixer.init(audio_codec)
-# load the audio from the video and play
-
-pg.mixer.music.load(video_path)
-pg.mixer.music.play()
-# pg.mixer.init()
-# s = pg.mixer.Sound(video_path)
-# print(s,s.get_length())
-# s.play()
 
 is_playing = False
 the_audio = None
 while run:
 
     if done_loading and not is_playing:
-        pg.mixer.music.load(temp_audio_file.name)
+        pg.mixer.music.load(temp_audio_file)
         pg.mixer.music.play()
 
         is_playing = True
@@ -77,9 +112,8 @@ while run:
 
         if i.type == pgl.KEYDOWN:
             if i.key == pgl.K_RETURN:
-                # print(opencv_video.get(cv2.CAP_PROP_POS_MSEC) / 1000,pg.mixer.music.get_pos())
                 current_vid = opencv_video.get(cv2.CAP_PROP_POS_MSEC) / 1000
-                # print(pg.mixer.music.get_pos(),(current_vid + 5))
+
                 pg.mixer.music.rewind()
                 pg.mixer.music.set_pos(7)
 
@@ -117,7 +151,6 @@ while run:
     if done_loading:
         ret, frame = opencv_video.read()
 
-        # Convert it to pygame surface
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame = numpy.rot90(frame)
         surface = pg.surfarray.make_surface(frame)
@@ -125,8 +158,7 @@ while run:
 
         size = ws()
         rect = FRect(0,0,size.x,size.y)
-        # renderer.draw_color = Color("black")
-        # renderer.clear()
+
         texture.draw(None,rect,flip_x=True)
 
 
@@ -137,5 +169,3 @@ while run:
 
 
 thread1.join()
-# result = os.remove(temp_audio_file.name)
-# print(result)
