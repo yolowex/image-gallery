@@ -327,8 +327,6 @@ def extract_frames_from_gif(gif_path):
             dur = gif.info["duration"] / 1000
             if dur == 0:
                 dur = 1 / 25
-            elif dur < 1 / 60:
-                dur = 1 / 60
 
             durations.append(dur)
             gif.seek(gif.tell() + 1)
