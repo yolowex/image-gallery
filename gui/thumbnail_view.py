@@ -90,6 +90,20 @@ class ThumbnailView:
             box = RelRect(self.__src_fun, i, 0, 1, 1, use_param=True)
             self.boxes.append(box)
 
+    def check_gif_updates(self):
+        pa = self.box.get()
+
+        for c, box in enumerate(self.boxes):
+            this = box.get()
+            if this.left < pa.left:
+                continue
+
+            if this.left > pa.right:
+                continue
+
+            content = self.content_manager.get_at(c)
+            content.check_events()
+
     def check_scroll_bar_click(self):
         pa = self.box.get()
         mr = cr.event_holder.mouse_rect
@@ -168,6 +182,7 @@ class ThumbnailView:
     def check_events(self):
         self.dont_reset_cursor = False
         self.update()
+        self.check_gif_updates()
         self.check_scroll_bar_click()
         self.check_scroll()
 

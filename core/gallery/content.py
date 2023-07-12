@@ -86,7 +86,9 @@ class Content:
             )
 
     def unload(self):
-        self.gif_surface_list.clear()
+        if self.gif_surface_list is not None:
+            self.gif_surface_list.clear()
+
         self.surface = None
         self.texture = None
         self.is_loaded = False
