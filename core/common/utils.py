@@ -1,8 +1,11 @@
 import datetime
 import os
 
+
+# unsafe import statements, these might break the log order
 import pygame as pg
 from pygame import Vector2, FRect
+from PIL import Image
 
 
 from core.common.enums import AspectRatioGroup, FileType
@@ -291,3 +294,19 @@ def flatten_dictionary(dictionary, parent_key="", separator="."):
 
 def now():
     return pg.time.get_ticks() / 1000
+
+
+def open_image_to_pygame_surface(image_path):
+    # Open the image with Pillow
+    image = Image.open(image_path)
+
+    # Convert the image to RGBA mode (with alpha channel)
+    image = image.convert("RGBA")
+
+    # Get the image data as a byte array
+    image_data = image.tobytes()
+
+    # Create a Pygame surface from the image data
+    pygame_surface = pg.image.fromstring(image_data, image.size, "RGBA")
+
+    return pygame_surface

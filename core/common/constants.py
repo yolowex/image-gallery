@@ -6,7 +6,22 @@ import platform
 from pathlib import Path
 
 
-SUPPORTED_PICTURE_FORMATS = ["png", "jpg", "jpeg", "webp", "tiff", "bmp", "gif"]
+SUPPORTED_PICTURE_FORMATS = [
+    "bmp",
+    "jpeg",
+    "jpg",
+    "png",
+    "tiff",
+    "gif",
+    "psd",
+    "webp",
+    "ico",
+    "tga",
+    "pbm",
+    "pgm",
+    "ppm" "hdr",
+    "svg",
+]
 
 SUPPORTED_VIDEO_FORMATS = [
     "avi",
@@ -100,11 +115,9 @@ def export_platform_constants():
         cr.log.write_log("Build Number:" + WINDOWS_BUILD_NUMBER, LogLevel.INFO)
 
     elif IS_LINUX:
-
         user_folders = ["Desktop", "Downloads", "Pictures", "Videos"]
 
-        CONTENT_ROOT_LIST = [
-        ]
+        CONTENT_ROOT_LIST = []
 
         home = os.path.expanduser("~")
         for i in user_folders:
@@ -113,7 +126,6 @@ def export_platform_constants():
                 CONTENT_ROOT_LIST.append(path)
 
         CONTENT_ROOT_LIST.append(home)
-
 
         LINUX_DISTRIBUTION = (
             subprocess.check_output(["lsb_release", "-d"])

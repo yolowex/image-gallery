@@ -36,8 +36,23 @@ class ContentSourceType(Enum):
 
     """
 
-    PYGAME = ["png", "jpg", "jpeg", "tiff", "bmp", "tga"]
-    PILLOW = ["gif", "webp"]
+    PILLOW = [
+        "bmp",
+        "jpeg",
+        "jpg",
+        "png",
+        "tiff",
+        "gif",
+        "psd",
+        "webp",
+        "ico",
+        "tga",
+        "pbm",
+        "pgm",
+        "ppm" "hdr",
+        "svg",
+    ]
+
     OPENCV = ["avi", "mp4", "mpeg", "mkv", "mov", "wmv", "flv"]
 
 

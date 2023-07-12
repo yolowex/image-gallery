@@ -25,7 +25,6 @@ class Content:
 
     def process_type(self):
         all_source_types = [
-            ContentSourceType.PYGAME,
             ContentSourceType.PILLOW,
             ContentSourceType.OPENCV,
         ]
@@ -35,9 +34,7 @@ class Content:
                 self.source_type = i
                 break
 
-        if self.source_type == ContentSourceType.PYGAME:
-            self.type_ = ContentType.PICTURE
-        elif self.source_type == ContentSourceType.PILLOW:
+        if self.source_type == ContentSourceType.PILLOW:
             if self.extension == "gif":
                 self.type_ = ContentType.GIF
             else:
@@ -53,9 +50,9 @@ class Content:
             )
 
     def load(self):
-        if self.source_type == ContentSourceType.PYGAME:
+        if self.source_type == ContentSourceType.PILLOW:
             try:
-                self.surface = pg.image.load(self.path)
+                self.surface = utils.open_image_to_pygame_surface(self.path)
                 self.texture = Texture.from_surface(cr.renderer, self.surface)
             except pg.error as e:
                 cr.log.write_log(
