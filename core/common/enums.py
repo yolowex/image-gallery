@@ -49,7 +49,8 @@ class ContentSourceType(Enum):
         "tga",
         "pbm",
         "pgm",
-        "ppm" "hdr",
+        "ppm",
+        "hdr",
         "svg",
     ]
 

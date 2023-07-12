@@ -19,8 +19,8 @@ SUPPORTED_PICTURE_FORMATS = [
     "tga",
     "pbm",
     "pgm",
-    "ppm" "hdr",
-    "svg",
+    "ppm",
+    "hdr",
 ]
 
 SUPPORTED_VIDEO_FORMATS = [

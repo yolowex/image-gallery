@@ -45,8 +45,8 @@ class Content:
 
         else:
             raise ValueError(
-                f"Invalid content file format, {self.extension} files are not"
-                "supported!"
+                f"Invalid content file format, {self.extension} files are not "
+                f"supported!: {self.path}"
             )
 
     def load(self):
@@ -54,7 +54,7 @@ class Content:
             try:
                 self.surface = utils.open_image_to_pygame_surface(self.path)
                 self.texture = Texture.from_surface(cr.renderer, self.surface)
-            except pg.error as e:
+            except Exception as e:
                 cr.log.write_log(
                     f"Could not load {self.path} due to this error: {e}", LogLevel.ERROR
                 )
