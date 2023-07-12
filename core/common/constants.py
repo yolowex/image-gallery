@@ -13,14 +13,14 @@ SUPPORTED_PICTURE_FORMATS = [
     "png",
     "tiff",
     "gif",
-    "psd",
+    "psd", # error: Truncated File Read
     "webp",
-    "ico",
+    "ico", # untested
     "tga",
     "pbm",
     "pgm",
     "ppm",
-    "hdr",
+    "hdr", # untested
 ]
 
 SUPPORTED_VIDEO_FORMATS = [
