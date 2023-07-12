@@ -58,7 +58,7 @@ class Content:
             try:
                 if self.extension == "gif":
                     self.gif_surface_list = utils.extract_frames_from_gif(self.path)
-
+                    print(self.name,self.gif_surface_list)
                     self.gif_index = 0
                     self.surface = self.gif_surface_list[0][0]
                     self.gif_timer = utils.now()
