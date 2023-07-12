@@ -296,9 +296,12 @@ def now():
     return pg.time.get_ticks() / 1000
 
 
-def open_image_to_pygame_surface(image_path):
+def open_image_to_pygame_surface(image_path=None, image=None):
     # Open the image with Pillow
-    image = Image.open(image_path)
+    if image is None and image_path is not None:
+        image = Image.open(image_path)
+    elif not (image is not None and image_path is None):
+        raise ValueError(f"Bad input! image_path: {image_path} ,image: {image}")
 
     # Convert the image to RGBA mode (with alpha channel)
     image = image.convert("RGBA")
@@ -310,3 +313,23 @@ def open_image_to_pygame_surface(image_path):
     pygame_surface = pg.image.fromstring(image_data, image.size, "RGBA")
 
     return pygame_surface
+
+
+def extract_frames_from_gif(gif_path):
+    gif = Image.open(gif_path)
+
+    frames = []
+    durations = []
+
+    try:
+        while True:
+            frames.append(gif.copy())
+            durations.append(gif.info["duration"] / 1000)
+            gif.seek(gif.tell() + 1)
+    except EOFError:
+        pass
+
+    frames = [open_image_to_pygame_surface(image=i) for i in frames]
+
+    image_duration_list = list(zip(frames, durations))
+    return image_duration_list

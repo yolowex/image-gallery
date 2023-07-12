@@ -15,6 +15,10 @@ class Content:
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
         self.type_: Optional[ContentType] = None
+        self.gif_surface_list: Optional[list[tuple[Surface, float]]] = None
+        self.gif_index: Optional[int] = None
+        self.gif_timer: float = 0
+
         self.surface: Optional[Surface] = None
         self.texture: Optional[Texture] = None
 
@@ -52,8 +56,18 @@ class Content:
     def load(self):
         if self.source_type == ContentSourceType.PILLOW:
             try:
-                self.surface = utils.open_image_to_pygame_surface(self.path)
-                self.texture = Texture.from_surface(cr.renderer, self.surface)
+                if self.extension == "gif":
+                    self.gif_surface_list = utils.extract_frames_from_gif(self.path)
+
+                    self.gif_index = 0
+                    self.surface = self.gif_surface_list[0][0]
+                    self.gif_timer = utils.now()
+
+                    self.texture = Texture.from_surface(cr.renderer, self.surface)
+
+                else:
+                    self.surface = utils.open_image_to_pygame_surface(self.path)
+                    self.texture = Texture.from_surface(cr.renderer, self.surface)
             except Exception as e:
                 cr.log.write_log(
                     f"Could not load {self.path} due to this error: {e}", LogLevel.ERROR
@@ -72,11 +86,23 @@ class Content:
             )
 
     def unload(self):
+        self.gif_surface_list.clear()
+        self.surface = None
         self.texture = None
         self.is_loaded = False
 
     def check_events(self):
-        ...
+        if self.extension == "gif":
+            current_duration = self.gif_surface_list[self.gif_index][1]
+
+            if utils.now() > self.gif_timer + current_duration:
+                self.gif_index += 1
+                if self.gif_index >= len(self.gif_surface_list):
+                    self.gif_index = 0
+
+                self.surface = self.gif_surface_list[self.gif_index][0]
+                self.texture = Texture.from_surface(cr.renderer, self.surface)
+                self.gif_timer = utils.now()
 
     def render_debug(self):
         ...
