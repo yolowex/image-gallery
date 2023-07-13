@@ -19,11 +19,8 @@ from pygame import Color, Font, FRect, Vector2, Surface
 
 from pygame._sdl2 import Renderer, Texture, Window  # noqa
 
-from PIL import Image
-
-
-import cv2
 import numpy
+import cv2
 from moviepy.editor import VideoFileClip
 import threading
 # Get the video file
@@ -33,6 +30,9 @@ video_path = os.path.abspath('../test_assets/clip.avi')
 opencv_video = cv2.VideoCapture(video_path)
 
 tempdir = "./tmp"
+if not os.path.exists(tempdir):
+    os.mkdir(tempdir)
+
 if platform.system() == "Linux":
     ffmpeg_path = 'ffmpeg'
 
