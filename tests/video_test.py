@@ -28,15 +28,13 @@ from moviepy.editor import VideoFileClip
 import threading
 # Get the video file
 
-ffmpeg_path = os.path.abspath('../ffmpeg/bin/ffmpeg.exe')
-video_path = os.path.abspath('../test_assets/movie.mkv')
+ffmpeg_path = '"' + os.path.abspath('../ffmpeg/bin/ffmpeg.exe') + '"'
+video_path = os.path.abspath('../test_assets/clip.avi')
 opencv_video = cv2.VideoCapture(video_path)
 
 tempdir = "./tmp"
-# if platform.system() == "Windows":
-#     tempdir = os.environ.get("LOCALAPPDATA") + "/Foto Folio"
-
-
+if platform.system() == "Linux":
+    ffmpeg_path = 'ffmpeg'
 
 moviepy_video = VideoFileClip(video_path)
 moviepy_audio = moviepy_video.audio
@@ -46,17 +44,17 @@ done_loading = False
 
 def write_audiofile(in_video_path,out_audio_path,ffmpeg_path) -> bool:
 
-    command = f"\"{ffmpeg_path}\" -y -i \"{in_video_path}\" -vn " \
+    command = f"{ffmpeg_path} -y -i \"{in_video_path}\" -vn " \
                             f"-acodec libmp3lame -qscale:a 2 \"{out_audio_path}\""
-    reuslt = True
+    result = True
     try:
         subprocess.check_call(command, shell=True)
         print("Command executed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Command failed with return code {e.returncode}.")
-        reuslt = False
+        result = False
 
-    return reuslt
+    return result
 
 def make_temp_sound_file():
     global temp_audio_file,done_loading
@@ -95,6 +93,11 @@ audio_codec = int(opencv_video.get(cv2.CAP_PROP_FOURCC))
 
 is_playing = False
 the_audio = None
+
+now = lambda: pg.time.get_ticks() / 1000
+timer = now()
+duration = 10
+
 while run:
 
     if done_loading and not is_playing:
@@ -103,12 +106,20 @@ while run:
 
         is_playing = True
 
+    if is_playing:
+        if now() > timer + duration :
+            current_vid = opencv_video.get(cv2.CAP_PROP_POS_MSEC) / 1000
+            pg.mixer.music.set_pos(current_vid)
+            timer = now()
+            print('syncing')
+
     # Get next frame
     for i in pg.event.get():
         if i.type == pgl.QUIT or i.type == pgl.KEYDOWN and i.key == pgl.K_ESCAPE:
             run = False
             thread1.join()
             break
+
 
         if i.type == pgl.KEYDOWN:
             if i.key == pgl.K_RETURN:
