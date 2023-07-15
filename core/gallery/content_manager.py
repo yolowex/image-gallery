@@ -71,9 +71,9 @@ class ContentManager:
         self.load_contents()
         cr.log.write_log("All contents were initialized successfully!", LogLevel.DEBUG)
 
-    def play_media(self):
+    def trigger_media(self):
         content = self.current_content
-        if content.type_ == ContentType.VIDEO:
+        if content.type == ContentType.VIDEO:
             if not content.video_audio_loaded:
                 content.is_loading_audio = True
                 if self.audio_thread_occupied:
@@ -83,8 +83,16 @@ class ContentManager:
                     self.current_audio_thread = content
                     thread = threading.Thread(target=content.load_audio)
                     thread.start()
+                content.start()
 
-            content.start()
+            else:
+                if not content.video_is_started:
+                    content.start()
+
+                elif content.video_is_paused:
+                    content.unpause()
+                else:
+                    content.pause()
 
     def goto(self, index):
         le = len(self.content_list) - 1
@@ -176,16 +184,12 @@ class ContentManager:
             return assets.content_placeholder
 
     def check_events(self):
-        # print(cr.event_holder.final_fps)
-
         if self.audio_thread_occupied:
             cr.mouse.set_high_priority(pgl.SYSTEM_CURSOR_WAIT)
 
             result = self.current_audio_thread.audio_extraction_result
             if result is not None:
                 cr.mouse.set_high_priority(None)
-
-                print(f"result {result}")
                 if result:
                     ...
                 else:
@@ -194,7 +198,6 @@ class ContentManager:
                 self.audio_thread_occupied = False
 
                 if self.audio_thread_queue is not None:
-                    print(self.audio_thread_queue, "doin something")
                     self.audio_thread_occupied = True
                     thread = threading.Thread(target=self.audio_thread_queue.load_audio)
                     thread.start()

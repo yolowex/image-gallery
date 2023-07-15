@@ -16,7 +16,7 @@ class Content:
         self.name = path.split("/")[-1]
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
-        self.type_: Optional[ContentType] = None
+        self.type: Optional[ContentType] = None
 
         self.__gif_surface_list: Optional[list[tuple[Surface, float]]] = None
         self.__gif_index: Optional[int] = None
@@ -33,8 +33,8 @@ class Content:
         self.__video_current_time: Optional[float] = None
         self.__video_frame_duration: Optional[float] = None
         self.__video_timer: float = 0
-        self.__video_is_started = False
-        self.__video_is_paused = False
+        self.video_is_started = False
+        self.video_is_paused = False
         self.__temp_audio_path: Optional[str] = None
         self.__video_audio_sync_timer = -1
         self.__video_audio_sync_duration = 0.01
@@ -72,23 +72,33 @@ class Content:
             )
             self.audio_extraction_result = False
 
+        self.video_audio_loaded = True
+
     def start(self):
-        self.__video_is_started = True
+        self.video_is_started = True
         # cr.event_holder.determined_fps = self.__video_fps
         # print(cr.event_holder.determined_fps)
 
     def pause(self):
-        ...
+        music = pg.mixer.music
+        self.video_is_paused = True
+
+        if self.audio_extraction_result:
+            music.pause()
 
     def unpause(self):
-        ...
+        music = pg.mixer.music
+
+        self.video_is_paused = False
+        if self.audio_extraction_result:
+            music.unpause()
 
     def stop(self):
         ...
 
     @property
     def __video_is_playing(self):
-        return self.__video_is_started and not self.__video_is_paused
+        return self.video_is_started and not self.video_is_paused
 
     def process_type(self):
         all_source_types = [
@@ -103,12 +113,12 @@ class Content:
 
         if self.source_type == ContentSourceType.PILLOW:
             if self.extension == "gif":
-                self.type_ = ContentType.GIF
+                self.type = ContentType.GIF
             else:
-                self.type_ = ContentType.PICTURE
+                self.type = ContentType.PICTURE
 
         elif self.source_type == ContentSourceType.OPENCV:
-            self.type_ = ContentType.VIDEO
+            self.type = ContentType.VIDEO
 
         else:
             raise ValueError(
@@ -120,9 +130,16 @@ class Content:
         ret, frame = self.__opencv_video.read()
 
         if not ret:
-            self.__video_is_started = False
+            self.video_is_started = False
             self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
             ret, frame = self.__opencv_video.read()
+
+            ui_layer = cr.gallery.detailed_view.image_ui_layer
+
+            if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
+                ui_layer = cr.gallery.fullscreen_view.image_ui_layer
+
+            ui_layer.reverse_trigger_button()
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -150,9 +167,9 @@ class Content:
                 self.failed_to_load = True
                 return
 
-            # we destroy the surface because it is not needed anymore + it takes a lot of space
             self.surface = None
             self.is_loaded = True
+
         elif self.source_type == ContentSourceType.OPENCV:
             try:
                 self.__opencv_video = cv2.VideoCapture(self.path)
@@ -202,7 +219,7 @@ class Content:
         self.is_loaded = False
 
     def check_events(self):
-        if self.type_ == ContentType.GIF:
+        if self.type == ContentType.GIF:
             current_duration = self.__gif_surface_list[self.__gif_index][1]
 
             if utils.now() > self.__gif_timer + current_duration:
@@ -214,7 +231,7 @@ class Content:
                 self.texture = Texture.from_surface(cr.renderer, self.surface)
                 self.__gif_timer = utils.now()
 
-        elif self.type_ == ContentType.VIDEO:
+        elif self.type == ContentType.VIDEO:
             if self.__video_is_playing and self.audio_extraction_result is not None:
                 # print(cr.event_holder.final_fps)
 
@@ -261,13 +278,13 @@ class Content:
             return
 
         if dst_rect is not None:
-            if self.type_ in [ContentType.PICTURE, ContentType.GIF]:
+            if self.type in [ContentType.PICTURE, ContentType.GIF]:
                 self.texture.draw(src_rect, dst_rect)
             else:
                 self.texture.draw(src_rect, dst_rect, flip_x=True)
 
         else:
-            if self.type_ in [ContentType.PICTURE, ContentType.GIF]:
+            if self.type in [ContentType.PICTURE, ContentType.GIF]:
                 size = Vector2(self.texture.get_rect().size)
                 self.texture.draw(src_rect, self.box.get_in_rect(size, True))
             else:

@@ -14,6 +14,9 @@ from core.common import utils, assets
 class ImageUiLayer(UiLayer):
     def __init__(self):
         super().__init__()
+        self.video_buttons = []
+        self.picture_buttons = []
+        self.play_button: Optional[Button] = None
 
     def init(self):
         self.init_right_pane()
@@ -25,6 +28,18 @@ class ImageUiLayer(UiLayer):
             return cr.gallery.detailed_view
 
         return cr.gallery.fullscreen_view
+
+    def reverse_trigger_button(self):
+        content = cr.gallery.content_manager.current_content
+
+        if content.video_is_paused or not content.video_is_started:
+            self.play_button.image = assets.ui_buttons["play"]
+        else:
+            self.play_button.image = assets.ui_buttons["pause"]
+
+    def trigger_start(self):
+        cr.gallery.content_manager.trigger_media()
+        self.reverse_trigger_button()
 
     def init_bottom_pane(self):
         def bottom_pane_render_condition():
@@ -57,11 +72,11 @@ class ImageUiLayer(UiLayer):
 
         w_step = play_button_size[0]
 
-        play_button = Button(
+        self.play_button = Button(
             "Play",
             R((0.46 + w_step * 0, play_button_y), play_button_size),
             assets.ui_buttons["play"],
-            cr.gallery.content_manager.play_media,
+            self.trigger_start,
             bottom_pane_render_condition,
         )
 
@@ -97,8 +112,14 @@ class ImageUiLayer(UiLayer):
         )
 
         self.buttons.extend(
-            [play_button, next_button, previous_button, first_button, last_button]
+            [self.play_button, next_button, previous_button, first_button, last_button]
         )
+
+        self.video_buttons.extend(
+            [self.play_button, next_button, previous_button, first_button, last_button]
+        )
+
+        self.picture_buttons.extend([next_button, previous_button])
 
     def init_right_pane(self):
         def right_pane_render_condition():
@@ -179,8 +200,21 @@ class ImageUiLayer(UiLayer):
         self.buttons.extend(
             [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
         )
+        self.picture_buttons.extend(
+            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
+        )
+        self.video_buttons.extend(
+            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
+        )
 
+    # todo: fix the bug in navigation
     def check_events(self):
+        content = cr.gallery.content_manager.current_content
+        if content.type in [ContentType.PICTURE, ContentType.GIF]:
+            self.buttons = self.picture_buttons
+        elif content.type == ContentType.VIDEO:
+            self.buttons = self.video_buttons
+
         super().check_events()
         if self.any_hovered:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_HAND
