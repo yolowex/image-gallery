@@ -80,6 +80,15 @@ class FolderView:
                         self.disk_cursor.collapse_folder_at(item["address"])
                         self.sync_texts()
 
+                    for index,i in enumerate(self.content_manager.content_list):
+                        if i.name == self.disk_cursor.opened_content_name:
+                            print("Voila!")
+                            self.content_manager.current_content_index = index
+                            self.content_manager.load_contents()
+                            break
+
+                    break
+
                 c += 1
 
             self.check_scroll()
