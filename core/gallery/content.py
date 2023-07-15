@@ -271,7 +271,14 @@ class Content:
                         music.play()
 
                 if utils.now() > self.__video_timer + self.__video_frame_duration:
-                    self.texture.update(self.__get_next_video_frame())
+                    try:
+                        self.texture.update(self.__get_next_video_frame())
+                    except cv2.error as e:
+                        cr.log.write_log(
+                            f"Could not fetch the video frame due to this error: {e}",
+                            LogLevel.ERROR,
+                        )
+
                     self.__video_timer = utils.now()
 
     def render_debug(self):
