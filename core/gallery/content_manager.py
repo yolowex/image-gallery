@@ -109,6 +109,9 @@ class ContentManager:
             ui_layer.reset_trigger_button()
 
     def goto(self, index):
+        if self.current_content_index == index:
+            return
+
         self.destroy_audio()
 
         le = len(self.content_list) - 1
