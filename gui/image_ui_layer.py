@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.content import Content
 from gui.button import Button
 from gui.ui_layer import UiLayer
 from helper_kit.relative_rect import RelRect
@@ -17,10 +18,56 @@ class ImageUiLayer(UiLayer):
         self.video_buttons = []
         self.picture_buttons = []
         self.play_button: Optional[Button] = None
+        # a value between 0 and 1
+        self.navigator_pos_scale = 0
 
     def init(self):
         self.init_right_pane()
         self.init_bottom_pane()
+
+    def get_box(self):
+        return self.parent.image_box
+
+    @property
+    def navigator_bar_height(self):
+        pa = self.get_box().get()
+
+        val = cr.ws().y * 0.01
+        if val > pa.h * 0.1:
+            val = pa.h * 0.1
+
+        return val
+
+    @property
+    def navigator_button_width(self):
+        bar = self.navigator_bar_rect
+
+        val = cr.ws().y * 0.02
+        if val > bar.w * 0.04:
+            val = bar.w * 0.04
+
+        return val
+
+    @property
+    def navigator_button_rect(self):
+        bar = self.navigator_bar_rect
+        return FRect(self.navigator_pos, bar.y, self.navigator_button_width, bar.h)
+
+    @property
+    def navigator_pos(self):
+        bar = self.navigator_bar_rect
+        bw = self.navigator_button_width
+
+        return utils.lerp(bar.left, bar.right - bw, self.navigator_pos_scale / 1)
+
+    @property
+    def navigator_bar_rect(self):
+        pa = self.get_box().get()
+        bar = pa.copy()
+
+        bar.h = self.navigator_bar_height
+        bar.bottom = pa.bottom
+        return bar
 
     @property
     def parent(self):
@@ -214,17 +261,85 @@ class ImageUiLayer(UiLayer):
             [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
         )
 
-    # todo: fix the bug in navigation
+    def update_navigator_button(self):
+        content: Content = self.parent.content_manager.current_content
+        total_time = content.video_total_time
+        current_time = (
+            content.opencv_video.get(cv2.CAP_PROP_POS_FRAMES) / content.video_fps
+        )
+        lerp_val = utils.inv_lerp(0, total_time, current_time)
+        self.navigator_pos_scale = lerp_val
+
+    def check_navigator(self):
+        self.update_navigator_button()
+
+        rect = self.navigator_bar_rect
+        rect.w -= self.navigator_button_width
+
+        pressed = cr.event_holder.mouse_pressed_keys[0]
+        mr = cr.event_holder.mouse_rect
+        mp = mr.center
+
+        pa: FRect = self.get_box().get()
+
+        if not pa.contains(mr):
+            return
+
+        if pressed:
+            if mr.colliderect(rect):
+                content: Content = self.parent.content_manager.current_content
+
+                val = utils.inv_lerp(rect.left, rect.right, mp[0])
+
+                if val < 0:
+                    val = 0
+                if val > 1:
+                    val = 1
+
+                self.navigator_pos_scale = val
+
+                new_time = self.navigator_pos_scale * content.video_total_time
+                content.video_music_start_time = new_time
+                if pg.mixer_music.get_busy():
+                    pg.mixer_music.stop()
+                    pg.mixer_music.play(start=content.video_music_start_time)
+                else:
+                    ...
+
+    # done: fix the bug in navigation
     def check_events(self):
+        is_vid = False
         content = cr.gallery.content_manager.current_content
         if content.type in [ContentType.PICTURE, ContentType.GIF]:
             self.buttons = self.picture_buttons
         elif content.type == ContentType.VIDEO:
             self.buttons = self.video_buttons
+            is_vid = True
+
+        if is_vid:
+            self.check_navigator()
 
         super().check_events()
         if self.any_hovered:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_HAND
 
     def render(self):
+        is_vid = False
+        content = cr.gallery.content_manager.current_content
+        if content.type in [ContentType.PICTURE, ContentType.GIF]:
+            self.buttons = self.picture_buttons
+        elif content.type == ContentType.VIDEO:
+            self.buttons = self.video_buttons
+            is_vid = True
+
         super().render()
+
+        if is_vid:
+            cr.renderer.draw_color = colors.GIMP_2
+            cr.renderer.fill_rect(self.navigator_bar_rect)
+
+            cr.renderer.draw_color = colors.NEON
+            cr.renderer.fill_rect(self.navigator_button_rect)
+
+            cr.renderer.draw_color = colors.CHOCOLATE.lerp(colors.BLACK, 0.5)
+            cr.renderer.draw_rect(self.navigator_bar_rect)

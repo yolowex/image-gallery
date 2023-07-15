@@ -22,14 +22,14 @@ class Content:
         self.__gif_index: Optional[int] = None
         self.__gif_timer: float = 0
 
-        self.__opencv_video: Optional[cv2.VideoCapture] = None
+        self.opencv_video: Optional[cv2.VideoCapture] = None
         self.__moviepy_video: Optional[moviepy.video.io.VideoFileClip] = None
         self.__moviepy_audio: Optional[
             moviepy.video.io.VideoFileClip.AudioFileClip
         ] = None
-        self.__video_fps: Optional[float] = None
+        self.video_fps: Optional[float] = None
         self.__video_total_frames: Optional[float] = None
-        self.__video_total_time: Optional[float] = None
+        self.video_total_time: Optional[float] = None
         self.__video_current_time: Optional[float] = None
         self.__video_frame_duration: Optional[float] = None
         self.__video_timer: float = 0
@@ -38,7 +38,7 @@ class Content:
         self.__temp_audio_path: Optional[str] = None
         self.__video_audio_sync_timer = -1
         self.__video_audio_sync_duration = 0.01
-        self.__video_music_start_time = 0
+        self.video_music_start_time = 0
         self.audio_extraction_result: Optional[bool] = None
 
         self.is_loading_audio = False
@@ -113,20 +113,20 @@ class Content:
 
         music = pg.mixer.music
         if self.audio_extraction_result:
-            step = self.__video_total_time / 100
+            step = self.video_total_time / 100
             if step < 5:
                 step = 5
 
-            pos = self.__video_music_start_time + music.get_pos() / 1000
+            pos = self.video_music_start_time + music.get_pos() / 1000
             pos += step
 
-            if pos >= self.__video_total_time:
+            if pos >= self.video_total_time:
                 return
 
-            self.__video_music_start_time = pos
+            self.video_music_start_time = pos
 
             music.stop()
-            music.play(start=self.__video_music_start_time)
+            music.play(start=self.video_music_start_time)
 
     def go_back(self):
         if self.video_is_paused:
@@ -134,18 +134,18 @@ class Content:
 
         music = pg.mixer.music
         if self.audio_extraction_result:
-            step = self.__video_total_time / 100
+            step = self.video_total_time / 100
             if step < 5:
                 step = 5
 
-            pos = self.__video_music_start_time + music.get_pos() / 1000
+            pos = self.video_music_start_time + music.get_pos() / 1000
             pos -= step
-            self.__video_music_start_time = pos
-            if self.__video_music_start_time < 0:
-                self.__video_music_start_time = 0
+            self.video_music_start_time = pos
+            if self.video_music_start_time < 0:
+                self.video_music_start_time = 0
 
             music.stop()
-            music.play(start=self.__video_music_start_time)
+            music.play(start=self.video_music_start_time)
 
     @property
     def __video_is_playing(self):
@@ -178,12 +178,12 @@ class Content:
             )
 
     def __get_next_video_frame(self):
-        ret, frame = self.__opencv_video.read()
+        ret, frame = self.opencv_video.read()
 
         if not ret:
             self.video_is_started = False
-            self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
-            ret, frame = self.__opencv_video.read()
+            self.opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
+            ret, frame = self.opencv_video.read()
 
             ui_layer = cr.gallery.detailed_view.image_ui_layer
 
@@ -223,17 +223,17 @@ class Content:
 
         elif self.source_type == ContentSourceType.OPENCV:
             try:
-                self.__opencv_video = cv2.VideoCapture(self.path)
+                self.opencv_video = cv2.VideoCapture(self.path)
 
                 self.texture = Texture.from_surface(
                     cr.renderer, self.__get_next_video_frame()
                 )
-                self.__video_fps = self.__opencv_video.get(cv2.CAP_PROP_FPS)
-                self.__video_total_frames = self.__opencv_video.get(
+                self.video_fps = self.opencv_video.get(cv2.CAP_PROP_FPS)
+                self.__video_total_frames = self.opencv_video.get(
                     cv2.CAP_PROP_FRAME_COUNT
                 )
-                self.__video_total_time = self.__video_total_frames / self.__video_fps
-                self.__video_frame_duration = 1 / self.__video_fps
+                self.video_total_time = self.__video_total_frames / self.video_fps
+                self.__video_frame_duration = 1 / self.video_fps
                 self.__video_timer = utils.now()
 
                 self.is_loaded = True
@@ -261,7 +261,7 @@ class Content:
             self.__gif_surface_list.clear()
 
         if self.source_type == ContentSourceType.OPENCV:
-            self.__opencv_video = None
+            self.opencv_video = None
             self.__moviepy_video = None
             self.__moviepy_audio = None
 
@@ -291,10 +291,10 @@ class Content:
 
                     if music.get_busy():
                         audio_cursor = (
-                            music.get_pos() + self.__video_music_start_time * 1000
+                            music.get_pos() + self.video_music_start_time * 1000
                         )
                         # print(audio_cursor)
-                        self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
+                        self.opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
 
                         # print(audio_cursor,video_cursor,video_cursor2)
                         # if utils.now() > self.__video_audio_sync_timer +\
