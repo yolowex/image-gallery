@@ -232,6 +232,9 @@ class FolderView:
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
 
+        if not pa.contains(mr):
+            return
+
         if mr.colliderect(pa):
             if mw:
                 if mod:
@@ -308,6 +311,9 @@ class FolderView:
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
 
+        if not pa.contains(mr):
+            return
+
         if clicked:
             for _, box, item in self.text_box_list:
                 this = box.get()
@@ -346,6 +352,9 @@ class FolderView:
         mod = pgl.K_LCTRL in cr.event_holder.held_keys
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
+
+        if not pa.contains(mr):
+            return
 
         if not cr.event_holder.mouse_moved:
             for _, box, item in self.text_box_list:
