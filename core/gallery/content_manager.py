@@ -34,6 +34,8 @@ class ContentManager:
         self.audio_thread_queue: Optional[Content] = None
 
     def reinit(self, path: str = None):
+        self.destroy_audio()
+
         self.path: Optional[str] = path
 
         self.loaded_content_stack.clear()
@@ -73,6 +75,7 @@ class ContentManager:
 
     def trigger_media(self):
         content = self.current_content
+
         if content.type == ContentType.VIDEO:
             if not content.video_audio_loaded:
                 content.is_loading_audio = True
@@ -94,7 +97,21 @@ class ContentManager:
                 else:
                     content.pause()
 
+    def destroy_audio(self):
+        content = self.current_content
+
+        if content.type == ContentType.VIDEO:
+            content.destroy_audio()
+            print("oh yeah")
+            ui_layer = cr.gallery.detailed_view.image_ui_layer
+            if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
+                ui_layer = cr.gallery.fullscreen_view.image_ui_layer
+
+            ui_layer.reset_trigger_button()
+
     def goto(self, index):
+        self.destroy_audio()
+
         le = len(self.content_list) - 1
         self.current_content_index = index
 
@@ -196,9 +213,16 @@ class ContentManager:
                     ...
 
                 self.audio_thread_occupied = False
+                content = self.current_content
+                if content != self.current_audio_thread:
+                    self.current_audio_thread.audio_extraction_result = None
+                    self.current_audio_thread.video_audio_loaded = False
 
                 if self.audio_thread_queue is not None:
+                    self.current_audio_thread = self.audio_thread_queue
                     self.audio_thread_occupied = True
-                    thread = threading.Thread(target=self.audio_thread_queue.load_audio)
+                    thread = threading.Thread(
+                        target=self.current_audio_thread.load_audio
+                    )
                     thread.start()
                     self.audio_thread_queue = None

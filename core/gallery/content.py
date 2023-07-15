@@ -64,15 +64,26 @@ class Content:
                 f"Audio extraction for {self.name} was successful.", LogLevel.INFO
             )
             self.audio_extraction_result = True
-            self.video_audio_loaded = True
+
         except subprocess.CalledProcessError as e:
             cr.log.write_log(
                 f"Audio extraction for {self.name} failed due to this error: {e}",
                 LogLevel.WARNING,
             )
+
             self.audio_extraction_result = False
 
         self.video_audio_loaded = True
+        self.is_loading_audio = False
+        # self.cancel_audio_extraction = False
+
+    def destroy_audio(self):
+        print("call")
+        pg.mixer.music.unload()
+        self.video_is_started = False
+        self.video_is_paused = False
+        self.audio_extraction_result = None
+        self.video_audio_loaded = False
 
     def start(self):
         self.video_is_started = True

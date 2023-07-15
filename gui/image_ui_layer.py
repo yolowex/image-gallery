@@ -29,6 +29,9 @@ class ImageUiLayer(UiLayer):
 
         return cr.gallery.fullscreen_view
 
+    def reset_trigger_button(self):
+        self.play_button.image = assets.ui_buttons["play"]
+
     def reverse_trigger_button(self):
         content = cr.gallery.content_manager.current_content
 
