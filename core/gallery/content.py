@@ -108,6 +108,9 @@ class Content:
             music.unpause()
 
     def go_forward(self):
+        if self.video_is_paused:
+            return
+
         music = pg.mixer.music
         if self.audio_extraction_result:
             step = self.__video_total_time / 100
@@ -116,13 +119,19 @@ class Content:
 
             pos = self.__video_music_start_time + music.get_pos() / 1000
             pos += step
+
+            if pos >= self.__video_total_time:
+                return
+
             self.__video_music_start_time = pos
 
             music.stop()
             music.play(start=self.__video_music_start_time)
-            print(self.__video_music_start_time, music.get_pos())
 
     def go_back(self):
+        if self.video_is_paused:
+            return
+
         music = pg.mixer.music
         if self.audio_extraction_result:
             step = self.__video_total_time / 100
@@ -137,7 +146,6 @@ class Content:
 
             music.stop()
             music.play(start=self.__video_music_start_time)
-            print(self.__video_music_start_time, music.get_pos())
 
     @property
     def __video_is_playing(self):
