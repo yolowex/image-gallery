@@ -232,9 +232,6 @@ class FolderView:
         clicked = cr.event_holder.mouse_pressed_keys[0]
         released = cr.event_holder.mouse_released_keys[0]
 
-        if not pa.contains(mr):
-            return
-
         if mr.colliderect(pa):
             if mw:
                 if mod:
