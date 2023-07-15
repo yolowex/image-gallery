@@ -66,6 +66,13 @@ class ContentManager:
         self.load_contents()
         cr.log.write_log("All contents were initialized successfully!", LogLevel.DEBUG)
 
+    def play_media(self):
+        content = self.current_content
+        if content.type_ == ContentType.VIDEO:
+            content.start()
+        else:
+            print("Not a Video")
+
     def goto(self, index):
         le = len(self.content_list) - 1
         self.current_content_index = index
@@ -156,4 +163,5 @@ class ContentManager:
             return assets.content_placeholder
 
     def check_events(self):
+        # print(cr.event_holder.final_fps)
         ...

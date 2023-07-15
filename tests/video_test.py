@@ -88,7 +88,7 @@ clock = pg.time.Clock()
 fps = opencv_video.get(cv2.CAP_PROP_FPS)
 opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
 total_time = opencv_video.get(cv2.CAP_PROP_FRAME_COUNT) / fps
-audio_codec = int(opencv_video.get(cv2.CAP_PROP_FOURCC))
+
 
 
 is_playing = False

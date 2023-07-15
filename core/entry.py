@@ -27,6 +27,8 @@ class Entry:
         cr.renderer = Renderer(cr.window)
         cr.mouse = Mouse()
         cr.event_holder = EventHolder()
+        # todo: test the fps in windows
+        cr.event_holder.determined_fps = 200
 
         icon = pg.image.load("./assets/icon.png")
         cr.window.set_icon(icon)

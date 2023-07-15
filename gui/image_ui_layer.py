@@ -61,7 +61,7 @@ class ImageUiLayer(UiLayer):
             "Play",
             R((0.46 + w_step * 0, play_button_y), play_button_size),
             assets.ui_buttons["play"],
-            lambda: None,
+            cr.gallery.content_manager.play_media,
             bottom_pane_render_condition,
         )
 
