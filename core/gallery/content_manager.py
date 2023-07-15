@@ -102,7 +102,6 @@ class ContentManager:
 
         if content.type == ContentType.VIDEO:
             content.destroy_audio()
-            print("oh yeah")
             ui_layer = cr.gallery.detailed_view.image_ui_layer
             if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
                 ui_layer = cr.gallery.fullscreen_view.image_ui_layer

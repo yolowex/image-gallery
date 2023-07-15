@@ -75,10 +75,12 @@ class Content:
 
         self.video_audio_loaded = True
         self.is_loading_audio = False
+        self.__moviepy_video = None
+        self.__moviepy_audio = None
+
         # self.cancel_audio_extraction = False
 
     def destroy_audio(self):
-        print("call")
         pg.mixer.music.unload()
         self.video_is_started = False
         self.video_is_paused = False
