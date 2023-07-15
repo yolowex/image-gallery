@@ -52,6 +52,11 @@ class Entry:
         constants.LOG_PATH = log_path
         constants.APP_DATA_PATH = app_data_path
 
+        constants.TEMPDIR = constants.APP_DATA_PATH + "/tmp"
+
+        if not os.path.exists(constants.TEMPDIR):
+            os.mkdir(constants.TEMPDIR)
+
         assets.init_assets()
 
         cr.gallery = Gallery()

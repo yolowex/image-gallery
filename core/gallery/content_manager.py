@@ -1,3 +1,5 @@
+import threading
+
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
@@ -27,6 +29,9 @@ class ContentManager:
 
         # this is set to true if the current_content_index is updated (whenever goto is used)
         self.was_updated = False
+        self.audio_thread_occupied = False
+        self.current_audio_thread: Optional[Content] = None
+        self.audio_thread_queue: Optional[Content] = None
 
     def reinit(self, path: str = None):
         self.path: Optional[str] = path
@@ -69,9 +74,17 @@ class ContentManager:
     def play_media(self):
         content = self.current_content
         if content.type_ == ContentType.VIDEO:
+            if not content.video_audio_loaded:
+                content.is_loading_audio = True
+                if self.audio_thread_occupied:
+                    self.audio_thread_queue = content
+                else:
+                    self.audio_thread_occupied = True
+                    self.current_audio_thread = content
+                    thread = threading.Thread(target=content.load_audio)
+                    thread.start()
+
             content.start()
-        else:
-            print("Not a Video")
 
     def goto(self, index):
         le = len(self.content_list) - 1
@@ -164,4 +177,25 @@ class ContentManager:
 
     def check_events(self):
         # print(cr.event_holder.final_fps)
-        ...
+
+        if self.audio_thread_occupied:
+            cr.mouse.set_high_priority(pgl.SYSTEM_CURSOR_WAIT)
+
+            result = self.current_audio_thread.audio_extraction_result
+            if result is not None:
+                cr.mouse.set_high_priority(None)
+
+                print(f"result {result}")
+                if result:
+                    ...
+                else:
+                    ...
+
+                self.audio_thread_occupied = False
+
+                if self.audio_thread_queue is not None:
+                    print(self.audio_thread_queue, "doin something")
+                    self.audio_thread_occupied = True
+                    thread = threading.Thread(target=self.audio_thread_queue.load_audio)
+                    thread.start()
+                    self.audio_thread_queue = None

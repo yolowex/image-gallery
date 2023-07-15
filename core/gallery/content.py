@@ -17,13 +17,16 @@ class Content:
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
         self.type_: Optional[ContentType] = None
+
         self.__gif_surface_list: Optional[list[tuple[Surface, float]]] = None
         self.__gif_index: Optional[int] = None
         self.__gif_timer: float = 0
 
         self.__opencv_video: Optional[cv2.VideoCapture] = None
         self.__moviepy_video: Optional[moviepy.video.io.VideoFileClip] = None
-        self.__moviepy_audio: Optional[moviepy.video.io.VideoFileClip.AudioFileClip] =None
+        self.__moviepy_audio: Optional[
+            moviepy.video.io.VideoFileClip.AudioFileClip
+        ] = None
         self.__video_fps: Optional[float] = None
         self.__video_total_frames: Optional[float] = None
         self.__video_total_time: Optional[float] = None
@@ -32,7 +35,13 @@ class Content:
         self.__video_timer: float = 0
         self.__video_is_started = False
         self.__video_is_paused = False
+        self.__temp_audio_path: Optional[str] = None
+        self.__video_audio_sync_timer = -1
+        self.__video_audio_sync_duration = 0.01
+        self.audio_extraction_result: Optional[bool] = None
 
+        self.is_loading_audio = False
+        self.video_audio_loaded = False
 
         self.surface: Optional[Surface] = None
         self.texture: Optional[Texture] = None
@@ -42,14 +51,31 @@ class Content:
         self.failed_to_load = False
         self.process_type()
 
-
     def load_audio(self):
-        ...
+        self.__temp_audio_path = constants.TEMPDIR + "/tmp.mp3"
+        command = (
+            f'{constants.FFMPEG_PATH} -y -i "{self.path}" -vn '
+            f'-acodec libmp3lame -qscale:a 2 "{self.__temp_audio_path}"'
+        )
+
+        try:
+            subprocess.check_call(command, shell=True)
+            cr.log.write_log(
+                f"Audio extraction for {self.name} was successful.", LogLevel.INFO
+            )
+            self.audio_extraction_result = True
+            self.video_audio_loaded = True
+        except subprocess.CalledProcessError as e:
+            cr.log.write_log(
+                f"Audio extraction for {self.name} failed due to this error: {e}",
+                LogLevel.WARNING,
+            )
+            self.audio_extraction_result = False
 
     def start(self):
-
-
         self.__video_is_started = True
+        # cr.event_holder.determined_fps = self.__video_fps
+        # print(cr.event_holder.determined_fps)
 
     def pause(self):
         ...
@@ -91,8 +117,15 @@ class Content:
             )
 
     def __get_next_video_frame(self):
-        frame = self.__opencv_video.read()[1]
+        ret, frame = self.__opencv_video.read()
+
+        if not ret:
+            self.__video_is_started = False
+            self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, 0)
+            ret, frame = self.__opencv_video.read()
+
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         frame = numpy.rot90(frame)
         surface = pg.surfarray.make_surface(frame)
         return surface
@@ -121,13 +154,16 @@ class Content:
             self.surface = None
             self.is_loaded = True
         elif self.source_type == ContentSourceType.OPENCV:
-
             try:
                 self.__opencv_video = cv2.VideoCapture(self.path)
 
-                self.texture = Texture.from_surface(cr.renderer,self.__get_next_video_frame())
+                self.texture = Texture.from_surface(
+                    cr.renderer, self.__get_next_video_frame()
+                )
                 self.__video_fps = self.__opencv_video.get(cv2.CAP_PROP_FPS)
-                self.__video_total_frames = self.__opencv_video.get(cv2.CAP_PROP_FRAME_COUNT)
+                self.__video_total_frames = self.__opencv_video.get(
+                    cv2.CAP_PROP_FRAME_COUNT
+                )
                 self.__video_total_time = self.__video_total_frames / self.__video_fps
                 self.__video_frame_duration = 1 / self.__video_fps
                 self.__video_timer = utils.now()
@@ -140,11 +176,11 @@ class Content:
                 # self.__moviepy_video = VideoFileClip(self.path)
                 # self.__moviepy_audio = self.__moviepy_video.audio
             except Exception as e:
-                cr.log.write_log(f"Could not load {self.path} due to this error: {e}",
-                    LogLevel.ERROR)
+                cr.log.write_log(
+                    f"Could not load {self.path} due to this error: {e}", LogLevel.ERROR
+                )
                 self.failed_to_load = True
                 return
-
 
         else:
             cr.log.write_log(
@@ -179,11 +215,34 @@ class Content:
                 self.__gif_timer = utils.now()
 
         elif self.type_ == ContentType.VIDEO:
-            if self.__video_is_playing:
+            if self.__video_is_playing and self.audio_extraction_result is not None:
+                # print(cr.event_holder.final_fps)
+
+                if self.audio_extraction_result:
+                    music = pg.mixer.music
+
+                    if music.get_busy():
+                        video_cursor = (
+                            self.__opencv_video.get(cv2.CAP_PROP_POS_MSEC) / 1000
+                        )
+                        audio_cursor = music.get_pos()
+                        self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
+
+                        # if utils.now() > self.__video_audio_sync_timer +\
+                        #         self.__video_audio_sync_duration:
+                        #     self.__video_audio_sync_timer = utils.now()
+                        # print(video_cursor, audio_cursor)
+                        # print("Syncing the audio")
+
+                        # music.rewind()
+                        # music.set_pos(video_cursor)
+                    else:
+                        music.load(self.__temp_audio_path)
+                        music.play()
+
                 if utils.now() > self.__video_timer + self.__video_frame_duration:
                     self.texture.update(self.__get_next_video_frame())
                     self.__video_timer = utils.now()
-
 
     def render_debug(self):
         ...
@@ -202,19 +261,17 @@ class Content:
             return
 
         if dst_rect is not None:
-            if self.type_ in [ContentType.PICTURE,ContentType.GIF]:
+            if self.type_ in [ContentType.PICTURE, ContentType.GIF]:
                 self.texture.draw(src_rect, dst_rect)
             else:
-                self.texture.draw(src_rect, dst_rect,flip_x=True)
-
+                self.texture.draw(src_rect, dst_rect, flip_x=True)
 
         else:
-            if self.type_ in [ContentType.PICTURE,ContentType.GIF]:
+            if self.type_ in [ContentType.PICTURE, ContentType.GIF]:
                 size = Vector2(self.texture.get_rect().size)
                 self.texture.draw(src_rect, self.box.get_in_rect(size, True))
-            else :
-                self.texture.draw(src_rect, dst_rect,flip_x=True)
-
+            else:
+                self.texture.draw(src_rect, dst_rect, flip_x=True)
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

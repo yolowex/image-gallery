@@ -338,11 +338,11 @@ def extract_frames_from_gif(gif_path):
     image_duration_list = list(zip(frames, durations))
     return image_duration_list
 
+
 def print_time(time_float):
-
-
-
     total_seconds = int(time_float)  # Convert float to total seconds
-    hours, remainder = divmod(total_seconds, 3600)  # Calculate hours and remaining seconds
+    hours, remainder = divmod(
+        total_seconds, 3600
+    )  # Calculate hours and remaining seconds
     minutes, seconds = divmod(remainder, 60)  # Calculate minutes and seconds
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"

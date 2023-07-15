@@ -13,14 +13,14 @@ SUPPORTED_PICTURE_FORMATS = [
     "png",
     "tiff",
     "gif",
-    "psd", # error: Truncated File Read
+    "psd",  # error: Truncated File Read
     "webp",
-    "ico", # untested
+    "ico",  # untested
     "tga",
     "pbm",
     "pgm",
     "ppm",
-    "hdr", # untested
+    "hdr",  # untested
 ]
 
 SUPPORTED_VIDEO_FORMATS = [
@@ -56,6 +56,8 @@ MACOS_ARCHITECTURE = ""
 
 
 CONTENT_ROOT_LIST = []
+TEMPDIR = ""
+FFMPEG_PATH = "ffmpeg"
 
 
 DISPLAY_SIZE = None
@@ -68,7 +70,7 @@ def export_platform_constants():
     global IS_MAC, MACOS_VERSION, MACOS_BUILD_NUMBER, MACOS_ARCHITECTURE
     global LOCAL_APPS_DATA
     global DISPLAY_SIZE, DISPLAY_ASPECT_RATIO
-    global CONTENT_ROOT_LIST
+    global CONTENT_ROOT_LIST, TEMPDIR, FFMPEG_PATH
 
     inf = pg.display.Info()
     DISPLAY_SIZE = Vector2(inf.current_w, inf.current_h)
@@ -84,6 +86,7 @@ def export_platform_constants():
     cr.log.write_log("Current platform: " + current_platform, LogLevel.INFO)
 
     if IS_WINDOWS:
+        FFMPEG_PATH = '"' + os.path.abspath("./ffmpeg/bin/ffmpeg.exe") + '"'
         CONTENT_ROOT_LIST = []
         command = "wmic logicaldisk get caption"
         result = subprocess.run(command, capture_output=True, text=True)
