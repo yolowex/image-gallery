@@ -99,29 +99,33 @@ class ImageUiLayer(UiLayer):
             bottom_pane_render_condition,
         )
 
-        first_button = Button(
-            "First",
+        back_button = Button(
+            "Back",
             R((0.46 + w_step * -2, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_first"],
-            cr.gallery.content_manager.go_first,
+            cr.gallery.content_manager.go_back,
             bottom_pane_render_condition,
         )
-        last_button = Button(
-            "Last",
+        forward_button = Button(
+            "Forward",
             R((0.46 + w_step * 2, other_buttons_y), other_buttons_size),
             assets.ui_buttons["play_go_last"],
-            cr.gallery.content_manager.go_last,
+            cr.gallery.content_manager.go_forward,
             bottom_pane_render_condition,
         )
 
-        self.buttons.extend(
-            [self.play_button, next_button, previous_button, first_button, last_button]
-        )
+        self.buttons.extend([])
 
         self.video_buttons.extend(
-            [self.play_button, next_button, previous_button, first_button, last_button]
+            [
+                self.play_button,
+                next_button,
+                previous_button,
+                back_button,
+                forward_button,
+            ]
         )
-
+        print(len(self.video_buttons))
         self.picture_buttons.extend([next_button, previous_button])
 
     def init_right_pane(self):

@@ -144,6 +144,12 @@ class ContentManager:
     def go_last(self):
         self.goto(len(self.content_list) - 1)
 
+    def go_forward(self):
+        self.current_content.go_forward()
+
+    def go_back(self):
+        self.current_content.go_back()
+
     def load_contents(self, index=None):
         if index is None:
             index = self.current_content_index

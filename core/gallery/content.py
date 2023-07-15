@@ -38,6 +38,7 @@ class Content:
         self.__temp_audio_path: Optional[str] = None
         self.__video_audio_sync_timer = -1
         self.__video_audio_sync_duration = 0.01
+        self.__video_music_start_time = 0
         self.audio_extraction_result: Optional[bool] = None
 
         self.is_loading_audio = False
@@ -106,8 +107,37 @@ class Content:
         if self.audio_extraction_result:
             music.unpause()
 
-    def stop(self):
-        ...
+    def go_forward(self):
+        music = pg.mixer.music
+        if self.audio_extraction_result:
+            step = self.__video_total_time / 100
+            if step < 5:
+                step = 5
+
+            pos = self.__video_music_start_time + music.get_pos() / 1000
+            pos += step
+            self.__video_music_start_time = pos
+
+            music.stop()
+            music.play(start=self.__video_music_start_time)
+            print(self.__video_music_start_time, music.get_pos())
+
+    def go_back(self):
+        music = pg.mixer.music
+        if self.audio_extraction_result:
+            step = self.__video_total_time / 100
+            if step < 5:
+                step = 5
+
+            pos = self.__video_music_start_time + music.get_pos() / 1000
+            pos -= step
+            self.__video_music_start_time = pos
+            if self.__video_music_start_time < 0:
+                self.__video_music_start_time = 0
+
+            music.stop()
+            music.play(start=self.__video_music_start_time)
+            print(self.__video_music_start_time, music.get_pos())
 
     @property
     def __video_is_playing(self):
@@ -252,12 +282,13 @@ class Content:
                     music = pg.mixer.music
 
                     if music.get_busy():
-                        video_cursor = (
-                            self.__opencv_video.get(cv2.CAP_PROP_POS_MSEC) / 1000
+                        audio_cursor = (
+                            music.get_pos() + self.__video_music_start_time * 1000
                         )
-                        audio_cursor = music.get_pos()
+                        # print(audio_cursor)
                         self.__opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
 
+                        # print(audio_cursor,video_cursor,video_cursor2)
                         # if utils.now() > self.__video_audio_sync_timer +\
                         #         self.__video_audio_sync_duration:
                         #     self.__video_audio_sync_timer = utils.now()
