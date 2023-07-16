@@ -20,6 +20,7 @@ class ImageUiLayer(UiLayer):
         self.play_button: Optional[Button] = None
         # a value between 0 and 1
         self.navigator_pos_scale = 0
+        self.navigator_locked = False
 
     def init(self):
         self.init_right_pane()
@@ -66,7 +67,8 @@ class ImageUiLayer(UiLayer):
         bar = pa.copy()
 
         bar.h = self.navigator_bar_height
-        bar.bottom = pa.bottom
+        bar.bottom = pa.bottom - pa.h * 0.025
+
         return bar
 
     @property
@@ -277,34 +279,54 @@ class ImageUiLayer(UiLayer):
         rect.w -= self.navigator_button_width
 
         pressed = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
+        held = cr.event_holder.mouse_held_keys[0]
         mr = cr.event_holder.mouse_rect
         mp = mr.center
 
         pa: FRect = self.get_box().get()
 
         if not pa.contains(mr):
+            self.navigator_locked = False
             return
 
         if pressed:
             if mr.colliderect(rect):
-                content: Content = self.parent.content_manager.current_content
+                self.navigator_locked = True
 
-                val = utils.inv_lerp(rect.left, rect.right, mp[0])
+        if released:
+            self.navigator_locked = False
 
-                if val < 0:
-                    val = 0
-                if val > 1:
-                    val = 1
+        if self.navigator_locked:
+            content: Content = self.parent.content_manager.current_content
 
-                self.navigator_pos_scale = val
+            val = utils.inv_lerp(rect.left, rect.right, mp[0])
 
-                new_time = self.navigator_pos_scale * content.video_total_time
+            if val < 0:
+                val = 0
+            if val > 1:
+                val = 1
+
+            self.navigator_pos_scale = val
+
+            new_time = self.navigator_pos_scale * content.video_total_time
+            if content.audio_extraction_result:
                 content.video_music_start_time = new_time
                 if pg.mixer_music.get_busy():
                     pg.mixer_music.stop()
                     pg.mixer_music.play(start=content.video_music_start_time)
+                    content.sync_video_with_audio()
                 else:
-                    ...
+                    pg.mixer_music.stop()
+                    pg.mixer_music.play(start=content.video_music_start_time)
+                    pg.mixer_music.pause()
+                    content.sync_video_with_audio()
+            else:
+                content.opencv_video.set(
+                    cv2.CAP_PROP_POS_FRAMES, new_time * content.video_fps
+                )
+
+            content.update_frame()
 
     # done: fix the bug in navigation
     def check_events(self):

@@ -32,8 +32,7 @@ class FullscreenView:
 
         self.zoom_view.update()
 
-        if not self.image_ui_layer.any_hovered:
-            self.zoom_view.check_events()
+        self.zoom_view.check_events()
 
     def render_debug(self):
         ...

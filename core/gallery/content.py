@@ -138,6 +138,8 @@ class Content:
 
             self.opencv_video.set(cv2.CAP_PROP_POS_FRAMES, pos * self.video_fps)
 
+        self.update_frame()
+
     def go_back(self):
         if self.video_is_paused:
             return
@@ -164,6 +166,8 @@ class Content:
                 pos = 0
 
             self.opencv_video.set(cv2.CAP_PROP_POS_FRAMES, pos * self.video_fps)
+
+        self.update_frame()
 
     @property
     def __video_is_playing(self):
@@ -274,6 +278,16 @@ class Content:
                 LogLevel.ERROR,
             )
 
+    def sync_video_with_audio(self):
+        music = pg.mixer.music
+
+        audio_cursor = music.get_pos() + self.video_music_start_time * 1000
+        # print(audio_cursor)
+        self.opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
+
+    def update_frame(self):
+        self.texture.update(self.__get_next_video_frame())
+
     def unload(self):
         if self.__gif_surface_list is not None:
             self.__gif_surface_list.clear()
@@ -308,11 +322,7 @@ class Content:
                     music = pg.mixer.music
 
                     if music.get_busy():
-                        audio_cursor = (
-                            music.get_pos() + self.video_music_start_time * 1000
-                        )
-                        # print(audio_cursor)
-                        self.opencv_video.set(cv2.CAP_PROP_POS_MSEC, audio_cursor)
+                        self.sync_video_with_audio()
 
                         # print(audio_cursor,video_cursor,video_cursor2)
                         # if utils.now() > self.__video_audio_sync_timer +\
@@ -329,7 +339,7 @@ class Content:
 
                 if utils.now() > self.__video_timer + self.__video_frame_duration:
                     try:
-                        self.texture.update(self.__get_next_video_frame())
+                        self.update_frame()
                     except cv2.error as e:
                         cr.log.write_log(
                             f"Could not fetch the video frame due to this error: {e}",
