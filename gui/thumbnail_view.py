@@ -220,13 +220,13 @@ class ThumbnailView:
 
     def render(self):
         pa = self.box.get()
-        cr.renderer.draw_color = constants.colors.GIMP_1
+        cr.renderer.draw_color = cr.color_theme.color_1
         cr.renderer.fill_rect(self.__scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.BEIGE
+        cr.renderer.draw_color = cr.color_theme.scroll_bar_border
         cr.renderer.draw_rect(self.__scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.NEON
+        cr.renderer.draw_color = cr.color_theme.button
         cr.renderer.fill_rect(self.__scroll_button_rect)
 
         for c, box in enumerate(self.boxes):
@@ -239,9 +239,9 @@ class ThumbnailView:
 
             if c == self.content_manager.current_content_index:
                 box.render(
-                    constants.colors.GIMP_2,
-                    constants.colors.GIMP_0,
-                    constants.colors.NEON,
+                    cr.color_theme.color_2,
+                    cr.color_theme.color_0,
+                    cr.color_theme.button,
                 )
 
             content = self.content_manager.get_at(c)

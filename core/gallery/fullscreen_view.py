@@ -38,7 +38,8 @@ class FullscreenView:
         ...
 
     def render(self):
-        self.image_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+        theme = cr.color_theme
+        self.image_box.render(theme.color_1, theme.color_2, theme.color_0)
         self.zoom_view.render()
         self.image_ui_layer.render()
         if cr.event_holder.should_render_debug:

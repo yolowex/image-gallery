@@ -56,11 +56,25 @@ class FolderView:
         self.selected_item: Optional[tuple[RelRect, dict]] = None
         self.disk_cursor = DiskCursor()
 
-        self.unloaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.2)
-        self.loaded_folders_color = colors.WHITE.lerp(colors.BLACK, 0.0)
+    @property
+    def error_color(self):
+        return cr.color_theme.error
 
-        self.error_color = colors.RED.lerp(colors.BLUE, 0.25)
-        self.selection_box_color = colors.OLIVE
+    @property
+    def selection_box_color(self):
+        return cr.color_theme.selection
+
+    @property
+    def bar_border_color(self):
+        return cr.color_theme.scroll_bar_border
+
+    @property
+    def unloaded_folders_color(self):
+        return cr.color_theme.text_1
+
+    @property
+    def loaded_folders_color(self):
+        return cr.color_theme.text_0
 
     def init(self):
         self.disk_cursor.init()
@@ -448,22 +462,22 @@ class FolderView:
 
             text.draw(mult, cut[0])
 
-        cr.renderer.draw_color = constants.colors.GIMP_1
+        cr.renderer.draw_color = cr.color_theme.color_1
         cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.BEIGE
+        cr.renderer.draw_color = self.bar_border_color
         cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.NEON
+        cr.renderer.draw_color = cr.color_theme.button
         cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
 
-        cr.renderer.draw_color = constants.colors.GIMP_1
+        cr.renderer.draw_color = cr.color_theme.color_1
         cr.renderer.fill_rect(self.__horizontal_scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.BEIGE
+        cr.renderer.draw_color = self.bar_border_color
         cr.renderer.draw_rect(self.__horizontal_scroll_bar_rect)
 
-        cr.renderer.draw_color = constants.colors.NEON
+        cr.renderer.draw_color = cr.color_theme.button
         cr.renderer.fill_rect(self.__horizontal_scroll_button_rect)
 
         if self.selected_item is not None:

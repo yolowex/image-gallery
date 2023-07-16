@@ -24,14 +24,23 @@ class HoverMan:
         self.should_render = False
         self.font = assets.fonts["small"]
         self.texture: Optional[Texture] = None
-        self.font_color = colors.WHITE
-        self.bg_color = colors.GIMP_2
-        self.border_color = colors.GIMP_0
 
         # padding values are a percentage of the window's size dimensions
         self.padding_x = 0.025
         self.padding_y = 0.025
         self.top_left = Vector2(0, 0)
+
+    @property
+    def font_color(self):
+        return cr.color_theme.text_0
+
+    @property
+    def bg_color(self):
+        return cr.color_theme.color_2
+
+    @property
+    def border_color(self):
+        return cr.color_theme.color_0
 
     @property
     def rect(self):

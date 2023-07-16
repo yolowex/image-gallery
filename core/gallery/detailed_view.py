@@ -183,21 +183,20 @@ class DetailedView:
 
         self.thumbnail_view.check_events()
 
-    def render_debug(self):
-        ...
-
     def render(self):
-        self.image_box.render(colors.GIMP_1, colors.GIMP_2)
+        theme = cr.color_theme
+
+        self.image_box.render(theme.color_1, theme.color_2)
         self.zoom_view.render()
 
-        self.detail_box.render(colors.GIMP_1, colors.GIMP_2)
+        self.detail_box.render(theme.color_1, theme.color_2)
 
-        self.preview_box.render(colors.GIMP_1, colors.GIMP_2)
+        self.preview_box.render(theme.color_1, theme.color_2)
 
-        self.info_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
-        self.left_box.render(colors.GIMP_1, colors.GIMP_2, colors.GIMP_0)
+        self.info_box.render(theme.color_1, theme.color_2, theme.color_0)
+        self.left_box.render(theme.color_1, theme.color_2, theme.color_0)
 
-        self.bottom_box.render(colors.GIMP_1, colors.GIMP_2)
+        self.bottom_box.render(theme.color_1, theme.color_2)
 
         self.image_ui_layer.render()
         self.thumbnail_view.render()
@@ -206,8 +205,5 @@ class DetailedView:
         if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
             self.folder_view.render()
 
-        if cr.event_holder.should_render_debug:
-            self.render_debug()
 
-
-# todo: find the purpose of DetailedView.log_box box & choose a better name
+# canceled: find the purpose of DetailedView.log_box box & choose a better name

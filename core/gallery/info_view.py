@@ -53,13 +53,13 @@ class InfoView:
         step_w = 1 / 3
 
         self.button_1_text = Texture.from_surface(
-            cr.renderer, self.font.render("Folders", True, colors.WHITE)
+            cr.renderer, self.font.render("Folders", True, cr.color_theme.text_0)
         )
         self.button_2_text = Texture.from_surface(
-            cr.renderer, self.font.render("Info", True, colors.WHITE)
+            cr.renderer, self.font.render("Info", True, cr.color_theme.text_0)
         )
         self.button_3_text = Texture.from_surface(
-            cr.renderer, self.font.render("Edit", True, colors.WHITE)
+            cr.renderer, self.font.render("Edit", True, cr.color_theme.text_0)
         )
 
         self.button_1_box = RelRect(
@@ -120,9 +120,9 @@ class InfoView:
 
     def render(self):
         self.selected_box.render(
-            colors.GIMP_1,
-            colors.NEON,
-            colors.GIMP_0,
+            cr.color_theme.color_1,
+            cr.color_theme.button,
+            cr.color_theme.color_0,
             rect=self.fun(self.selected_box.rect),
         )
 

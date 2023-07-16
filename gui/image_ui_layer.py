@@ -368,11 +368,11 @@ class ImageUiLayer(UiLayer):
         super().render()
 
         if is_vid:
-            cr.renderer.draw_color = colors.GIMP_2
+            cr.renderer.draw_color = cr.color_theme.color_2
             cr.renderer.fill_rect(self.navigator_bar_rect)
 
-            cr.renderer.draw_color = colors.TURQUOISE
+            cr.renderer.draw_color = cr.color_theme.navigator
             cr.renderer.fill_rect(self.navigator_button_rect)
 
-            cr.renderer.draw_color = colors.CHOCOLATE.lerp(colors.BLACK, 0.5)
+            cr.renderer.draw_color = cr.color_theme.navigator_bar_border
             cr.renderer.draw_rect(self.navigator_bar_rect)
