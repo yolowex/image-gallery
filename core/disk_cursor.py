@@ -17,6 +17,7 @@ class DiskCursor:
         self.contents_dict = {}
         self.opened_content_path = None
         self.opened_content_name = None
+        self.opened_content_item = None
 
     def init(self):
         if len(sys.argv) > 1:
@@ -117,7 +118,7 @@ class DiskCursor:
 
     def init_indirect_file(self, dict_, stack):
         if not len(stack):
-            return
+            return dict_
 
         current = stack[-1]
         failed = True
@@ -130,14 +131,16 @@ class DiskCursor:
                 failed = False
                 stack.pop(len(stack) - 1)
                 self.expand_folder(item)
-                self.init_indirect_file(item, stack)
-                return
+                return self.init_indirect_file(item, stack)
 
         if failed:
-            raise cr.log.write_log(
+            cr.log.write_log(
                 f"Could not process the content root of {self.opened_content_name}",
                 LogLevel.ERROR,
             )
+            return False
+
+        return dict_
 
     def init_contents(self):
         for path in constants.CONTENT_ROOT_LIST:
@@ -169,6 +172,9 @@ class DiskCursor:
                     LogLevel.INFO,
                 )
 
-                self.init_indirect_file(self.contents_dict, stack)
+                item = self.init_indirect_file(self.contents_dict, stack)
+                print("item is ", item)
+                if item:
+                    self.opened_content_item = item
 
         cr.log.write_log("Successfully initialized all content roots", LogLevel.DEBUG)

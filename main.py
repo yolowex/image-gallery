@@ -1,3 +1,4 @@
+from core.common import constants
 from core.common.enums import LogLevel
 from core.log import Log
 import platform
@@ -56,5 +57,5 @@ except Exception as e:
 
 
 log.write_log("Closing the app...", LogLevel.INFO)
-if error:
+if error and not constants.IS_LINUX:
     input("Press any key to exit")
