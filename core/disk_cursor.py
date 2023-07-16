@@ -23,7 +23,6 @@ class DiskCursor:
         if len(sys.argv) > 1:
             self.opened_content_path = sys.argv[1]
             self.opened_content_name = self.opened_content_path.split("/")[-1]
-            print(self.opened_content_path)
 
         self.init_contents()
 
@@ -86,6 +85,9 @@ class DiskCursor:
         self.expand_folder(self.get_item_by_address(address))
 
     def expand_folder(self, item: dict):
+        if item["is_loaded"]:
+            return False
+
         item["is_loaded"] = True
 
         try:
@@ -101,10 +103,12 @@ class DiskCursor:
             )
 
             item["error"] = f"Error: {e}"
-            return
+            return False
 
         for sub_item in sub_items:
             self.add_item_at(sub_item, item, item["address"])
+
+        return True
 
     def collapse_folder_at(self, address):
         self.collapse_folder(self.get_item_by_address(address))
@@ -121,26 +125,51 @@ class DiskCursor:
             return dict_
 
         current = stack[-1]
-        failed = True
+
         for key in dict_:
             item = dict_[key]
             if not isinstance(item, dict):
                 continue
 
             if current == item["path"]:
-                failed = False
                 stack.pop(len(stack) - 1)
                 self.expand_folder(item)
                 return self.init_indirect_file(item, stack)
 
-        if failed:
+        cr.log.write_log(
+            f"Could not process the content root of {self.opened_content_name}",
+            LogLevel.ERROR,
+        )
+        return False
+
+    def open_dropped_file(self, p_path: str):
+        stack = []
+
+        x = p_path.split("/")
+        found_root = False
+        for index, i in list(enumerate(x))[::-1]:
+            path = "".join([i + "/" for i in x[:index]])[:-1]
+            stack.append(path)
+            if path in constants.CONTENT_ROOT_LIST:
+                found_root = True
+                break
+
+        if not found_root:
             cr.log.write_log(
-                f"Could not process the content root of {self.opened_content_name}",
+                f"Could not find any root for dragged file {p_path}",
                 LogLevel.ERROR,
             )
-            return False
+        else:
+            cr.log.write_log(
+                f"Content root for {p_path} is {stack[-1]}",
+                LogLevel.INFO,
+            )
 
-        return dict_
+            item = self.init_indirect_file(self.contents_dict, stack)
+            if item:
+                return item
+
+        return False
 
     def init_contents(self):
         for path in constants.CONTENT_ROOT_LIST:
@@ -173,7 +202,7 @@ class DiskCursor:
                 )
 
                 item = self.init_indirect_file(self.contents_dict, stack)
-                print("item is ", item)
+
                 if item:
                     self.opened_content_item = item
 

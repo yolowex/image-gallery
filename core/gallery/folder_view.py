@@ -73,16 +73,9 @@ class FolderView:
                     self.content_manager.reinit(item["path"])
                     self.thumbnail_view.reinit()
                     self.scroll_y_value = -c * self.item_height
-                    if not item["is_loaded"]:
-                        self.disk_cursor.expand_folder_at(item["address"])
-                        self.sync_texts()
-                    else:
-                        self.disk_cursor.collapse_folder_at(item["address"])
-                        self.sync_texts()
 
-                    for index,i in enumerate(self.content_manager.content_list):
+                    for index, i in enumerate(self.content_manager.content_list):
                         if i.name == self.disk_cursor.opened_content_name:
-                            print("Voila!")
                             self.content_manager.current_content_index = index
                             self.content_manager.load_contents()
                             break
@@ -401,7 +394,33 @@ class FolderView:
                 if mr.colliderect(this):
                     self.hover_man.update_text(item["name"])
 
+    def check_drop_file(self):
+        for i in cr.event_holder.events:
+            if i.type == pgl.DROPFILE:
+                result_item = self.disk_cursor.open_dropped_file(i.file)
+                self.sync_texts()
+
+                c = 0
+                for _, box, item in self.text_box_list:
+                    if item["address"] == result_item["address"]:
+                        self.selected_item = (box, item)
+                        self.content_manager.reinit(item["path"])
+                        self.thumbnail_view.reinit()
+                        self.scroll_y_value = -c * self.item_height
+
+                        for index, i in enumerate(self.content_manager.content_list):
+                            if i.name == self.disk_cursor.opened_content_name:
+                                print("Voila!")
+                                self.content_manager.current_content_index = index
+                                self.content_manager.load_contents()
+                                break
+
+                        break
+
+                    c += 1
+
     def check_events(self):
+        self.check_drop_file()
         self.check_hover()
         self.check_click()
         self.check_scroll()

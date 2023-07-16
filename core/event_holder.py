@@ -28,6 +28,8 @@ class EventHolder:
         self.clock = pg.time.Clock()
         self.dt = 0
 
+        self.events: list[pg.event.Event] = []
+
     @property
     def delta_time(self):
         return self.dt
@@ -52,8 +54,9 @@ class EventHolder:
         self.dt = self.clock.tick(self.determined_fps) / 1000
         self.window_resized = False
         self.mouse_wheel = 0
-
-        for i in pg.event.get():
+        self.events.clear()
+        self.events.extend(pg.event.get())
+        for i in self.events:
             if i.type == WINDOWFOCUSLOST:
                 self.window_focus = False
             if i.type == WINDOWFOCUSGAINED:
