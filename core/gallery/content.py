@@ -112,11 +112,12 @@ class Content:
             return
 
         music = pg.mixer.music
-        if self.audio_extraction_result:
-            step = self.video_total_time / 100
-            if step < 5:
-                step = 5
 
+        step = self.video_total_time / 100
+        if step < 5:
+            step = 5
+
+        if self.audio_extraction_result:
             pos = self.video_music_start_time + music.get_pos() / 1000
             pos += step
 
@@ -128,16 +129,25 @@ class Content:
             music.stop()
             music.play(start=self.video_music_start_time)
 
+        else:
+            pos = self.opencv_video.get(cv2.CAP_PROP_POS_FRAMES) / self.video_fps
+            pos += step
+
+            if pos >= self.video_total_time:
+                return
+
+            self.opencv_video.set(cv2.CAP_PROP_POS_FRAMES, pos * self.video_fps)
+
     def go_back(self):
         if self.video_is_paused:
             return
 
         music = pg.mixer.music
-        if self.audio_extraction_result:
-            step = self.video_total_time / 100
-            if step < 5:
-                step = 5
+        step = self.video_total_time / 100
+        if step < 5:
+            step = 5
 
+        if self.audio_extraction_result:
             pos = self.video_music_start_time + music.get_pos() / 1000
             pos -= step
             self.video_music_start_time = pos
@@ -146,6 +156,14 @@ class Content:
 
             music.stop()
             music.play(start=self.video_music_start_time)
+        else:
+            pos = self.opencv_video.get(cv2.CAP_PROP_POS_FRAMES) / self.video_fps
+            pos -= step
+
+            if pos < 0:
+                pos = 0
+
+            self.opencv_video.set(cv2.CAP_PROP_POS_FRAMES, pos * self.video_fps)
 
     @property
     def __video_is_playing(self):
