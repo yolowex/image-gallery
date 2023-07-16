@@ -19,7 +19,7 @@ class FullscreenView:
         self.hover_man = hover_man
 
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
-        self.image_ui_layer = ImageUiLayer()
+        self.image_ui_layer = ImageUiLayer(self.hover_man)
 
     def init(self):
         self.image_ui_layer.init()

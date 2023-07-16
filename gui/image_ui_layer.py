@@ -6,6 +6,7 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content import Content
 from gui.button import Button
+from gui.hover_man import HoverMan
 from gui.ui_layer import UiLayer
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
@@ -13,8 +14,9 @@ from core.common import utils, assets
 
 # todo: properly center the bottom pane elements
 class ImageUiLayer(UiLayer):
-    def __init__(self):
+    def __init__(self, hover_man: HoverMan):
         super().__init__()
+        self.hover_man = hover_man
         self.video_buttons = []
         self.picture_buttons = []
         self.play_button: Optional[Button] = None
@@ -125,7 +127,7 @@ class ImageUiLayer(UiLayer):
         w_step = play_button_size[0]
 
         self.play_button = Button(
-            "Play",
+            "Play Video",
             R((0.46 + w_step * 0, play_button_y), play_button_size),
             assets.ui_buttons["play"],
             self.trigger_start,
@@ -328,6 +330,15 @@ class ImageUiLayer(UiLayer):
 
             content.update_frame()
 
+    def check_hover_man(self):
+        mr = cr.event_holder.mouse_rect
+
+        for button in self.buttons:
+            this = button.rel_rect.get()
+            if mr.colliderect(this):
+                self.hover_man.update_text(button.name)
+                break
+
     # done: fix the bug in navigation
     def check_events(self):
         is_vid = False
@@ -341,6 +352,7 @@ class ImageUiLayer(UiLayer):
         if is_vid:
             self.check_navigator()
 
+        self.check_hover_man()
         super().check_events()
         if self.any_hovered:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_HAND

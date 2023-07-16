@@ -27,7 +27,7 @@ class DetailedView:
         self.boxes_x_range = (0.2, 0.7)
         self.boxes_y_range = (0.5, 0.85)
 
-        self.image_ui_layer = ImageUiLayer()
+        self.image_ui_layer = ImageUiLayer(self.hover_man)
 
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.05)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
