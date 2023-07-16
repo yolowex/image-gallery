@@ -53,7 +53,9 @@ class DetailedView:
 
         self.x_locked = False
         self.y_locked = False
-        self.thumbnail_view = ThumbnailView(self.preview_box, self.content_manager)
+        self.thumbnail_view = ThumbnailView(
+            self.preview_box, self.content_manager, hover_man
+        )
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
         self.folder_view = FolderView(

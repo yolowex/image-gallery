@@ -14,6 +14,7 @@ class Content:
     def __init__(self, box: RelRect = None, path: str = None):
         self.path: Optional[str] = path
         self.name = path.split("/")[-1]
+        self.pure_name = self.name.split(".")[0]
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
         self.type: Optional[ContentType] = None

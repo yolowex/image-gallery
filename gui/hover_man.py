@@ -60,7 +60,8 @@ class HoverMan:
 
         return text
 
-    def update_text(self, text):
+    def update_text(self, text, line_char_limit=25):
+        self.line_char_limit = line_char_limit
         if not self.should_render:
             self.text = text
 

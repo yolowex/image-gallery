@@ -6,15 +6,19 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content_manager import ContentManager
 from gui.button import Button
+from gui.hover_man import HoverMan
 from gui.ui_layer import UiLayer
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
 
 class ThumbnailView:
-    def __init__(self, box: RelRect, content_manager: ContentManager):
+    def __init__(
+        self, box: RelRect, content_manager: ContentManager, hover_man: HoverMan
+    ):
         self.box = box
         self.content_manager = content_manager
+        self.hover_man = hover_man
 
         self.boxes: list[RelRect] = []
         self.scroll_value = 0
@@ -179,12 +183,37 @@ class ThumbnailView:
 
             self.content_manager.load_contents(-int(self.scroll_value))
 
+    def check_hover(self):
+        pa = self.box.get()
+        mr = cr.event_holder.mouse_rect
+        for c, box in enumerate(self.boxes):
+            this = box.get()
+            if this.left < pa.left:
+                continue
+
+            if this.left > pa.right:
+                continue
+
+            if mr.colliderect(this):
+                content = self.content_manager.get_at(c)
+
+                max_len = 20
+                text = content.pure_name[:max_len]
+                if len(text) > max_len - 3:
+                    text += "-" + content.extension
+                else:
+                    text += "." + content.extension
+
+                self.hover_man.update_text(text, 30)
+                break
+
     def check_events(self):
         self.dont_reset_cursor = False
         self.update()
         self.check_gif_updates()
         self.check_scroll_bar_click()
         self.check_scroll()
+        self.check_hover()
 
     def render_debug(self):
         ...
