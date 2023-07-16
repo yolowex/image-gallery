@@ -176,7 +176,6 @@ class ImageUiLayer(UiLayer):
                 forward_button,
             ]
         )
-        print(len(self.video_buttons))
         self.picture_buttons.extend([next_button, previous_button])
 
     def init_right_pane(self):

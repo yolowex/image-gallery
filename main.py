@@ -2,7 +2,6 @@ from core.common.enums import LogLevel
 from core.log import Log
 import platform
 import traceback
-import os
 
 import os
 import pathlib
@@ -20,6 +19,9 @@ if file_path != "":
     os.chdir(file_path)
 
 print(f"current working directory is {os.getcwd()}\n")
+
+if len(sys.argv) > 1:
+    sys.argv[1] = pathlib.Path(sys.argv[1]).resolve().as_posix()
 
 
 current_platform = platform.system()

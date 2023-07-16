@@ -15,8 +15,15 @@ f = FileType
 class DiskCursor:
     def __init__(self):
         self.contents_dict = {}
+        self.opened_content_path = None
+        self.opened_content_name = None
 
     def init(self):
+        if len(sys.argv) > 1:
+            self.opened_content_path = sys.argv[1]
+            self.opened_content_name = self.opened_content_path.split("/")[-1]
+            print(self.opened_content_path)
+
         self.init_contents()
 
     def add_item_at(self, path: str, dict_: dict, parent_address=None):
@@ -108,6 +115,30 @@ class DiskCursor:
             if isinstance(i, int):
                 del item[i]
 
+    def init_indirect_file(self, dict_, stack):
+        if not len(stack):
+            return
+
+        current = stack[-1]
+        failed = True
+        for key in dict_:
+            item = dict_[key]
+            if not isinstance(item, dict):
+                continue
+
+            if current == item["path"]:
+                failed = False
+                stack.pop(len(stack) - 1)
+                self.expand_folder(item)
+                self.init_indirect_file(item, stack)
+                return
+
+        if failed:
+            raise cr.log.write_log(
+                f"Could not process the content root of {self.opened_content_name}",
+                LogLevel.ERROR,
+            )
+
     def init_contents(self):
         for path in constants.CONTENT_ROOT_LIST:
             self.add_item_at(path, self.contents_dict)
@@ -115,5 +146,29 @@ class DiskCursor:
         for key in self.contents_dict:
             item = self.contents_dict[key]
             self.expand_folder(item)
+
+        stack = []
+        if self.opened_content_path is not None:
+            x = self.opened_content_path.split("/")
+            found_root = False
+            for index, i in list(enumerate(x))[::-1]:
+                path = "".join([i + "/" for i in x[:index]])[:-1]
+                stack.append(path)
+                if path in constants.CONTENT_ROOT_LIST:
+                    found_root = True
+                    break
+
+            if not found_root:
+                cr.log.write_log(
+                    f"Could not find any root for {self.opened_content_path}",
+                    LogLevel.ERROR,
+                )
+            else:
+                cr.log.write_log(
+                    f"Content root for {self.opened_content_name} is {stack[-1]}",
+                    LogLevel.INFO,
+                )
+
+                self.init_indirect_file(self.contents_dict, stack)
 
         cr.log.write_log("Successfully initialized all content roots", LogLevel.DEBUG)
