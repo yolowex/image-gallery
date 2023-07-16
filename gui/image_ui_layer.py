@@ -286,9 +286,9 @@ class ImageUiLayer(UiLayer):
 
         pa: FRect = self.get_box().get()
 
-        if not pa.contains(mr):
-            self.navigator_locked = False
-            return
+        # if not pa.contains(mr):
+        #     self.navigator_locked = False
+        #     return
 
         if pressed:
             if mr.colliderect(rect):
