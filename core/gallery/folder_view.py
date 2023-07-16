@@ -66,12 +66,13 @@ class FolderView:
         self.disk_cursor.init()
         self.sync_texts()
         if self.disk_cursor.opened_content_item:
+            c = 0
             for _, box, item in self.text_box_list:
                 if item["address"] == self.disk_cursor.opened_content_item["address"]:
                     self.selected_item = (box, item)
                     self.content_manager.reinit(item["path"])
                     self.thumbnail_view.reinit()
-
+                    self.scroll_y_value = -c * self.item_height
                     if not item["is_loaded"]:
                         self.disk_cursor.expand_folder_at(item["address"])
                         self.sync_texts()
@@ -79,7 +80,11 @@ class FolderView:
                         self.disk_cursor.collapse_folder_at(item["address"])
                         self.sync_texts()
 
-            print(self.disk_cursor.opened_content_item)
+                c += 1
+
+            self.check_scroll()
+
+            # print(self.disk_cursor.opened_content_item)
 
     @property
     def __horizontal_scroll_bar_height(self):
