@@ -126,15 +126,20 @@ class InfoView:
             rect=self.fun(self.selected_box.rect),
         )
 
-        cut_1 = utils.cut_rect_in(
-            self.fun(self.button_1_box.rect), self.button_1_box.get()
-        )
-        cut_2 = utils.cut_rect_in(
-            self.fun(self.button_2_box.rect), self.button_2_box.get()
-        )
-        cut_3 = utils.cut_rect_in(
-            self.fun(self.button_3_box.rect), self.button_3_box.get()
-        )
+        s1 = self.button_1_box.get()
+        s2 = self.button_2_box.get()
+        s3 = self.button_3_box.get()
+
+        r1 = self.fun(self.button_1_box.rect)
+        s1.center = r1.center
+        r2 = self.fun(self.button_2_box.rect)
+        s2.center = r2.center
+        r3 = self.fun(self.button_3_box.rect)
+        s3.center = r3.center
+
+        cut_1 = utils.cut_rect_in(r1, s1)
+        cut_2 = utils.cut_rect_in(r2, s2)
+        cut_3 = utils.cut_rect_in(r3, s3)
 
         src_rect_1 = utils.mult_rect(
             cut_1[1], self.button_1_text.width, self.button_1_text.height
@@ -145,6 +150,9 @@ class InfoView:
         src_rect_3 = utils.mult_rect(
             cut_3[1], self.button_3_text.width, self.button_3_text.height
         )
+
+        # src_rect_1.center = self.button_1_box.get().center
+        # cut_1[0].center = self.button_1_box.get().center
 
         self.button_1_text.draw(src_rect_1, cut_1[0])
         self.button_2_text.draw(src_rect_2, cut_2[0])
