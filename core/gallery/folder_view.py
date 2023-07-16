@@ -408,11 +408,11 @@ class FolderView:
                         self.thumbnail_view.reinit()
                         self.scroll_y_value = -c * self.item_height
 
-                        for index, i in enumerate(self.content_manager.content_list):
-                            if i.name == self.disk_cursor.opened_content_name:
-                                print("Voila!")
+                        for index, j in enumerate(self.content_manager.content_list):
+                            if j.name == i.file.split("/")[-1]:
                                 self.content_manager.current_content_index = index
                                 self.content_manager.load_contents()
+
                                 break
 
                         break
