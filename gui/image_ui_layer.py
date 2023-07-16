@@ -360,7 +360,7 @@ class ImageUiLayer(UiLayer):
             cr.renderer.draw_color = colors.GIMP_2
             cr.renderer.fill_rect(self.navigator_bar_rect)
 
-            cr.renderer.draw_color = colors.NEON
+            cr.renderer.draw_color = colors.TURQUOISE
             cr.renderer.fill_rect(self.navigator_button_rect)
 
             cr.renderer.draw_color = colors.CHOCOLATE.lerp(colors.BLACK, 0.5)

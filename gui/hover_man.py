@@ -40,6 +40,15 @@ class HoverMan:
 
         size = self.texture.get_rect().size
         rect = FRect(self.top_left, size)
+
+        win_rect = FRect((0, 0), cr.ws())
+
+        if rect.right > win_rect.right:
+            rect.right = rect.left
+
+        if rect.bottom > win_rect.bottom:
+            rect.bottom = rect.top
+
         return rect
 
     def get_text_str(self):
