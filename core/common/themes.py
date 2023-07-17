@@ -87,63 +87,72 @@ class ColorThemes:
             colors.CHOCOLATE.lerp("black", 0.5),  # navigator border
         ]
 
+        EVIL_EYE = [
+            Color("#2C3E50"),  # color_0 (Dark Blue)
+            Color("#34495E"),  # color_1 (Dark Grayish Blue)
+            Color("#2C3E90"),  # color_2 (Dark Blue)
+            Color("#A6A6A6").lerp("dark blue", 0.3),  # button (Light Gray)
+            Color("#FFFFFF").lerp("purple", 0.08),  # text_0 (White)
+            Color("#D3D3D3").lerp("purple", 0.08),  # text_1 (Light Gray)
+            Color("#A6A6A6").lerp("dark blue", 0.45),  # navigator (Dark Grayish Blue)
+            Color("#FF0000"),  # error (Red)
+            Color("#FFA500"),  # selected box (Orange)
+            Color("#04090E"),  # scroll bar border (Dark Grayish Blue)
+            Color("#A6A6A6"),  # navigator border (Light Gray)
+        ]
+
         LIGHT = [
-            i.lerp(Color("white"), 0.3)
-            for i in [
-                Color("#3b3b3b"),
-                Color("#454545"),
-                Color("#5c5c5c"),
-                Color(150, 180, 255),
-                Color([255, 255, 255]),
-                Color([200, 200, 200]),
-                Color([64, 224, 208]),
-                colors.RED,
-                colors.OLIVE,
-                colors.BEIGE,
-                colors.CHOCOLATE.lerp("black", 0.5),
-            ]
+            Color("#F8F9FA"),  # color_0 (Light Gray)
+            Color("#F1F8E9"),  # color_1 (Pale Green)
+            Color("#E1F5FE").lerp("black", 0.5),  # color_2 (Light Blue)
+            Color("#FFFDE7").lerp("blue", 0.2),  # button (Pale Yellow)
+            Color("#212121"),  # text_0 (Black)
+            Color("#757575"),  # text_1 (Dark Gray)
+            Color("#F5F5F5"),  # navigator (Light Gray)
+            Color("#F44336"),  # error (Red)
+            Color("#FF9800"),  # selected box (Orange)
+            Color("#E0E0E0").lerp("black", 0.5),  # scroll bar border (Light Gray)
+            Color("#BDBDBD"),  # navigator border (Gray)
+            Color("#9C27B0").lerp("gold", 0.5),  # accent color (Purple)
         ]
 
         MEXICO = [
-            i.lerp(Color("orange"), 0.1)
+            i.lerp("orange", 0.25)
             for i in [
-                Color("#3b3b3b"),
-                Color("#454545"),
-                Color("#5c5c5c"),
-                Color(150, 180, 255),
-                Color([255, 255, 255]),
-                Color([200, 200, 200]),
-                Color([64, 224, 208]),
-                colors.RED,
-                colors.OLIVE,
-                colors.BEIGE,
-                colors.CHOCOLATE.lerp("black", 0.5),
+                Color("#F8F9FA"),  # color_0 (Light Gray)
+                Color("#F1F8E9"),  # color_1 (Pale Green)
+                Color("#E1F5FE").lerp("black", 0.5),  # color_2 (Light Blue)
+                Color("#FFFDE7").lerp("blue", 0.2),  # button (Pale Yellow)
+                Color("#212121"),  # text_0 (Black)
+                Color("#757575"),  # text_1 (Dark Gray)
+                Color("#F5F5F5"),  # navigator (Light Gray)
+                Color("#F44336"),  # error (Red)
+                Color("#FF9800"),  # selected box (Orange)
+                Color("#E0E0E0").lerp("black", 0.5),  # scroll bar border (Light Gray)
+                Color("#BDBDBD"),  # navigator border (Gray)
+                Color("#9C27B0").lerp("gold", 0.5),  # accent color (Purple)
             ]
         ]
 
-        NEON = [
-            i.lerp(Color("blue"), 0.3).lerp(Color("black"), 0.5)
-            for i in [
-                Color("#3b3b3b"),
-                Color("#454545"),
-                Color("#5c5c5c"),
-                Color(150, 180, 255),
-                Color([255, 255, 255]),
-                Color([200, 200, 200]),
-                Color([64, 224, 208]),
-                colors.RED,
-                colors.OLIVE,
-                colors.BEIGE,
-                colors.CHOCOLATE.lerp("black", 0.5),
-            ]
-        ]
+        # NEON = [
+        #     Color("#323b3b"),  # color_0
+        #     Color("#454545"),  # color_1
+        #     Color("#5c5c5c"),  # color_2
+        #     Color("#5c5c5c"),  # button
+        #     Color("#5c5c5c"),  # text_0
+        #     Color("#5c5c5c"),  # text_1
+        #     Color("#5c5c5c"),  # navigator
+        #     Color("#5c5c5c"), # error
+        #     Color("#5c5c5c"),  # selected box
+        #     Color("#5c5c5c"),  # scroll bar border
+        #     Color("#5c5c5c"),  # navigator border
+        # ]
 
-    DARK = Pattern.DARK
-    LIGHT = Pattern.LIGHT
-    MEXICO = Pattern.MEXICO
-    NEON = Pattern.NEON
+    p = Pattern
 
-    ALL = [DARK, LIGHT, MEXICO, NEON]
+    ALL = [p.DARK, p.EVIL_EYE, p.LIGHT, p.MEXICO]
+
+    print(type(ALL), ALL[0])
 
     __index = 0
 
@@ -152,6 +161,7 @@ class ColorThemes:
 
     def go_next(self):
         ct = ColorThemes
+        print([i.name for i in ct.ALL])
         ct.__index += 1
         if ct.__index == len(ct.ALL):
             ct.__index = 0

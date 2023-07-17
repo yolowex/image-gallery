@@ -1,3 +1,4 @@
+from core.common.themes import ColorThemes
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
@@ -108,7 +109,7 @@ class BottomView:
                 cr.color_theme.go_next()
                 self.update_theme_text()
                 cr.gallery.detailed_view.folder_view.sync_texts()
-
+                cr.gallery.detailed_view.info_view.update_texts()
 
     def check_hover(self):
         mr = cr.event_holder.mouse_rect
@@ -117,7 +118,7 @@ class BottomView:
         if cr.event_holder.mouse_moved or True:
             if mr.colliderect(theme_rect):
                 self.hover_man.update_text(
-                    "".join([i.name + "\n" for i in cr.color_theme.ALL]), 50
+                    "".join([i.name + "\n" for i in cr.color_theme.ALL]), 100
                 )
 
     def check_events(self):

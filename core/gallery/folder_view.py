@@ -465,20 +465,20 @@ class FolderView:
         cr.renderer.draw_color = cr.color_theme.color_1
         cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
 
-        cr.renderer.draw_color = self.bar_border_color
-        cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
+        cr.renderer.draw_color = cr.color_theme.color_1
+        cr.renderer.fill_rect(self.__horizontal_scroll_bar_rect)
+
+        cr.renderer.draw_color = cr.color_theme.button
+        cr.renderer.fill_rect(self.__horizontal_scroll_button_rect)
 
         cr.renderer.draw_color = cr.color_theme.button
         cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
 
-        cr.renderer.draw_color = cr.color_theme.color_1
-        cr.renderer.fill_rect(self.__horizontal_scroll_bar_rect)
+        cr.renderer.draw_color = self.bar_border_color
+        cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
 
         cr.renderer.draw_color = self.bar_border_color
         cr.renderer.draw_rect(self.__horizontal_scroll_bar_rect)
-
-        cr.renderer.draw_color = cr.color_theme.button
-        cr.renderer.fill_rect(self.__horizontal_scroll_button_rect)
 
         if self.selected_item is not None:
             box, item = self.selected_item

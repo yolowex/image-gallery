@@ -95,6 +95,17 @@ class InfoView:
 
         self.selected_box_index = SelectedInfoView.FOLDERS
 
+    def update_texts(self):
+        self.button_1_text = Texture.from_surface(
+            cr.renderer, self.font.render("Folders", True, cr.color_theme.text_0)
+        )
+        self.button_2_text = Texture.from_surface(
+            cr.renderer, self.font.render("Info", True, cr.color_theme.text_0)
+        )
+        self.button_3_text = Texture.from_surface(
+            cr.renderer, self.font.render("Edit", True, cr.color_theme.text_0)
+        )
+
     @property
     def selected_box(self) -> RelRect:
         return self.box_list[self.selected_box_index.value]
