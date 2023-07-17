@@ -44,17 +44,6 @@ class Gallery:
             cr.window.set_windowed()
 
     def check_events(self):
-        if pgl.K_TAB in cr.event_holder.pressed_keys:
-            th = cr.color_theme.current_theme
-            if th == cr.color_theme.MEXICO:
-                cr.color_theme.current_theme = cr.color_theme.DARK
-
-            if th == cr.color_theme.DARK:
-                cr.color_theme.current_theme = cr.color_theme.MEXICO
-
-            self.detailed_view.folder_view.sync_texts()
-            self.hover_man.init_text()
-
         self.hover_man.update_text(None)
         self.content_manager.check_events()
         if self.__current_view == ViewType.DETAILED:
