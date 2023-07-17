@@ -4,6 +4,7 @@ import core.common.constants as constants
 from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.bottom_view import BottomView
 from core.gallery.content_manager import ContentManager
 from core.gallery.folder_view import FolderView
 from core.gallery.info_view import InfoView
@@ -32,7 +33,7 @@ class DetailedView:
         self.image_pos: Optional[Vector2] = Vector2(0.2, 0.05)
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
 
-        self.bottom_box: Optional[RelRect] = None
+        self.bottom_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
         self.detail_box: Optional[RelRect] = None
 
         self.image_box = RelRect(cr.ws, (0, 0), (0, 0))
@@ -61,6 +62,8 @@ class DetailedView:
         self.folder_view = FolderView(
             self.left_box, self.content_manager, self.hover_man, self.thumbnail_view
         )
+
+        self.bottom_view = BottomView(self.bottom_box, self.hover_man)
 
         self.just_resized_boxes = False
         self.resize_boxes()
@@ -94,12 +97,12 @@ class DetailedView:
         image_size = self.image_size = Vector2(rect.w, rect.h)
 
         self.detail_box = RelRect(cr.ws, image_pos.x, 0, image_size.x, 0.05)
-        self.bottom_box = RelRect(cr.ws, 0, 0.95, 1, 0.05)
+        self.bottom_box.rect = FRect(0, 0.96, 1, 0.04)
 
         self.image_box.rect = FRect(self.image_pos, self.image_size)
 
         left_box_width = image_pos.x
-        self.left_box.rect = FRect(0, 0.05, left_box_width, 0.9)
+        self.left_box.rect = FRect(0, 0.05, left_box_width, 0.91)
 
         self.info_box.rect = FRect(
             0,
@@ -163,6 +166,7 @@ class DetailedView:
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
+        self.bottom_view.check_events()
         self.image_ui_layer.check_events()
         self.info_view.check_events()
         if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
@@ -185,7 +189,6 @@ class DetailedView:
 
     def render(self):
         theme = cr.color_theme
-
         self.image_box.render(theme.color_1, theme.color_2)
         self.zoom_view.render()
 
@@ -201,6 +204,7 @@ class DetailedView:
         self.image_ui_layer.render()
         self.thumbnail_view.render()
         self.info_view.render()
+        self.bottom_view.render()
 
         if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
             self.folder_view.render()

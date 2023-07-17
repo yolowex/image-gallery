@@ -44,7 +44,6 @@ class Gallery:
             cr.window.set_windowed()
 
     def check_events(self):
-
         if pgl.K_TAB in cr.event_holder.pressed_keys:
             th = cr.color_theme.current_theme
             if th == cr.color_theme.MEXICO:

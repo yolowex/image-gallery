@@ -88,17 +88,20 @@ class ColorThemes:
         ]
 
         LIGHT = [
-            Color("#3b3b3b"),
-            Color("#454545"),
-            Color("#5c5c5c"),
-            Color(150, 180, 255),
-            Color([255, 255, 255]),
-            Color([200, 200, 200]),
-            Color([64, 224, 208]),
-            colors.RED,
-            colors.OLIVE,
-            colors.BEIGE,
-            colors.CHOCOLATE.lerp("black", 0.5),
+            i.lerp(Color("white"), 0.3)
+            for i in [
+                Color("#3b3b3b"),
+                Color("#454545"),
+                Color("#5c5c5c"),
+                Color(150, 180, 255),
+                Color([255, 255, 255]),
+                Color([200, 200, 200]),
+                Color([64, 224, 208]),
+                colors.RED,
+                colors.OLIVE,
+                colors.BEIGE,
+                colors.CHOCOLATE.lerp("black", 0.5),
+            ]
         ]
 
         MEXICO = [
@@ -119,26 +122,41 @@ class ColorThemes:
         ]
 
         NEON = [
-            Color("#3b3b3b"),
-            Color("#454545"),
-            Color("#5c5c5c"),
-            Color(150, 180, 255),
-            Color([255, 255, 255]),
-            Color([200, 200, 200]),
-            Color([64, 224, 208]),
-            colors.RED,
-            colors.OLIVE,
-            colors.BEIGE,
-            colors.CHOCOLATE.lerp("black", 0.5),
+            i.lerp(Color("blue"), 0.3).lerp(Color("black"), 0.5)
+            for i in [
+                Color("#3b3b3b"),
+                Color("#454545"),
+                Color("#5c5c5c"),
+                Color(150, 180, 255),
+                Color([255, 255, 255]),
+                Color([200, 200, 200]),
+                Color([64, 224, 208]),
+                colors.RED,
+                colors.OLIVE,
+                colors.BEIGE,
+                colors.CHOCOLATE.lerp("black", 0.5),
+            ]
         ]
 
-    DARK = Pattern.NEON
+    DARK = Pattern.DARK
     LIGHT = Pattern.LIGHT
     MEXICO = Pattern.MEXICO
     NEON = Pattern.NEON
 
+    ALL = [DARK, LIGHT, MEXICO, NEON]
+
+    __index = 0
+
     def __init__(self):
         self.current_theme: ColorThemes.Pattern = ColorThemes.Pattern.DARK
+
+    def go_next(self):
+        ct = ColorThemes
+        ct.__index += 1
+        if ct.__index == len(ct.ALL):
+            ct.__index = 0
+
+        self.current_theme = ct.ALL[ct.__index]
 
     @property
     def color_0(self):
