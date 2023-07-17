@@ -107,6 +107,8 @@ class BottomView:
             if mr.colliderect(theme_rect):
                 cr.color_theme.go_next()
                 self.update_theme_text()
+                cr.gallery.detailed_view.folder_view.sync_texts()
+
 
     def check_hover(self):
         mr = cr.event_holder.mouse_rect
