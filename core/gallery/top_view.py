@@ -126,7 +126,7 @@ class TopView:
 
             return fun
 
-        left = 0.05
+        left = 0.00
         step_w = (1 - left) / 4
         h = 0.6
         self.name_tag_box = RelRect(
