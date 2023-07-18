@@ -113,8 +113,6 @@ class ContentManager:
         if self.current_content_index == index:
             return
 
-        cr.gallery.detailed_view.top_view.sync_texts()
-
         self.destroy_audio()
 
         le = len(self.content_list) - 1
@@ -135,6 +133,7 @@ class ContentManager:
         )
 
         self.load_contents()
+        cr.gallery.detailed_view.top_view.sync_texts()
 
         self.was_updated = True
 

@@ -393,3 +393,17 @@ class Content:
 
         if cr.event_holder.should_render_debug:
             self.render_debug()
+
+    @property
+    def short_name(self):
+        name = self.pure_name
+        ext = self.extension
+
+        max_ = 10
+        if len(name) >= max_:
+            if ext is None:
+                return name[:max_] + "..."
+            else:
+                return name[:max_] + "-." + ext
+
+        return self.name

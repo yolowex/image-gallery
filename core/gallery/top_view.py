@@ -81,7 +81,7 @@ class TopView:
         self.name_text = Texture.from_surface(
             cr.renderer,
             self.font.render(
-                f"{self.content_manager.current_content.name}",
+                f"{self.content_manager.current_content.short_name}",
                 True,
                 cr.color_theme.text_0,
             ),
@@ -187,6 +187,16 @@ class TopView:
 
     def check_hover(self):
         mr = cr.event_holder.mouse_rect
+
+        name_info = self.get_text_info(self.name_text, self.name_tag_box)
+        resolution_info = self.get_text_info(
+            self.resolution_text, self.resolution_tag_box
+        )
+        ctime_info = self.get_text_info(self.ctime_text, self.ctime_tag_box)
+        size_info = self.get_text_info(self.size_text, self.size_tag_box)
+
+        if mr.colliderect(name_info[0]):
+            self.hover_man.update_text(self.content_manager.current_content.name)
 
     def check_events(self):
         self.check_click()

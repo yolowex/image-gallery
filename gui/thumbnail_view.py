@@ -197,14 +197,7 @@ class ThumbnailView:
             if mr.colliderect(this):
                 content = self.content_manager.get_at(c)
 
-                max_len = 20
-                text = content.pure_name[:max_len]
-                if len(text) > max_len - 3:
-                    text += "-" + content.extension
-                else:
-                    text += "." + content.extension
-
-                self.hover_man.update_text(text, 30)
+                self.hover_man.update_text(content.name)
                 break
 
     def check_events(self):
