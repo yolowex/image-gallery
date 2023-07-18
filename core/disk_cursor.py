@@ -175,9 +175,9 @@ class DiskCursor:
         for path in constants.CONTENT_ROOT_LIST:
             self.add_item_at(path, self.contents_dict)
 
-        for key in self.contents_dict:
-            item = self.contents_dict[key]
-            self.expand_folder(item)
+        # for key in self.contents_dict:
+        #     item = self.contents_dict[key]
+        #     self.expand_folder(item)
 
         stack = []
         if self.opened_content_path is not None:

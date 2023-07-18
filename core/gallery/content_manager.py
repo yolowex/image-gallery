@@ -122,6 +122,9 @@ class ContentManager:
         if self.current_content_index < 0:
             self.current_content_index = 0  # and some here
 
+        # con = self.content_list[self.current_content_index]
+        # print(con.ctime,con.size)
+
         cr.log.write_log(
             f"ContentManager: {self.current_content_index+1}/{len(self.content_list)}"
             f", stack size: {len(self.loaded_content_stack)}",

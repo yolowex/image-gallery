@@ -18,6 +18,10 @@ class Content:
         self.extension = self.name.split(".")[-1].lower()
         self.source_type: Optional[ContentSourceType] = None
         self.type: Optional[ContentType] = None
+        self.ctime = time.strftime(
+            "%B/%d/%Y", time.localtime(os.path.getctime(self.path))
+        )
+        self.size = utils.get_file_size(self.path)
 
         self.__gif_surface_list: Optional[list[tuple[Surface, float]]] = None
         self.__gif_index: Optional[int] = None

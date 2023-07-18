@@ -346,3 +346,20 @@ def print_time(time_float):
     )  # Calculate hours and remaining seconds
     minutes, seconds = divmod(remainder, 60)  # Calculate minutes and seconds
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
+def get_file_size(path):
+    file_size = os.path.getsize(path)
+
+    kb_size = file_size / 1024
+    mb_size = kb_size / 1024
+    gb_size = mb_size / 1024
+
+    if gb_size >= 1:
+        return f"{gb_size:.2f} GB"
+    elif mb_size >= 1:
+        return f"{mb_size:.2f} MB"
+    elif kb_size >= 1:
+        return f"{kb_size:.2f} KB"
+    else:
+        return f"{file_size} bytes"
