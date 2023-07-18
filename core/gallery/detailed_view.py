@@ -65,7 +65,7 @@ class DetailedView:
         )
 
         self.bottom_view = BottomView(self.bottom_box, self.hover_man)
-        self.top_view = TopView(self.top_box, self.hover_man)
+        self.top_view = TopView(self.top_box, self.content_manager, self.hover_man)
 
         self.just_resized_boxes = False
         self.resize_boxes()

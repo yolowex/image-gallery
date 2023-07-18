@@ -46,6 +46,7 @@ class ContentManager:
 
         self.was_updated = False
         self.init_contents()
+        cr.gallery.detailed_view.top_view.sync_texts()
 
     def init_contents(self):
         cr.log.write_log("Initializing the contents...", LogLevel.DEBUG)
@@ -111,6 +112,8 @@ class ContentManager:
     def goto(self, index):
         if self.current_content_index == index:
             return
+
+        cr.gallery.detailed_view.top_view.sync_texts()
 
         self.destroy_audio()
 

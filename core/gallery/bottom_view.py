@@ -131,6 +131,4 @@ class BottomView:
         pa = self.box.get()
 
         info = self.theme_text_info
-        cr.renderer.draw_color = Color("red")
-        cr.renderer.draw_rect(self.fun(self.theme_box.rect))
         self.theme_text.draw(info[1], info[0])

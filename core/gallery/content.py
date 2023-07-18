@@ -178,6 +178,15 @@ class Content:
     def __video_is_playing(self):
         return self.video_is_started and not self.video_is_paused
 
+    @property
+    def resolution(self):
+        if not self.is_loaded or self.texture is None:
+            return "NaN"
+
+        w, h = self.texture.get_rect().size
+
+        return f"{w}x{h}"
+
     def process_type(self):
         all_source_types = [
             ContentSourceType.PILLOW,
