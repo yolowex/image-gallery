@@ -8,6 +8,7 @@ from core.gallery.bottom_view import BottomView
 from core.gallery.content_manager import ContentManager
 from core.gallery.folder_view import FolderView
 from core.gallery.info_view import InfoView
+from core.gallery.top_view import TopView
 from gui.hover_man import HoverMan
 from gui.image_ui_layer import ImageUiLayer
 from gui.thumbnail_view import ThumbnailView
@@ -34,7 +35,7 @@ class DetailedView:
         self.image_size: Optional[Vector2] = Vector2(0.8, 0.65)
 
         self.bottom_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
-        self.detail_box: Optional[RelRect] = None
+        self.top_box: Optional[RelRect] = RelRect(cr.ws, (0, 0), (0, 0))
 
         self.image_box = RelRect(cr.ws, (0, 0), (0, 0))
 
@@ -64,6 +65,7 @@ class DetailedView:
         )
 
         self.bottom_view = BottomView(self.bottom_box, self.hover_man)
+        self.top_view = TopView(self.top_box, self.hover_man)
 
         self.just_resized_boxes = False
         self.resize_boxes()
@@ -96,7 +98,7 @@ class DetailedView:
         image_pos = self.image_pos = Vector2(rect.x, rect.y)
         image_size = self.image_size = Vector2(rect.w, rect.h)
 
-        self.detail_box = RelRect(cr.ws, image_pos.x, 0, image_size.x, 0.05)
+        self.top_box.rect = FRect(image_pos.x, 0, image_size.x, 0.05)
         self.bottom_box.rect = FRect(0, 0.96, 1, 0.04)
 
         self.image_box.rect = FRect(self.image_pos, self.image_size)
@@ -166,6 +168,7 @@ class DetailedView:
         if cr.event_holder.window_resized:
             self.resize_boxes()
 
+        self.top_view.check_events()
         self.bottom_view.check_events()
         self.image_ui_layer.check_events()
         self.info_view.check_events()
@@ -192,7 +195,7 @@ class DetailedView:
         self.image_box.render(theme.color_1, theme.color_2)
         self.zoom_view.render()
 
-        self.detail_box.render(theme.color_1, theme.color_2)
+        self.top_box.render(theme.color_1, theme.color_2)
 
         self.preview_box.render(theme.color_1, theme.color_2)
 
@@ -205,6 +208,7 @@ class DetailedView:
         self.thumbnail_view.render()
         self.info_view.render()
         self.bottom_view.render()
+        self.top_view.render()
 
         if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
             self.folder_view.render()

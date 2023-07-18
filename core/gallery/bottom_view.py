@@ -44,7 +44,7 @@ class BottomView:
 
                 res.x *= pa.w
                 res.y *= pa.h
-                res.w *= pa.h / ar.y
+                res.w = res.h * pa.h / ar.y
                 res.h *= pa.h
 
                 res.x += pa.x
@@ -65,7 +65,7 @@ class BottomView:
             fun = make_fun(self.theme_text.get_rect().size)
 
             def new_fun(rect):
-                pa = self.box.get()
+                pa = self.fun(self.theme_box.rect)
                 res = fun(rect)
                 res.right = pa.right
                 return res
@@ -73,13 +73,14 @@ class BottomView:
             return new_fun
 
         self.theme_box = RelRect(
-            make_theme_box_fun(),
+            None,
             0.8,
             0.0,
-            1,
+            0.2,
             1,
             use_param=True,
         )
+        self.theme_box.scale_source_function = make_theme_box_fun()
 
     def update_theme_text(self):
         self.theme_text = Texture.from_surface(
@@ -108,6 +109,7 @@ class BottomView:
             if mr.colliderect(theme_rect):
                 cr.color_theme.go_next()
                 self.update_theme_text()
+                cr.gallery.detailed_view.top_view.sync_texts()
                 cr.gallery.detailed_view.folder_view.sync_texts()
                 cr.gallery.detailed_view.info_view.update_texts()
 
@@ -129,4 +131,6 @@ class BottomView:
         pa = self.box.get()
 
         info = self.theme_text_info
+        cr.renderer.draw_color = Color("red")
+        cr.renderer.draw_rect(self.fun(self.theme_box.rect))
         self.theme_text.draw(info[1], info[0])
