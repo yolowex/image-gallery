@@ -188,6 +188,9 @@ class TopView:
     def check_hover(self):
         mr = cr.event_holder.mouse_rect
 
+        if self.content_manager.current_content in [assets.content_placeholder,assets.app_content]:
+            return
+
         name_info = self.get_text_info(self.name_text, self.name_tag_box)
         resolution_info = self.get_text_info(
             self.resolution_text, self.resolution_tag_box
@@ -206,6 +209,9 @@ class TopView:
         pa = self.box.get()
         # cr.renderer.draw_color = colors.RED
         # cr.renderer.draw_rect(pa)
+
+        if self.content_manager.current_content in [assets.content_placeholder,assets.app_content]:
+            return
 
         cr.renderer.draw_color = cr.color_theme.color_2
         cr.renderer.draw_rect(self.get_border_rect(self.name_tag_box))
