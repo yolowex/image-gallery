@@ -12,6 +12,9 @@ class ContextMenuInfo:
     def __init__(self):
         self.items: list[list] = []
 
+    def clear(self):
+        self.items.clear()
+
     @property
     def ljust_value(self):
         return int(max([len(i) for i in self.texts]) * 1.5)
@@ -29,27 +32,18 @@ class ContextMenuInfo:
 
 
 class ContextMenu:
-    __default_info = ContextMenuInfo()
-    __default_info.add_item("Copy", lambda x: print(x))
-    __default_info.add_item("Cut", lambda x: print(x))
-    __default_info.add_item("Delete", lambda x: print(x))
-    __default_info.add_item("Paste", lambda x: print(x))
-    __default_info.add_item("Save", lambda x: print(x))
-
     def __init__(self):
         self.top_left: Optional[Vector2] = None
-        self.padding_x = 0.025
-        self.padding_y = 0.005
+        self.padding_x = 0.004
+        self.padding_y = 0.003
         self.is_open = False
         self.font = assets.fonts["small"]
 
         self.info: Optional[ContextMenuInfo] = None
         self.texture_list: list[Texture] = []
 
-        self.container_rect: FRect = FRect(0,0,0,0)
+        self.container_rect: FRect = FRect(0, 0, 0, 0)
         self.rect_list: list[FRect] = []
-
-
 
     def update_rect_info(self):
         if not self.is_open:
@@ -57,9 +51,13 @@ class ContextMenu:
 
         win_rect = cr.ws_rect()
         width_list = [i.width + win_rect.w * self.padding_x for i in self.texture_list]
-        height_list = [i.height + win_rect.h * self.padding_y for i in self.texture_list]
+        height_list = [
+            i.height + win_rect.h * self.padding_y for i in self.texture_list
+        ]
 
-        container_rect = FRect(self.top_left.x,self.top_left.y,max(width_list),sum(height_list))
+        container_rect = FRect(
+            self.top_left.x, self.top_left.y, max(width_list), sum(height_list)
+        )
 
         if container_rect.right > win_rect.right:
             container_rect.right = container_rect.left
@@ -70,22 +68,21 @@ class ContextMenu:
         self.container_rect.update(container_rect)
         self.rect_list.clear()
 
-        for c,i in enumerate(height_list):
+        for c, i in enumerate(height_list):
             y = sum([0] + height_list[:c])
 
-            rect = FRect(container_rect.topleft,(container_rect.width,i))
+            rect = FRect(container_rect.topleft, (container_rect.width, i))
             rect.y += y
             self.rect_list.append(rect)
 
-
-    def init_text(self, text:str) -> Texture:
+    def init_text(self, text: str) -> Texture:
         ws = cr.ws()
-        self.top_left = cr.event_holder.mouse_pos.copy()
-
 
         text = text.ljust(self.info.ljust_value)
 
-        surface = self.font.render(text, True, cr.color_theme.text_0)
+        surface = self.font.render(
+            text, True, cr.color_theme.text_0, cr.color_theme.color_0
+        )
         new_surface = Surface(
             (
                 surface.get_width() + ws.x * self.padding_x,
@@ -93,7 +90,7 @@ class ContextMenu:
             )
         )
 
-        new_surface.fill(colors.GLASS)
+        new_surface.fill(cr.color_theme.color_2)
 
         rect = surface.get_rect(center=new_surface.get_rect().center)
         new_surface.blit(surface, rect)
@@ -109,20 +106,30 @@ class ContextMenu:
 
         self.update_rect_info()
 
-
     def open_menu(self, context_menu_info: ContextMenuInfo = None):
-        if context_menu_info is None:
-            self.info = ContextMenu.__default_info
-        else:
-            self.info = context_menu_info
-
+        self.info = context_menu_info
+        # print(self.info.items)
         self.is_open = True
         self.top_left = cr.event_holder.mouse_pos.copy()
         self.sync_texts()
 
-
     def close_menu(self):
         self.is_open = False
+
+    def check_clicks(self):
+        if not self.is_open:
+            return
+
+        left_clicked = cr.event_holder.mouse_pressed_keys[0]
+        right_clicked = cr.event_holder.mouse_pressed_keys[2]
+        mr = cr.event_holder.mouse_rect
+
+        if left_clicked:
+            for function, rect in list(zip(self.info.functions, self.rect_list)):
+                if rect.contains(mr):
+                    function()
+                    self.close_menu()
+                    return
 
     def check_events(self):
         self.update_rect_info()
@@ -134,8 +141,7 @@ class ContextMenu:
             self.close_menu()
 
         if not self.is_open:
-            if right_clicked:
-                self.open_menu()
+            ...
 
         else:
             if mr.colliderect(self.container_rect):
@@ -144,9 +150,13 @@ class ContextMenu:
                 if left_clicked or right_clicked:
                     self.close_menu()
 
+        self.check_clicks()
+
     def render(self):
         if not self.is_open:
             return
+
+        mr = cr.event_holder.mouse_rect
 
         cr.renderer.draw_color = cr.color_theme.color_2
         cr.renderer.fill_rect(self.container_rect)
@@ -154,12 +164,9 @@ class ContextMenu:
         cr.renderer.draw_color = cr.color_theme.color_0
         cr.renderer.draw_rect(self.container_rect)
 
-        for texture,rect in list(zip(self.texture_list,self.rect_list)):
-            cr.renderer.draw_color = cr.color_theme.navigator
+        for texture, rect in list(zip(self.texture_list, self.rect_list)):
+            texture.draw(None, rect)
 
-
-            cr.renderer.draw_color = cr.color_theme.error
-            cr.renderer.draw_rect(rect)
-
-            texture.draw(None,rect)
-
+            if rect.contains(mr):
+                cr.renderer.draw_color = cr.color_theme.selection
+                cr.renderer.draw_rect(rect)

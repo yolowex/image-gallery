@@ -1,12 +1,14 @@
 import datetime
 import os
-
+import pathlib
+import subprocess
 
 # unsafe import statements, these might break the log order
 import pygame as pg
 from pygame import Vector2, FRect
 from PIL import Image
 
+import threading
 
 from core.common.enums import AspectRatioGroup, FileType
 
@@ -363,3 +365,32 @@ def get_file_size(path):
         return f"{kb_size:.2f} KB"
     else:
         return f"{file_size} bytes"
+
+
+def copy(src_path, dst_path, is_cut=False):
+    try:
+        name = src_path.split("/") - 1
+        x = name.split(".")
+
+        c = 0
+        while True:
+            this_name = name
+            if c != 0:
+                this_name += f"_{c}"
+
+            if len(x) > 1:
+                this_name += x[1]
+
+            path = pathlib.Path(dst_path + "/" + this_name).resolve().as_posix()
+
+            if not os.path.exists(path):
+                break
+
+        command = "cp"
+        if is_cut:
+            command = "mv"
+
+        subprocess.check_call(f'{command} "{src_path}" "{path}"', shell=True)
+
+    except OSError:
+        return False

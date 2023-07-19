@@ -19,7 +19,7 @@ class Gallery:
         self.content_manager.init_contents()
 
         self.detailed_view: DetailedView = DetailedView(
-            self.content_manager, self.hover_man
+            self.content_manager, self.hover_man, self.context_menu
         )
         self.fullscreen_view: FullscreenView = FullscreenView(
             self.content_manager, self.hover_man
@@ -46,15 +46,17 @@ class Gallery:
             cr.window.set_windowed()
 
     def check_events(self):
-        self.hover_man.update_text(None)
-        self.content_manager.check_events()
-        if self.__current_view == ViewType.DETAILED:
-            self.detailed_view.check_events()
-        elif self.__current_view == ViewType.FULLSCREEN:
-            self.fullscreen_view.check_events()
+        if not self.context_menu.is_open:
+            self.hover_man.update_text(None)
+            self.content_manager.check_events()
+            if self.__current_view == ViewType.DETAILED:
+                self.detailed_view.check_events()
+            elif self.__current_view == ViewType.FULLSCREEN:
+                self.fullscreen_view.check_events()
+
+            self.hover_man.check_events()
 
         self.context_menu.check_events()
-        self.hover_man.check_events()
 
         self.content_manager.was_updated = False
 
@@ -71,8 +73,10 @@ class Gallery:
         elif self.__current_view == ViewType.FULLSCREEN:
             self.fullscreen_view.render()
 
+        if not self.context_menu.is_open:
+            self.hover_man.render()
+
         self.context_menu.render()
-        self.hover_man.render()
 
         if cr.event_holder.should_render_debug:
             self.render_debug()

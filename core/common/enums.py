@@ -83,6 +83,12 @@ class SelectedInfoView(Enum):
     EDIT = 2
 
 
+class ClipboardEnum(Enum):
+    COPY = 0
+    CUT = 1
+    DELETE = 2
+
+
 SelectedInfoView_All = [
     SelectedInfoView.FOLDERS,
     SelectedInfoView.INFO,

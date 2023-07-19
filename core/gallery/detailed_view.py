@@ -9,6 +9,7 @@ from core.gallery.content_manager import ContentManager
 from core.gallery.folder_view import FolderView
 from core.gallery.info_view import InfoView
 from core.gallery.top_view import TopView
+from gui.context_menu import ContextMenu
 from gui.hover_man import HoverMan
 from gui.image_ui_layer import ImageUiLayer
 from gui.thumbnail_view import ThumbnailView
@@ -21,10 +22,16 @@ from gui.button import Button
 # todo: precisely position the boxes so there is no vacant space between them
 # done: add black formatter
 class DetailedView:
-    def __init__(self, content_manager: ContentManager, hover_man: HoverMan):
+    def __init__(
+        self,
+        content_manager: ContentManager,
+        hover_man: HoverMan,
+        context_menu: ContextMenu,
+    ):
         self.last_ratio = utils.get_aspect_ratio(cr.ws())
         self.content_manager = content_manager
         self.hover_man = hover_man
+        self.context_menu = context_menu
 
         self.boxes_x_range = (0.2, 0.7)
         self.boxes_y_range = (0.5, 0.85)
@@ -56,7 +63,7 @@ class DetailedView:
         self.x_locked = False
         self.y_locked = False
         self.thumbnail_view = ThumbnailView(
-            self.preview_box, self.content_manager, hover_man
+            self.preview_box, self.content_manager, hover_man, self.context_menu
         )
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)

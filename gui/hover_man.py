@@ -92,6 +92,7 @@ class HoverMan:
 
         text = self.get_text_str()
         surface = self.font.render(text, True, self.font_color)
+
         new_surface = Surface(
             (
                 surface.get_width() + ws.x * self.padding_x,

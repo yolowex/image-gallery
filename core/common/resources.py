@@ -1,3 +1,4 @@
+from core.clipboard import Clipboard
 from core.common.names import *
 from core.event_holder import EventHolder
 from core.log import Log
@@ -13,6 +14,8 @@ log: Optional[Log] = None
 mouse: Optional[Mouse] = None
 gallery = None
 editor = None
+
+clipboard = Clipboard()
 
 color_theme = ColorThemes()
 
@@ -33,4 +36,4 @@ def ws_rect() -> FRect:
 
     :return: Vector2
     """
-    return FRect((0,0),window.size)
+    return FRect((0, 0), window.size)
