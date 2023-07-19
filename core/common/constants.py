@@ -98,7 +98,7 @@ def export_platform_constants():
         user_folders = ["desktop", "downloads", "pictures", "videos"]
         COPY_COMMAND = "copy"
         CUT_COMMAND = "move"
-        DELETE_COMMAND = "delete"
+        DELETE_COMMAND = "del"
 
         for i in user_folders:
             path = Path.home() / i

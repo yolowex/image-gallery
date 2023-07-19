@@ -397,6 +397,10 @@ def copy(src_path, dst_path, is_cut=False):
         if is_cut:
             command = constants.CUT_COMMAND
 
+        if constants.IS_WINDOWS:
+            path = pathlib.Path(path).resolve().as_posix().replace("/","\\")
+            src_path = pathlib.Path(src_path).resolve().as_posix().replace("/","\\")
+
         subprocess.check_call(f'{command} "{src_path}" "{path}"', shell=True)
         return True
 
@@ -406,6 +410,9 @@ def copy(src_path, dst_path, is_cut=False):
 
 def delete(path: str):
     try:
+        if constants.IS_WINDOWS:
+            path = pathlib.Path(path).resolve().as_posix().replace("/","\\")
+
         subprocess.check_call(f'{constants.DELETE_COMMAND} "{path}"', shell=True)
         return True
     except (OSError, subprocess.CalledProcessError):
