@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+import core.common.constants as constants
 
 def center_window(root, width, height):
     screen_width = root.winfo_screenwidth()
@@ -22,7 +23,9 @@ def delete_file_popup(clipboard):
     popup.title("Delete File")
     popup.geometry("300x100")
     popup.resizable(width=False, height=False)
-    center_window(popup, 300, 100)
+
+    if not constants.IS_LINUX:
+        center_window(popup, 300, 100)
 
     icon_path = "./assets/icon.png"
     popup.iconphoto(True, tk.PhotoImage(file=icon_path))
