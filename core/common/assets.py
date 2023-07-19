@@ -12,6 +12,7 @@ content_placeholder: Optional[Content] = None
 app_content: Optional[Content] = None
 
 fonts: Dict[str, Font] = {}
+reserved_contents: list[Content] = []
 
 
 def init_assets():
@@ -25,6 +26,9 @@ def init_assets():
 
     app_content = Content(path=assets_path + "/icon.png")
     app_content.load()
+
+    reserved_contents.extend([app_content, content_placeholder])
+
     # unsafe
 
     cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)

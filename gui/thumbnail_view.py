@@ -232,8 +232,9 @@ class ThumbnailView:
 
                 if this.contains(mr):
                     content = self.content_manager.get_at(c)
-                    self.update_context_menu_info(content)
-                    self.context_menu.open_menu(self.__context_menu_info)
+                    if content not in assets.reserved_contents:
+                        self.update_context_menu_info(content)
+                        self.context_menu.open_menu(self.__context_menu_info)
 
     def check_events(self):
         self.dont_reset_cursor = False

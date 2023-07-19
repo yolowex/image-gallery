@@ -89,6 +89,13 @@ class ClipboardEnum(Enum):
     DELETE = 2
 
 
+class ClipboardResultEnum(Enum):
+    PENDING = 0
+    RUNNING = 1
+    FAIL = 2
+    SUCCESS = 3
+
+
 SelectedInfoView_All = [
     SelectedInfoView.FOLDERS,
     SelectedInfoView.INFO,

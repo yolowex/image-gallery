@@ -22,10 +22,10 @@ class ContentManager:
         self.path: Optional[str] = path
         # stores the index number of loaded contents which reside in the content_list
         self.loaded_content_stack: list[int] = []
-        self.loaded_content_stack_max_size = 100
+        self.loaded_content_stack_max_size = 50
         self.content_list: list[Content] = []
         self.current_content_index: Optional[int] = None
-        self.content_load_wing = 15
+        self.content_load_wing = 10
 
         # this is set to true if the current_content_index is updated (whenever goto is used)
         self.was_updated = False
@@ -34,6 +34,9 @@ class ContentManager:
         self.audio_thread_queue: Optional[Content] = None
 
     def reinit(self, path: str = None):
+        if path is None:
+            path = self.path
+
         self.destroy_audio()
 
         self.path: Optional[str] = path

@@ -391,6 +391,15 @@ def copy(src_path, dst_path, is_cut=False):
             command = "mv"
 
         subprocess.check_call(f'{command} "{src_path}" "{path}"', shell=True)
+        return True
 
-    except OSError:
+    except (OSError, subprocess.CalledProcessError):
+        return False
+
+
+def delete(path: str):
+    try:
+        subprocess.check_call(f'rm "{path}"', shell=True)
+        return True
+    except (OSError, subprocess.CalledProcessError):
         return False
