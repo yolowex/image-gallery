@@ -1,7 +1,10 @@
+import threading
+
 from core.common import utils
 import core.common.resources as cr
 from core.common.names import *
 from core.common.enums import ClipboardEnum, ClipboardResultEnum
+from helper_kit.delete_popup import delete_file_popup
 
 
 class Clipboard:
@@ -10,6 +13,8 @@ class Clipboard:
         self.current_result: Optional[ClipboardResultEnum] = None
         self.src_path: Optional[str] = None
         self.dst_path: Optional[str] = None
+        self.trigger_operation = False
+        self.has_popup = False
 
     def copy(self, path: str):
         self.current_operation = ClipboardEnum.COPY
@@ -45,10 +50,16 @@ class Clipboard:
     def delete(self, path: str):
         self.current_operation = ClipboardEnum.DELETE
         self.src_path = path
-        print("cut", self.src_path)
 
-        th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
-        th.start()
+        self.has_popup = True
+        thread = threading.Thread(target=lambda: delete_file_popup(self))
+        thread.start()
 
     def paste(self, path: str):
         self.dst_path = path
+
+    def check_events(self):
+        if self.trigger_operation and self.current_operation == ClipboardEnum.DELETE:
+            th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
+            th.start()
+            self.trigger_operation = False

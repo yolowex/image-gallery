@@ -46,7 +46,7 @@ class Gallery:
             cr.window.set_windowed()
 
     def check_events(self):
-        if not self.context_menu.is_open:
+        if not self.context_menu.is_open and not cr.clipboard.has_popup:
             self.hover_man.update_text(None)
             self.content_manager.check_events()
             if self.__current_view == ViewType.DETAILED:
@@ -59,6 +59,8 @@ class Gallery:
         self.context_menu.check_events()
 
         self.content_manager.was_updated = False
+
+        cr.clipboard.check_events()
 
     def render_debug(self):
         if self.__current_view == ViewType.DETAILED:
