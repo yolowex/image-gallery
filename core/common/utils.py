@@ -369,22 +369,25 @@ def get_file_size(path):
 
 def copy(src_path, dst_path, is_cut=False):
     try:
-        name = src_path.split("/") - 1
+        name = src_path.split("/")[-1]
         x = name.split(".")
+        pure_name = x[0]
 
         c = 0
         while True:
-            this_name = name
+            this_name = pure_name
             if c != 0:
                 this_name += f"_{c}"
 
             if len(x) > 1:
-                this_name += x[1]
+                this_name += "." + x[1]
 
             path = pathlib.Path(dst_path + "/" + this_name).resolve().as_posix()
-
+            print(path)
             if not os.path.exists(path):
                 break
+
+            c += 1
 
         command = "cp"
         if is_cut:
