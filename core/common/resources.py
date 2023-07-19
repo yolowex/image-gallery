@@ -25,3 +25,12 @@ def ws() -> Vector2:
     """
     # todo: handle this linter error
     return Vector2(window.size)
+
+
+def ws_rect() -> FRect:
+    """
+    returns the rectangle of the sdl2 window
+
+    :return: Vector2
+    """
+    return FRect((0,0),window.size)
