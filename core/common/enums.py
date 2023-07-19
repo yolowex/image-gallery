@@ -92,7 +92,7 @@ class ClipboardEnum(Enum):
 class ClipboardResultEnum(Enum):
     PENDING = 0
     RUNNING = 1
-    FAILED  = 2
+    FAILED = 2
     SUCCESS = 3
 
 

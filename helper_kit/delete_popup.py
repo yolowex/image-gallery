@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import core.common.constants as constants
 
+
 def center_window(root, width, height):
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -10,6 +11,7 @@ def center_window(root, width, height):
     y_coordinate = int((screen_height / 2) - (height / 2))
 
     root.geometry(f"{width}x{height}+{x_coordinate}+{y_coordinate}")
+
 
 def delete_file_popup(clipboard):
     def on_yes():

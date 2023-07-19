@@ -49,7 +49,6 @@ class Clipboard:
         else:
             self.current_result = ClipboardResultEnum.FAILED
 
-
     def delete(self, path: str):
         self.current_operation = ClipboardEnum.DELETE
         self.src_path = path
@@ -64,7 +63,10 @@ class Clipboard:
 
     def check_events(self):
         if self.current_result == ClipboardResultEnum.PENDING:
-            if self.trigger_operation and self.current_operation == ClipboardEnum.DELETE:
+            if (
+                self.trigger_operation
+                and self.current_operation == ClipboardEnum.DELETE
+            ):
                 self.current_result = ClipboardResultEnum.RUNNING
                 th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
                 th.start()
