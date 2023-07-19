@@ -68,7 +68,11 @@ class DetailedView:
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
         self.folder_view = FolderView(
-            self.left_box, self.content_manager, self.hover_man, self.thumbnail_view
+            self.left_box,
+            self.content_manager,
+            self.hover_man,
+            self.thumbnail_view,
+            self.context_menu,
         )
 
         self.bottom_view = BottomView(self.bottom_box, self.hover_man)

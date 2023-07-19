@@ -17,15 +17,16 @@ class Clipboard:
         self.has_popup = False
 
     def copy(self, path: str):
+        self.current_result = ClipboardResultEnum.PENDING
         self.current_operation = ClipboardEnum.COPY
         self.src_path = path
         self.dst_path = None
 
     def cut(self, path: str):
+        self.current_result = ClipboardResultEnum.PENDING
         self.current_operation = ClipboardEnum.CUT
         self.src_path = path
         self.dst_path = None
-        print("cut", path)
 
     def __do_delete(self, path):
         ret = utils.delete(self.src_path)
@@ -49,6 +50,35 @@ class Clipboard:
         else:
             self.current_result = ClipboardResultEnum.FAILED
 
+    def __do_copy(self, src_path, dst_path, is_cut):
+        ret = utils.copy(src_path, dst_path, is_cut)
+
+        src = os.path.dirname(src_path)
+
+        if ret:
+            if cr.gallery.content_manager.path in dst_path or (
+                cr.gallery.content_manager.path == src and is_cut
+            ):
+                index = cr.gallery.content_manager.current_content_index
+                cr.gallery.content_manager.reinit()
+
+                if is_cut:
+                    index -= 1
+                    if index >= len(cr.gallery.content_manager.content_list):
+                        index = cr.gallery.content_manager.content_list - 1
+                    cr.gallery.content_manager.current_content_index = index
+
+                cr.gallery.content_manager.load_contents()
+
+                scroll_value = cr.gallery.detailed_view.thumbnail_view.scroll_value
+                cr.gallery.detailed_view.thumbnail_view.reinit()
+                cr.gallery.detailed_view.thumbnail_view.scroll_value = scroll_value
+
+            self.current_result = ClipboardResultEnum.SUCCESS
+
+        else:
+            self.current_result = ClipboardResultEnum.FAILED
+
     def delete(self, path: str):
         self.current_operation = ClipboardEnum.DELETE
         self.src_path = path
@@ -60,6 +90,14 @@ class Clipboard:
 
     def paste(self, path: str):
         self.dst_path = path
+        is_cut = self.current_operation == ClipboardEnum.CUT
+        th = threading.Thread(
+            target=lambda: self.__do_copy(self.src_path, self.dst_path, is_cut)
+        )
+        th.start()
+
+    def save(self, path: str):
+        ...
 
     def check_events(self):
         if self.current_result == ClipboardResultEnum.PENDING:

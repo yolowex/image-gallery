@@ -27,8 +27,12 @@ class ContextMenuInfo:
     def functions(self):
         return [i[1] for i in self.items]
 
-    def add_item(self, text: str, function):
-        self.items.append([text, function])
+    @property
+    def is_active_list(self):
+        return [i[2] for i in self.items]
+
+    def add_item(self, text: str, function, is_active=True):
+        self.items.append([text, function, is_active])
 
 
 class ContextMenu:
@@ -75,14 +79,16 @@ class ContextMenu:
             rect.y += y
             self.rect_list.append(rect)
 
-    def init_text(self, text: str) -> Texture:
+    def init_text(self, text: str, is_active=True) -> Texture:
         ws = cr.ws()
 
         text = text.ljust(self.info.ljust_value)
 
-        surface = self.font.render(
-            text, True, cr.color_theme.text_0, cr.color_theme.color_0
-        )
+        color = cr.color_theme.text_0
+        if not is_active:
+            color = cr.color_theme.text_1
+
+        surface = self.font.render(text, True, color, cr.color_theme.color_0)
         new_surface = Surface(
             (
                 surface.get_width() + ws.x * self.padding_x,
@@ -101,8 +107,8 @@ class ContextMenu:
     def sync_texts(self):
         self.texture_list.clear()
 
-        for text in self.info.texts:
-            self.texture_list.append(self.init_text(text))
+        for text, is_active in zip(self.info.texts, self.info.is_active_list):
+            self.texture_list.append(self.init_text(text, is_active))
 
         self.update_rect_info()
 
@@ -125,7 +131,11 @@ class ContextMenu:
         mr = cr.event_holder.mouse_rect
 
         if left_clicked:
-            for function, rect in list(zip(self.info.functions, self.rect_list)):
+            for function, rect, is_active in list(
+                zip(self.info.functions, self.rect_list, self.info.is_active_list)
+            ):
+                if not is_active:
+                    continue
                 if rect.contains(mr):
                     function()
                     self.close_menu()
@@ -164,9 +174,15 @@ class ContextMenu:
         cr.renderer.draw_color = cr.color_theme.color_0
         cr.renderer.draw_rect(self.container_rect)
 
-        for texture, rect in list(zip(self.texture_list, self.rect_list)):
+        for texture, rect, is_active in list(
+            zip(self.texture_list, self.rect_list, self.info.is_active_list)
+        ):
             texture.draw(None, rect)
 
             if rect.contains(mr):
-                cr.renderer.draw_color = cr.color_theme.selection
+                color = cr.color_theme.selection
+                if not is_active:
+                    color = color.lerp(cr.color_theme.error, 0.25)
+
+                cr.renderer.draw_color = color
                 cr.renderer.draw_rect(rect)

@@ -7,6 +7,7 @@ import core.common.resources as cr
 from core.disk_cursor import DiskCursor
 from core.gallery.content import Content
 from core.gallery.content_manager import ContentManager
+from gui.context_menu import ContextMenu, ContextMenuInfo
 from gui.hover_man import HoverMan
 from gui.thumbnail_view import ThumbnailView
 from helper_kit.relative_rect import RelRect
@@ -34,10 +35,14 @@ class FolderView:
         content_manager: ContentManager,
         hover_man: HoverMan,
         thumbnail_view: ThumbnailView,
+        context_menu: ContextMenu,
     ):
+        self.__context_menu_info = ContextMenuInfo()
+
         self.box = box
         self.content_manager = content_manager
         self.hover_man = hover_man
+        self.context_menu = context_menu
         self.thumbnail_view = thumbnail_view
         self.font = assets.fonts["mid"]
 
@@ -55,6 +60,23 @@ class FolderView:
         self.text_max_length = 20
         self.selected_item: Optional[tuple[RelRect, dict]] = None
         self.disk_cursor = DiskCursor()
+
+    def update_context_menu_info(self, item: dict):
+        info = self.__context_menu_info
+        info.clear()
+
+        cp = cr.clipboard
+
+        paste_active = (
+            cp.current_operation in [ClipboardEnum.COPY, ClipboardEnum.CUT]
+        ) and cp.current_result == ClipboardResultEnum.PENDING
+
+        save_active = False
+
+        info.add_item("Paste", lambda: cr.clipboard.paste(item["path"]), paste_active)
+        info.add_item(
+            "Save Edits", lambda: cr.clipboard.save(item["path"]), save_active
+        )
 
     @property
     def error_color(self):
@@ -433,8 +455,34 @@ class FolderView:
 
                     c += 1
 
+    def check_context_menu(self):
+        pa = self.box.get()
+        right_clicked = cr.event_holder.mouse_pressed_keys[2]
+        mr = cr.event_holder.mouse_rect
+
+        if right_clicked:
+            for _, box, item in self.text_box_list:
+                this = box.get()
+
+                if this.top > pa.bottom:
+                    continue
+
+                if this.bottom < pa.top:
+                    continue
+
+                if this.left > pa.right:
+                    continue
+
+                if this.right < pa.left:
+                    continue
+
+                if mr.colliderect(this):
+                    self.update_context_menu_info(item)
+                    self.context_menu.open_menu(self.__context_menu_info)
+
     def check_events(self):
         self.check_drop_file()
+        self.check_context_menu()
         self.check_hover()
         self.check_click()
         self.check_scroll()
