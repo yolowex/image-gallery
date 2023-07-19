@@ -1,6 +1,14 @@
 import tkinter as tk
 from tkinter import messagebox
 
+def center_window(root, width, height):
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+
+    x_coordinate = int((screen_width / 2) - (width / 2))
+    y_coordinate = int((screen_height / 2) - (height / 2))
+
+    root.geometry(f"{width}x{height}+{x_coordinate}+{y_coordinate}")
 
 def delete_file_popup(clipboard):
     def on_yes():
@@ -14,6 +22,7 @@ def delete_file_popup(clipboard):
     popup.title("Delete File")
     popup.geometry("300x100")
     popup.resizable(width=False, height=False)
+    center_window(popup, 300, 100)
 
     icon_path = "./assets/icon.png"
     popup.iconphoto(True, tk.PhotoImage(file=icon_path))
