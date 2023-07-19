@@ -44,14 +44,18 @@ class Clipboard:
             scroll_value = cr.gallery.detailed_view.thumbnail_view.scroll_value
             cr.gallery.detailed_view.thumbnail_view.reinit()
             cr.gallery.detailed_view.thumbnail_view.scroll_value = scroll_value
+            self.current_result = ClipboardResultEnum.SUCCESS
+
         else:
-            print("Deletion failed")
+            self.current_result = ClipboardResultEnum.FAILED
+
 
     def delete(self, path: str):
         self.current_operation = ClipboardEnum.DELETE
         self.src_path = path
 
         self.has_popup = True
+        self.current_result = ClipboardResultEnum.PENDING
         thread = threading.Thread(target=lambda: delete_file_popup(self))
         thread.start()
 
@@ -59,7 +63,9 @@ class Clipboard:
         self.dst_path = path
 
     def check_events(self):
-        if self.trigger_operation and self.current_operation == ClipboardEnum.DELETE:
-            th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
-            th.start()
-            self.trigger_operation = False
+        if self.current_result == ClipboardResultEnum.PENDING:
+            if self.trigger_operation and self.current_operation == ClipboardEnum.DELETE:
+                self.current_result = ClipboardResultEnum.RUNNING
+                th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
+                th.start()
+                self.trigger_operation = False
