@@ -435,6 +435,8 @@ class FolderView:
             if i.type == pgl.DROPFILE:
                 result_item = self.disk_cursor.open_dropped_file(i.file)
                 self.sync_texts()
+                if not result_item:
+                    break
 
                 c = 0
                 for _, box, item in self.text_box_list:
