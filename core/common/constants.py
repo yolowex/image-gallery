@@ -53,6 +53,9 @@ LINUX_KERNEL_VERSION = ""
 MACOS_VERSION = ""
 MACOS_BUILD_NUMBER = ""
 MACOS_ARCHITECTURE = ""
+COPY_COMMAND = "cp"
+CUT_COMMAND = "mv"
+DELETE_COMMAND = "rm"
 
 
 CONTENT_ROOT_LIST = []
@@ -71,6 +74,7 @@ def export_platform_constants():
     global LOCAL_APPS_DATA
     global DISPLAY_SIZE, DISPLAY_ASPECT_RATIO
     global CONTENT_ROOT_LIST, TEMPDIR, FFMPEG_PATH
+    global COPY_COMMAND, CUT_COMMAND, DELETE_COMMAND
 
     inf = pg.display.Info()
     DISPLAY_SIZE = Vector2(inf.current_w, inf.current_h)
@@ -92,6 +96,9 @@ def export_platform_constants():
         result = subprocess.run(command, capture_output=True, text=True)
 
         user_folders = ["desktop", "downloads", "pictures", "videos"]
+        COPY_COMMAND = "copy"
+        CUT_COMMAND = "move"
+        DELETE_COMMAND = "delete"
 
         for i in user_folders:
             path = Path.home() / i

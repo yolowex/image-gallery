@@ -1,16 +1,19 @@
 import datetime
 import os
 import pathlib
-import subprocess
 
 # unsafe import statements, these might break the log order
 import pygame as pg
 from pygame import Vector2, FRect
 from PIL import Image
-
+import subprocess
 import threading
 
+
 from core.common.enums import AspectRatioGroup, FileType
+
+# unsafe: this can lead to circular import errors
+import core.common.constants as constants
 
 
 # this function is supposed to be used for log files, this is probably a bad name.
@@ -389,9 +392,9 @@ def copy(src_path, dst_path, is_cut=False):
 
             c += 1
 
-        command = "cp"
+        command = constants.COPY_COMMAND
         if is_cut:
-            command = "mv"
+            command = constants.CUT_COMMAND
 
         subprocess.check_call(f'{command} "{src_path}" "{path}"', shell=True)
         return True
@@ -402,7 +405,7 @@ def copy(src_path, dst_path, is_cut=False):
 
 def delete(path: str):
     try:
-        subprocess.check_call(f'rm "{path}"', shell=True)
+        subprocess.check_call(f'{constants.DELETE_COMMAND} "{path}"', shell=True)
         return True
     except (OSError, subprocess.CalledProcessError):
         return False
