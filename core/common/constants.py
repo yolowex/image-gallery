@@ -6,6 +6,10 @@ import platform
 from pathlib import Path
 
 
+SUPPORTED_CHARACTERS = (
+    "0123456789" + "abcdefghijklmnopqrstuvwxyz" + "abcdefghijklmnopqrstuvwxyz".upper()
+)
+
 SUPPORTED_PICTURE_FORMATS = [
     "bmp",
     "jpeg",
