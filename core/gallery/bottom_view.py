@@ -174,15 +174,24 @@ class BottomView:
 
     def check_hover(self):
         theme_info = self.get_info(self.theme_text, self.theme_box)
+        ann_info = self.get_info(self.announce_text, self.announce_box)
 
         mr = cr.event_holder.mouse_rect
         theme_rect = theme_info[0]
 
-        if cr.event_holder.mouse_moved or True:
-            if mr.colliderect(theme_rect):
-                self.hover_man.update_text(
+        ann_rect = ann_info[0]
+
+        if mr.colliderect(theme_rect):
+            self.hover_man.update_text(
                     "".join([i.name + "\n" for i in cr.color_theme.ALL]), 100
                 )
+
+        if mr.colliderect(ann_rect):
+            self.hover_man.update_text(
+                    cr.log.last_announcement, 100
+                )
+
+
 
     def check_events(self):
         self.check_click()
@@ -197,7 +206,6 @@ class BottomView:
 
         theme_info = self.get_info(self.theme_text, self.theme_box)
         ann_info = self.get_info(self.announce_text, self.announce_box)
-        cr.renderer.draw_rect(self.fun(self.announce_box.rect))
 
         self.theme_text.draw(theme_info[1], theme_info[0])
         self.announce_text.draw(ann_info[1], ann_info[0])
