@@ -9,11 +9,12 @@ from core.common import utils, assets
 
 
 class TextView:
-    def __init__(self, box: RelRect, is_entry=False, text=""):
+    def __init__(self, box: RelRect, is_entry=False, text="", y_scale=1):
         self.font = assets.fonts["mid"]
         self.box = box
         self.text = text
         self.texture: Optional[Texture] = None
+        self.y_scale = y_scale
         self.is_entry = is_entry
         self.has_focus = False
         self.just_lost_focus = False
@@ -44,6 +45,11 @@ class TextView:
             def new_fun(rect):
                 pa = box.get()
                 res = fun(rect)
+                res.h *= self.y_scale
+                res.w *= self.y_scale
+
+                # dirty: redundant
+                res.center = pa.center
                 if alignment == Alignment.CENTER:
                     res.center = pa.center
                 elif alignment == Alignment.LEFT:
@@ -79,7 +85,7 @@ class TextView:
         pa = self.box.get()
         mr = cr.event_holder.mouse_rect
 
-        if pa.contains(mr):
+        if pa.contains(mr) and self.text != "":
             # unsafe / dirty
             cr.gallery.hover_man.update_text(text=self.text)
 
@@ -96,15 +102,19 @@ class TextView:
         if clicked:
             if pa.contains(mr):
                 self.has_focus = True
-
-        if any_clicked:
-            if not pa.contains(mr):
+            else:
                 self.has_focus = False
                 self.just_lost_focus = True
 
-        if right_clicked:
-            self.has_focus = False
-            self.just_lost_focus = True
+        elif self.has_focus:
+            if right_clicked:
+                self.has_focus = False
+                self.just_lost_focus = True
+
+            elif any_clicked:
+                if not pa.contains(mr):
+                    self.has_focus = False
+                    self.just_lost_focus = True
 
         if any_clicked:
             self.update()
@@ -120,6 +130,13 @@ class TextView:
             for i in cr.event_holder.events:
                 if i.type == pgl.KEYDOWN:
                     char = i.unicode
+
+                    if i.key == pgl.K_RETURN:
+                        self.has_focus = False
+                        self.just_lost_focus = True
+                        self.update()
+                        return
+
                     if char in constants.SUPPORTED_CHARACTERS:
                         self.text += char
                         self.update()

@@ -22,7 +22,6 @@ def make_fun(size, con_box):
         res.y = pa.y
         res.h = pa.h
         res.w = pa.h / ar.y
-        return res
 
     return fun
 
@@ -57,6 +56,8 @@ class TagView:
         self.people_text_view_list: list[TextView] = []
         self.people_button_list: list[Button] = []
 
+        self.vertical_margin = 0.01
+
         def fun(rect):
             # win_size = cr.ws()
             res = rect.copy()
@@ -89,6 +90,31 @@ class TagView:
 
         self.people_box = RelRect(fun, 0.01, 0.01, 0.8, 0.05, use_param=True)
         self.people_text = TextView(self.people_box, is_entry=False, text="Add People")
+
+        self.location_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 2,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.location_text = TextView(
+            self.location_box, is_entry=False, text="Location : ", y_scale=0.75
+        )
+
+        self.location_entry_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 3,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.location_entry_text = TextView(
+            self.location_entry_box, is_entry=True, text="", y_scale=0.75
+        )
+
         self.add_people_box = RelRect(button_fun, 0.8, 0.01, 0.2, 0.05, use_param=True)
 
         self.add_people_button = Button(
@@ -99,10 +125,25 @@ class TagView:
             None,
         )
 
+    def load(self):
+        ...
+
+    def save(self):
+        print("save!", utils.now())
+
+    @property
+    def text_entries_list(self) -> list[TextView]:
+        res = self.people_text_view_list.copy()
+        res.extend([self.location_entry_text])
+
+        return res
+
     def add_person(self):
         height = 0.05
-        vertical_margin = 0.001
-        y = 0.01 + (1 + len(self.people_text_view_list)) * (height + vertical_margin)
+
+        y = 0.01 + (1 + len(self.people_text_view_list)) * (
+            height + self.vertical_margin
+        )
 
         person_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
         person_text = TextView(person_box, is_entry=True, text="")
@@ -120,7 +161,70 @@ class TagView:
         self.people_text_view_list.append(person_text)
         self.people_button_list.append(move_person_button)
 
+        self.sync_location_text()
+
+    def sync_people(self):
+        height = 0.05
+
+        for index, text_view in enumerate(self.people_text_view_list):
+            y = 0.01 + (1 + index) * (height + self.vertical_margin)
+            text_view.box.rect.y = y
+
+        for index, button in enumerate(self.people_button_list):
+            y = 0.01 + (1 + index) * (height + self.vertical_margin)
+            button.rel_rect.rect.y = y
+
+    def sync_location_text(self):
+        height = 0.05
+
+        y = 0.01 + (2 + len(self.people_text_view_list)) * (
+            height + self.vertical_margin
+        )
+
+        self.location_box = RelRect(
+            self.fun,
+            self.location_box.rect.x,
+            y,
+            self.location_box.rect.w,
+            self.location_box.rect.h,
+            use_param=True,
+        )
+        self.location_text = TextView(
+            self.location_box,
+            is_entry=False,
+            text="Location : ",
+            y_scale=self.location_text.y_scale,
+        )
+
+        y = 0.01 + (3 + len(self.people_text_view_list)) * (
+            height + self.vertical_margin
+        )
+
+        self.location_entry_box = RelRect(
+            self.fun,
+            self.location_entry_box.rect.x,
+            y,
+            self.location_entry_box.rect.w,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.location_entry_text = TextView(
+            self.location_entry_box,
+            is_entry=self.location_entry_text.is_entry,
+            text=self.location_entry_text.text,
+            y_scale=self.location_text.y_scale,
+        )
+
+    def check_save(self):
+        for text_entry in self.text_entries_list:
+            if text_entry.just_lost_focus:
+                self.save()
+                break
+
     def check_events(self):
+        self.location_text.check_events()
+        self.location_entry_text.check_events()
+
         self.people_text.check_events()
         for text_view in self.people_text_view_list:
             text_view.check_events()
@@ -129,14 +233,18 @@ class TagView:
             if text_view.just_lost_focus and text_view.text == "":
                 self.people_text_view_list.pop(index)
                 self.people_button_list.pop(index)
+                self.sync_people()
+                self.sync_location_text()
+                self.save()
 
         self.add_people_button.check_events()
 
         for button in self.people_button_list:
             button.check_events()
 
+        self.check_save()
+
     def render(self):
-        cr.renderer.draw_rect(self.box.get())
         self.people_text.render()
         self.add_people_button.render()
 
@@ -145,3 +253,6 @@ class TagView:
 
         for button in self.people_button_list:
             button.render()
+
+        self.location_text.render()
+        self.location_entry_text.render()
