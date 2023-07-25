@@ -18,7 +18,7 @@ reserved_contents: list[Content] = []
 def init_assets():
     global ui_buttons, content_placeholder, app_content
 
-    fonts["small"] = pg.font.Font(assets_path + "/font-bold.ttf", 20)
+    fonts["small"] = pg.font.Font(assets_path + "/font.ttf", 20)
     fonts["mid"] = pg.font.Font(assets_path + "/font-bold.ttf", 60)
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
@@ -33,7 +33,7 @@ def init_assets():
 
     cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)
 
-    expected_ui_buttons = 12
+    expected_ui_buttons = 14
 
     ui_buttons_path = os.path.abspath("./assets/ui-buttons")
     # this might fail on windows

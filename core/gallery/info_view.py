@@ -56,7 +56,7 @@ class InfoView:
             cr.renderer, self.font.render("Folders", True, cr.color_theme.text_0)
         )
         self.button_2_text = Texture.from_surface(
-            cr.renderer, self.font.render("Info", True, cr.color_theme.text_0)
+            cr.renderer, self.font.render("Tags", True, cr.color_theme.text_0)
         )
         self.button_3_text = Texture.from_surface(
             cr.renderer, self.font.render("Edit", True, cr.color_theme.text_0)

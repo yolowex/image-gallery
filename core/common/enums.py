@@ -80,7 +80,7 @@ class FileType(Enum):
 
 class SelectedInfoView(Enum):
     FOLDERS = 0
-    INFO = 1
+    TAGS = 1
     EDIT = 2
 
 
@@ -105,6 +105,6 @@ class Alignment(Enum):
 
 SelectedInfoView_All = [
     SelectedInfoView.FOLDERS,
-    SelectedInfoView.INFO,
+    SelectedInfoView.TAGS,
     SelectedInfoView.EDIT,
 ]
