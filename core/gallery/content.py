@@ -58,20 +58,21 @@ class Content:
         self.process_type()
 
     def load_audio(self):
-
         self.__temp_audio_path = constants.TEMPDIR + "/tmp.mp3"
         command = (
             f'{constants.FFMPEG_PATH} -y -i "{self.path}" -vn '
             f'-acodec libmp3lame -qscale:a 2 "{self.__temp_audio_path}"'
         )
 
-        cr.log.write_log(f"Extracting the audio of {self.name[-10 :]} ...",
-            LogLevel.ANNOUNCE)
+        cr.log.write_log(
+            f"Extracting the audio of {self.name[-10 :]} ...", LogLevel.ANNOUNCE
+        )
 
         try:
             subprocess.check_call(command, shell=True)
             cr.log.write_log(
-                f"Audio extraction for {self.name[-10:]} was successful.", LogLevel.ANNOUNCE
+                f"Audio extraction for {self.name[-10:]} was successful.",
+                LogLevel.ANNOUNCE,
             )
             self.audio_extraction_result = True
 
@@ -81,7 +82,9 @@ class Content:
                 LogLevel.WARNING,
             )
 
-            cr.log.write_log(f"Audio extraction for {self.name[-10:]} failed. ", LogLevel.ANNOUNCE)
+            cr.log.write_log(
+                f"Audio extraction for {self.name[-10:]} failed. ", LogLevel.ANNOUNCE
+            )
 
             self.audio_extraction_result = False
 

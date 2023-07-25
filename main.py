@@ -26,7 +26,7 @@ if len(sys.argv) > 1:
 
 
 current_platform = platform.system()
-app_name = "Foto Folio"
+app_name = "Lotus"
 app_data_path = "."
 if current_platform == "Windows":
     x = os.environ.get("LOCALAPPDATA")

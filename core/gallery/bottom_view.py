@@ -183,15 +183,11 @@ class BottomView:
 
         if mr.colliderect(theme_rect):
             self.hover_man.update_text(
-                    "".join([i.name + "\n" for i in cr.color_theme.ALL]), 100
-                )
+                "".join([i.name + "\n" for i in cr.color_theme.ALL]), 100
+            )
 
         if mr.colliderect(ann_rect):
-            self.hover_man.update_text(
-                    cr.log.last_announcement, 100
-                )
-
-
+            self.hover_man.update_text(cr.log.last_announcement, 100)
 
     def check_events(self):
         self.check_click()
