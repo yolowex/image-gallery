@@ -139,6 +139,7 @@ class ContentManager:
         cr.gallery.detailed_view.top_view.sync_texts()
 
         self.was_updated = True
+        cr.gallery.detailed_view.tag_view.load()
 
     def go_next(self):
         self.goto(self.current_content_index + 1)

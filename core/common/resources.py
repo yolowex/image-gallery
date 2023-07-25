@@ -15,6 +15,8 @@ mouse: Optional[Mouse] = None
 gallery = None
 editor = None
 
+sql_agent = None
+
 clipboard = Clipboard()
 
 color_theme = ColorThemes()

@@ -7,6 +7,7 @@ import core.common.constants as constants
 from core.log import Log
 from core.gallery.gallery import Gallery
 from core.mouse import Mouse
+from core.sql_agent import SqlAgent
 
 
 class Entry:
@@ -24,6 +25,7 @@ class Entry:
         which disables any linter errors and warnings
         """
         cr.window.position = pg._sdl2.video.WINDOWPOS_CENTERED  # noqa
+        cr.sql_agent = SqlAgent()
         cr.renderer = Renderer(cr.window)
         cr.mouse = Mouse()
         cr.event_holder = EventHolder()
@@ -58,6 +60,7 @@ class Entry:
             os.mkdir(constants.TEMPDIR)
 
         assets.init_assets()
+        cr.sql_agent.init()
 
         cr.gallery = Gallery()
         cr.gallery.init()

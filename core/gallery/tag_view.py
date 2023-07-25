@@ -126,10 +126,45 @@ class TagView:
         )
 
     def load(self):
-        ...
+        content: Content = cr.gallery.content_manager.current_content
+        if content in assets.reserved_contents:
+            return
+
+        self.people_text_view_list.clear()
+        self.people_button_list.clear()
+        self.location_entry_text.text = ""
+
+        item = cr.sql_agent.pull_item(content.path)
+
+        if not len(item[1]):
+            return
+
+        location = None
+        for i in item[1]:
+            if i[1] == "Location":
+                location = i
+
+        self.location_entry_text.text = location[2]
+        self.sync_location_text()
+
+        for name in item[0]:
+            self.add_person(text=name[1], has_focus=False)
 
     def save(self):
-        print("save!", utils.now())
+        content: Content = cr.gallery.content_manager.current_content
+        cr.sql_agent.clear_item(content.path)
+
+        name_tags = []
+        for text_view in self.people_text_view_list:
+            name_tag = [content.path, text_view.text, 0, 0]
+            name_tags.append(name_tag)
+
+        perma_tags = []
+
+        if self.location_entry_text.text != "":
+            perma_tags.append([content.path, "Location", self.location_entry_text.text])
+
+        cr.sql_agent.push_item(content.path, name_tags, perma_tags)
 
     @property
     def text_entries_list(self) -> list[TextView]:
@@ -138,7 +173,7 @@ class TagView:
 
         return res
 
-    def add_person(self):
+    def add_person(self, text="", has_focus=True):
         height = 0.05
 
         y = 0.01 + (1 + len(self.people_text_view_list)) * (
@@ -146,8 +181,8 @@ class TagView:
         )
 
         person_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
-        person_text = TextView(person_box, is_entry=True, text="")
-        person_text.has_focus = True
+        person_text = TextView(person_box, is_entry=True, text=text)
+        person_text.has_focus = has_focus
         move_person_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
 
         move_person_button = Button(
@@ -222,6 +257,10 @@ class TagView:
                 break
 
     def check_events(self):
+        content: Content = cr.gallery.content_manager.current_content
+        if content in assets.reserved_contents:
+            return
+
         self.location_text.check_events()
         self.location_entry_text.check_events()
 
@@ -245,6 +284,10 @@ class TagView:
         self.check_save()
 
     def render(self):
+        content: Content = cr.gallery.content_manager.current_content
+        if content in assets.reserved_contents:
+            return
+
         self.people_text.render()
         self.add_people_button.render()
 

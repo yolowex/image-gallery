@@ -10,6 +10,7 @@ import datetime
 import pathlib
 import platform
 import threading
+import sqlite3
 
 from typing import Optional, List, Dict, Union
 

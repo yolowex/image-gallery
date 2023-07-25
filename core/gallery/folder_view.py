@@ -390,7 +390,7 @@ class FolderView:
 
                     self.content_manager.reinit(item["path"])
                     self.thumbnail_view.reinit()
-
+                    # cr.gallery.detailed_view.tag_view.load()
                     if not item["is_loaded"]:
                         self.disk_cursor.expand_folder_at(item["address"])
                         self.sync_texts()
