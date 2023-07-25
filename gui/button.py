@@ -58,9 +58,6 @@ class Button:
                             LogLevel.ERROR,
                         )
 
-    def render_debug(self):
-        ...
-
     def render(self):
         if not (
             not callable(self.render_condition)
@@ -69,6 +66,3 @@ class Button:
             return
 
         self.image.draw(None, self.rel_rect.get())
-
-        if cr.event_holder.should_render_debug:
-            self.render_debug()

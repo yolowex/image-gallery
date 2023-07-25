@@ -7,7 +7,10 @@ from pathlib import Path
 
 
 SUPPORTED_CHARACTERS = (
-    "0123456789" + "abcdefghijklmnopqrstuvwxyz" + "abcdefghijklmnopqrstuvwxyz".upper()
+    "0123456789"
+    + "abcdefghijklmnopqrstuvwxyz"
+    + "abcdefghijklmnopqrstuvwxyz".upper()
+    + " =-+_)(*&^%$#@!~`}{][\\|'\";:/?.>,<"
 )
 
 SUPPORTED_PICTURE_FORMATS = [

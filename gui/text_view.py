@@ -16,6 +16,7 @@ class TextView:
         self.texture: Optional[Texture] = None
         self.is_entry = is_entry
         self.has_focus = False
+        self.just_lost_focus = False
 
         self.cursor_timer = utils.now()
         self.cursor_duration = 0.6
@@ -83,6 +84,7 @@ class TextView:
             cr.gallery.hover_man.update_text(text=self.text)
 
     def check_events(self):
+        self.just_lost_focus = False
         self.check_hover()
 
         pa = self.box.get()
@@ -98,9 +100,11 @@ class TextView:
         if any_clicked:
             if not pa.contains(mr):
                 self.has_focus = False
+                self.just_lost_focus = True
 
         if right_clicked:
             self.has_focus = False
+            self.just_lost_focus = True
 
         if any_clicked:
             self.update()
@@ -122,10 +126,15 @@ class TextView:
 
                     if i.key == pgl.K_BACKSPACE:
                         self.text = self.text[:-1]
+                        if (
+                            pgl.K_LCTRL in cr.event_holder.held_keys
+                            or pgl.K_RCTRL in cr.event_holder.held_keys
+                        ):
+                            self.text = ""
                         self.update()
 
     def render(self):
-        cr.renderer.draw_color = cr.color_theme.navigator_bar_border
+        cr.renderer.draw_color = cr.color_theme.color_2
         cr.renderer.draw_rect(self.box.get())
 
         self.texture.draw(None, self.main_fun(self.box.rect))

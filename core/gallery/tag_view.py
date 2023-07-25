@@ -54,6 +54,8 @@ class TagView:
     def __init__(self, box: RelRect):
         self.box = box
         self.font: Font = assets.fonts["mid"]
+        self.people_text_view_list: list[TextView] = []
+        self.people_button_list: list[Button] = []
 
         def fun(rect):
             # win_size = cr.ws()
@@ -83,6 +85,7 @@ class TagView:
             return res
 
         self.fun = fun
+        self.button_fun = button_fun
 
         self.people_box = RelRect(fun, 0.01, 0.01, 0.8, 0.05, use_param=True)
         self.people_text = TextView(self.people_box, is_entry=False, text="Add People")
@@ -92,15 +95,53 @@ class TagView:
             "Add People",
             self.add_people_box,
             assets.ui_buttons["tag_add"],
-            lambda: print("hooray"),
+            self.add_person,
             None,
         )
 
+    def add_person(self):
+        height = 0.05
+        vertical_margin = 0.001
+        y = 0.01 + (1 + len(self.people_text_view_list)) * (height + vertical_margin)
+
+        person_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
+        person_text = TextView(person_box, is_entry=True, text="")
+        person_text.has_focus = True
+        move_person_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
+
+        move_person_button = Button(
+            "Move Box",
+            move_person_box,
+            assets.ui_buttons["tag_move"],
+            lambda: print("oy yes"),
+            None,
+        )
+
+        self.people_text_view_list.append(person_text)
+        self.people_button_list.append(move_person_button)
+
     def check_events(self):
         self.people_text.check_events()
+        for text_view in self.people_text_view_list:
+            text_view.check_events()
+
+        for index, text_view in list(enumerate(self.people_text_view_list))[::-1]:
+            if text_view.just_lost_focus and text_view.text == "":
+                self.people_text_view_list.pop(index)
+                self.people_button_list.pop(index)
+
         self.add_people_button.check_events()
+
+        for button in self.people_button_list:
+            button.check_events()
 
     def render(self):
         cr.renderer.draw_rect(self.box.get())
         self.people_text.render()
         self.add_people_button.render()
+
+        for text_view in self.people_text_view_list:
+            text_view.render()
+
+        for button in self.people_button_list:
+            button.render()
