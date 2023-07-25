@@ -18,8 +18,8 @@ reserved_contents: list[Content] = []
 def init_assets():
     global ui_buttons, content_placeholder, app_content
 
-    fonts["small"] = pg.font.SysFont("monospace", 20, bold=True)
-    fonts["mid"] = pg.font.SysFont("monospace", 60, bold=True)
+    fonts["small"] = pg.font.Font(assets_path + "/font-bold.ttf", 20)
+    fonts["mid"] = pg.font.Font(assets_path + "/font-bold.ttf", 60)
 
     content_placeholder = Content(path=assets_path + "/no_image.png")
     content_placeholder.load()
