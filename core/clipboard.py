@@ -18,7 +18,7 @@ class Clipboard:
 
     @property
     def log_text(self):
-        path = self.src_path[-20:]
+        path = self.src_path[-35:]
         return self.current_operation.name + " " + self.current_result.name + " " + path
 
     def copy(self, path: str):
