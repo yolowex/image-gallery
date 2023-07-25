@@ -9,10 +9,10 @@ from core.common import utils, assets
 
 
 class TextView:
-    def __init__(self, box: RelRect, is_entry=False):
+    def __init__(self, box: RelRect, is_entry=False, text=""):
         self.font = assets.fonts["mid"]
         self.box = box
-        self.text = ""
+        self.text = text
         self.texture: Optional[Texture] = None
         self.is_entry = is_entry
         self.has_focus = False
@@ -74,7 +74,17 @@ class TextView:
             self.texture, self.box, alignment=Alignment.CENTER
         )
 
+    def check_hover(self):
+        pa = self.box.get()
+        mr = cr.event_holder.mouse_rect
+
+        if pa.contains(mr):
+            # unsafe / dirty
+            cr.gallery.hover_man.update_text(text=self.text)
+
     def check_events(self):
+        self.check_hover()
+
         pa = self.box.get()
         mr = cr.event_holder.mouse_rect
         clicked = cr.event_holder.mouse_pressed_keys[0]

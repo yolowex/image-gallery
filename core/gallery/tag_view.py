@@ -32,12 +32,12 @@ class TagView:
 
         self.fun = fun
 
-        self.text_box = RelRect(fun, 0.01, 0.01, 0.8, 0.05, use_param=True)
-        self.text_view = TextView(self.text_box, is_entry=True)
+        self.people_box = RelRect(fun, 0.01, 0.01, 0.8, 0.05, use_param=True)
+        self.people_text = TextView(self.people_box, is_entry=False, text="Add People")
 
     def check_events(self):
-        self.text_view.check_events()
+        self.people_text.check_events()
 
     def render(self):
         cr.renderer.draw_rect(self.box.get())
-        self.text_view.render()
+        self.people_text.render()
