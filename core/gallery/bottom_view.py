@@ -61,16 +61,44 @@ class BottomView:
             ),
         )
 
-        def make_theme_box_fun():
-            fun = make_fun(self.theme_text.get_rect().size)
+        self.announce_text = Texture.from_surface(
+            cr.renderer,
+            self.font.render(
+                f"{cr.log.last_announcement}", True, cr.color_theme.text_0
+            ),
+        )
+
+        def make_box_fun(text: Texture, box: RelRect, alignment: Alignment = None):
+            fun = make_fun(text.get_rect().size)
 
             def new_fun(rect):
-                pa = self.fun(self.theme_box.rect)
+                pa = self.fun(box.rect)
                 res = fun(rect)
-                res.right = pa.right
+
+                if alignment == Alignment.CENTER:
+                    res.center = pa.center
+                elif alignment == Alignment.LEFT:
+                    res.left = pa.left
+                elif alignment == Alignment.RIGHT:
+                    res.right = pa.right
+
                 return res
 
             return new_fun
+
+        self.make_box_fun = make_box_fun
+
+        self.announce_box = RelRect(
+            None,
+            0.2,
+            0.0,
+            0.6,
+            1,
+            use_param=True,
+        )
+        self.announce_box.scale_source_function = make_box_fun(
+            self.announce_text, self.announce_box, alignment=Alignment.LEFT
+        )
 
         self.theme_box = RelRect(
             None,
@@ -80,7 +108,9 @@ class BottomView:
             1,
             use_param=True,
         )
-        self.theme_box.scale_source_function = make_theme_box_fun()
+        self.theme_box.scale_source_function = make_box_fun(
+            self.theme_text, self.theme_box, Alignment.RIGHT
+        )
 
     def update_theme_text(self):
         self.theme_text = Texture.from_surface(
@@ -89,33 +119,64 @@ class BottomView:
                 f"{cr.color_theme.current_theme.name}", True, cr.color_theme.text_0
             ),
         )
-
-    @property
-    def theme_text_info(self):
-        r1 = self.fun(self.theme_box.rect)
-        s1 = self.theme_box.get()
-        cut_1 = utils.cut_rect_in(r1, s1)
-        src_rect_1 = utils.mult_rect(
-            cut_1[1], self.theme_text.width, self.theme_text.height
+        self.theme_box = RelRect(
+            None,
+            0.8,
+            0.0,
+            0.2,
+            1,
+            use_param=True,
         )
+        self.theme_box.scale_source_function = self.make_box_fun(
+            self.theme_text, self.theme_box, Alignment.RIGHT
+        )
+
+    def update_announce_text(self):
+        self.announce_text = Texture.from_surface(
+            cr.renderer,
+            self.font.render(
+                f"{cr.log.last_announcement}", True, cr.color_theme.text_0
+            ),
+        )
+        self.announce_box = RelRect(
+            None,
+            0.2,
+            0.0,
+            0.6,
+            1,
+            use_param=True,
+        )
+        self.announce_box.scale_source_function = self.make_box_fun(
+            self.announce_text, self.announce_box, alignment=Alignment.LEFT
+        )
+
+    def get_info(self, text: Texture, box: RelRect):
+        r1 = self.fun(box.rect)
+        s1 = box.get()
+        cut_1 = utils.cut_rect_in(r1, s1)
+        src_rect_1 = utils.mult_rect(cut_1[1], text.width, text.height)
         return cut_1[0], src_rect_1
 
     def check_click(self):
+        theme_info = self.get_info(self.theme_text, self.theme_box)
         click = cr.event_holder.mouse_pressed_keys[0]
         mr = cr.event_holder.mouse_rect
-        theme_rect = self.theme_text_info[0]
+        theme_rect = theme_info[0]
 
         if click:
             if mr.colliderect(theme_rect):
                 cr.color_theme.go_next()
                 self.update_theme_text()
+                self.update_announce_text()
                 cr.gallery.detailed_view.top_view.sync_texts()
                 cr.gallery.detailed_view.folder_view.sync_texts()
                 cr.gallery.detailed_view.info_view.update_texts()
 
     def check_hover(self):
+        theme_info = self.get_info(self.theme_text, self.theme_box)
+
         mr = cr.event_holder.mouse_rect
-        theme_rect = self.theme_text_info[0]
+        theme_rect = theme_info[0]
 
         if cr.event_holder.mouse_moved or True:
             if mr.colliderect(theme_rect):
@@ -126,9 +187,17 @@ class BottomView:
     def check_events(self):
         self.check_click()
         self.check_hover()
+        if cr.log.was_updated:
+            # unsafe af
+            cr.log.was_updated = False
+            self.update_announce_text()
 
     def render(self):
         pa = self.box.get()
 
-        info = self.theme_text_info
-        self.theme_text.draw(info[1], info[0])
+        theme_info = self.get_info(self.theme_text, self.theme_box)
+        ann_info = self.get_info(self.announce_text, self.announce_box)
+        cr.renderer.draw_rect(self.fun(self.announce_box.rect))
+
+        self.theme_text.draw(theme_info[1], theme_info[0])
+        self.announce_text.draw(ann_info[1], ann_info[0])

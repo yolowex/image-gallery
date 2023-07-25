@@ -20,12 +20,15 @@ class Log:
 
     def __init__(self, path: str):
         self.path = path
-        self.level: LogLevel = LogLevel.INFO
+        self.level: LogLevel = LogLevel.DEBUG
 
         if os.path.exists(self.path):
             os.remove(self.path)
 
         json.dump({}, open(self.path, "w"), indent=4)
+
+        self.last_announcement = " "
+        self.was_updated = False
 
     # replace with a better name
     def write_log(self, message, log_level: LogLevel):
@@ -34,6 +37,12 @@ class Log:
             time_ = log_time()
             key = "id:" + str(Log._id) + " time:" + time_ + " level:" + log_level.name
             print(key + " : " + message)
+
+            if log_level == LogLevel.ANNOUNCE:
+                self.last_announcement = message
+
+            # unsafe af
+            self.was_updated = True
 
             file = open(self.path, "r")
             readfile = file.read()

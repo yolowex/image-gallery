@@ -9,10 +9,11 @@ class TaskEnum(Enum):
 
 class LogLevel(Enum):
     DEBUG = 0
-    INFO = 1
-    WARNING = 2
-    ERROR = 3
-    FATAL = 4
+    ANNOUNCE = 1
+    INFO = 2
+    WARNING = 3
+    ERROR = 4
+    FATAL = 5
 
 
 class ViewType(Enum):
@@ -94,6 +95,12 @@ class ClipboardResultEnum(Enum):
     RUNNING = 1
     FAILED = 2
     SUCCESS = 3
+
+
+class Alignment(Enum):
+    LEFT = -1
+    CENTER = 0
+    RIGHT = 1
 
 
 SelectedInfoView_All = [
