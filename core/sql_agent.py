@@ -23,6 +23,7 @@ class SqlAgent:
 
         self.make_tables()
 
+    def print_everything(self):
         print("name_tags!!")
         list(map(print, self.__get_table_items("name_tags")))
         print("perma_tags!!")
