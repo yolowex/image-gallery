@@ -54,7 +54,7 @@ class TagView:
         self.box = box
         self.font: Font = assets.fonts["mid"]
         self.people_text_view_list: list[TextView] = []
-        self.people_button_list: list[Button] = []
+        # self.people_button_list: list[Button] = []
 
         self.vertical_margin = 0.01
 
@@ -127,7 +127,7 @@ class TagView:
 
     def clear(self):
         self.people_text_view_list.clear()
-        self.people_button_list.clear()
+        # self.people_button_list.clear()
 
         self.location_box = RelRect(
             self.fun,
@@ -219,21 +219,21 @@ class TagView:
             height + self.vertical_margin
         )
 
-        person_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
+        person_box = RelRect(self.fun, 0.01, y, 0.97, height, use_param=True)
         person_text = TextView(person_box, is_entry=True, text=text)
         person_text.has_focus = has_focus
-        move_person_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
-
-        move_person_button = Button(
-            "Move Box",
-            move_person_box,
-            assets.ui_buttons["tag_move"],
-            cr.mouse.enable_virtual,
-            None,
-        )
+        # move_person_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
+        #
+        # move_person_button = Button(
+        #     "Move Box",
+        #     move_person_box,
+        #     assets.ui_buttons["tag_move"],
+        #     cr.mouse.enable_virtual,
+        #     None,
+        # )
 
         self.people_text_view_list.append(person_text)
-        self.people_button_list.append(move_person_button)
+        # self.people_button_list.append(move_person_button)
 
         self.sync_location_text()
 
@@ -244,9 +244,9 @@ class TagView:
             y = 0.01 + (1 + index) * (height + self.vertical_margin)
             text_view.box.rect.y = y
 
-        for index, button in enumerate(self.people_button_list):
-            y = 0.01 + (1 + index) * (height + self.vertical_margin)
-            button.rel_rect.rect.y = y
+        # for index, button in enumerate(self.people_button_list):
+        #     y = 0.01 + (1 + index) * (height + self.vertical_margin)
+        #     button.rel_rect.rect.y = y
 
     def sync_location_text(self):
         height = 0.05
@@ -318,15 +318,15 @@ class TagView:
         for index, text_view in list(enumerate(self.people_text_view_list))[::-1]:
             if text_view.just_lost_focus and text_view.text == "":
                 self.people_text_view_list.pop(index)
-                self.people_button_list.pop(index)
+                # self.people_button_list.pop(index)
                 self.sync_people()
                 self.sync_location_text()
                 self.save()
 
         self.add_people_button.check_events()
 
-        for button in self.people_button_list:
-            button.check_events()
+        # for button in self.people_button_list:
+        #     button.check_events()
 
         self.check_save()
 
@@ -341,8 +341,8 @@ class TagView:
         for text_view in self.people_text_view_list:
             text_view.render()
 
-        for button in self.people_button_list:
-            button.render()
+        # for button in self.people_button_list:
+        #     button.render()
 
         self.location_text.render()
         self.location_entry_text.render()
