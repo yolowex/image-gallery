@@ -128,18 +128,19 @@ class TextView:
                     self.update("|")
 
             for i in cr.event_holder.events:
-                if i.type == pgl.KEYDOWN:
-                    char = i.unicode
+                if i.type == pgl.TEXTINPUT:
+                    char = i.text
 
+                    if char in constants.SUPPORTED_CHARACTERS:
+                        self.text += char
+                        self.update()
+
+                if i.type == pgl.KEYDOWN:
                     if i.key == pgl.K_RETURN:
                         self.has_focus = False
                         self.just_lost_focus = True
                         self.update()
                         return
-
-                    if char in constants.SUPPORTED_CHARACTERS:
-                        self.text += char
-                        self.update()
 
                     if i.key == pgl.K_BACKSPACE:
                         self.text = self.text[:-1]

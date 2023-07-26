@@ -417,3 +417,13 @@ def delete(path: str):
         return True
     except (OSError, subprocess.CalledProcessError):
         return False
+
+
+def enable_virtual_mouse():
+    pg.event.set_grab(True)
+    pg.mouse.set_visible(False)
+
+
+def disable_virtual_mouse():
+    pg.event.set_grab(False)
+    pg.mouse.set_visible(True)

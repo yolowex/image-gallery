@@ -204,7 +204,6 @@ class TagView:
         perma_tags.append([content.path, "Location", text])
 
         cr.sql_agent.push_item(content.path, name_tags, perma_tags)
-        print(cr.sql_agent.pull_item(content.path))
 
     @property
     def text_entries_list(self) -> list[TextView]:
@@ -229,7 +228,7 @@ class TagView:
             "Move Box",
             move_person_box,
             assets.ui_buttons["tag_move"],
-            lambda: print("oy yes"),
+            None,
             None,
         )
 
