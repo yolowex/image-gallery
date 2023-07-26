@@ -1,9 +1,17 @@
 import pygame as pg
 import pygame.locals as pgl
+from pygame import Vector2
 
 from pygame._sdl2 import Renderer, Texture, Window  # noqa
 
 window = None
+
+
+def is_virtual():
+    if window is not None:
+        return window.grab and not pg.mouse.get_visible()
+    else:
+        return pg.event.get_grab() and not pg.mouse.get_visible()
 
 
 def enable_virtual_mouse():
@@ -24,6 +32,8 @@ def disable_virtual_mouse():
 
 def start_program():
     run = 1
+    vm = Vector2(0, 0)
+
     while run:
         for i in pg.event.get():
             if i.type == pgl.QUIT or i.type == pgl.KEYDOWN and i.key == pgl.K_ESCAPE:
@@ -39,6 +49,10 @@ def start_program():
                     print(pg.mouse.get_pos())
                     pg.mouse.set_pos(150, 150)
                     print(pg.mouse.get_pos())
+
+        if is_virtual():
+            vm += pg.mouse.get_rel()
+            print(vm)
 
 
 pg.init()

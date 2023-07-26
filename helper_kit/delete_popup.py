@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import core.common.constants as constants
+import core.common.resources as cr
 
 
 def center_window(root, width, height):
@@ -14,6 +15,8 @@ def center_window(root, width, height):
 
 
 def delete_file_popup(clipboard):
+    cr.window.opacity = 0.65
+
     def on_yes():
         popup.destroy()
         clipboard.trigger_operation = True
@@ -44,3 +47,4 @@ def delete_file_popup(clipboard):
     popup.mainloop()
 
     clipboard.has_popup = False
+    cr.window.opacity = 1
