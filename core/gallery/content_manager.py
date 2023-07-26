@@ -37,8 +37,6 @@ class ContentManager:
         if path is None:
             path = self.path
 
-        cr.gallery.detailed_view.tag_view.load()
-
         self.destroy_audio()
 
         self.path: Optional[str] = path
@@ -52,7 +50,6 @@ class ContentManager:
         self.was_updated = False
         self.init_contents()
         cr.gallery.detailed_view.top_view.sync_texts()
-        cr.gallery.detailed_view.tag_view.load()
 
     def init_contents(self):
         cr.log.write_log("Initializing the contents...", LogLevel.DEBUG)
