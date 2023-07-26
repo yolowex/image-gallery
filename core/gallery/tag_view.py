@@ -228,7 +228,7 @@ class TagView:
             "Move Box",
             move_person_box,
             assets.ui_buttons["tag_move"],
-            None,
+            utils.enable_virtual_mouse,
             None,
         )
 
@@ -295,7 +295,16 @@ class TagView:
                 self.save()
                 break
 
+    def check_virtual_mouse(self):
+        val = utils.is_enabled_virtual_mouse()
+        any_released = any(cr.event_holder.mouse_released_keys)
+
+        if any_released and val:
+            utils.disable_virtual_mouse()
+            print("ok")
+
     def check_events(self):
+        self.check_virtual_mouse()
         content: Content = cr.gallery.content_manager.current_content
         if content in assets.reserved_contents:
             return

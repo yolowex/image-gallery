@@ -1,4 +1,4 @@
-from core.common import assets
+from core.common import assets, utils
 from core.common.names import *
 import core.common.resources as cr
 from core.editor.editor import Editor
@@ -65,6 +65,7 @@ class Entry:
         cr.gallery = Gallery()
         cr.gallery.init()
         cr.editor = Editor()
+        utils.init()
 
     def run(self):
         while not cr.event_holder.should_quit:

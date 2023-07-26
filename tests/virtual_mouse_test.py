@@ -3,9 +3,15 @@ import pygame.locals as pgl
 
 from pygame._sdl2 import Renderer, Texture, Window  # noqa
 
+window = None
+
 
 def enable_virtual_mouse():
-    pg.event.set_grab(True)
+    if window is not None:
+        window.grab = True
+    else:
+        pg.event.set_grab(True)
+
     pg.mouse.set_visible(False)
     print("Enabled virtual mouse", pg.event.get_grab(), pg.mouse.get_visible())
 
@@ -28,6 +34,11 @@ def start_program():
                     enable_virtual_mouse()
                 if i.key == pgl.K_2:
                     disable_virtual_mouse()
+
+                if i.key == pgl.K_3:
+                    print(pg.mouse.get_pos())
+                    pg.mouse.set_pos(150, 150)
+                    print(pg.mouse.get_pos())
 
 
 pg.init()

@@ -16,6 +16,17 @@ from core.common.enums import AspectRatioGroup, FileType
 import core.common.constants as constants
 
 
+cr = None
+
+
+# dirty, unsafe
+def init():
+    global cr
+    import core.common.resources as cc
+
+    cr = cc
+
+
 # this function is supposed to be used for log files, this is probably a bad name.
 # todo: find a better name for this function
 def log_time():
@@ -420,10 +431,14 @@ def delete(path: str):
 
 
 def enable_virtual_mouse():
-    pg.event.set_grab(True)
+    cr.window.grab = True
     pg.mouse.set_visible(False)
 
 
 def disable_virtual_mouse():
-    pg.event.set_grab(False)
+    cr.window.grab = False
     pg.mouse.set_visible(True)
+
+
+def is_enabled_virtual_mouse():
+    return cr.window.grab and not pg.mouse.get_visible()
