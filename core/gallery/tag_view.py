@@ -376,12 +376,11 @@ class TagView:
 
     def render_name_tags(self):
         zv = self.zoom_view
-
-        cr.renderer.draw_color = Color("red")
-        cr.renderer.draw_rect(zv.get_picture_rect())
+        container = zv.container_box.get()
 
         for name_tag in self.name_tags:
-            name_tag.render()
+            if container.colliderect(name_tag.rect):
+                name_tag.render()
 
     def render(self):
         self.render_name_tags()
@@ -401,6 +400,3 @@ class TagView:
 
         self.location_text.render()
         self.location_entry_text.render()
-
-        for name_tag in self.name_tags:
-            name_tag.render()

@@ -21,12 +21,16 @@ class NameTag(HoverMan):
         self.owner = owner
 
     def check_events(self):
+        zw: ZoomView = self.owner.zoom_view
+        # dirty
+        pa = zw.get_picture_rect()
+
         self.just_selected = False
         mr = cr.event_holder.mouse_rect
         mp = cr.event_holder.mouse_pos
         clicked = cr.event_holder.mouse_pressed_keys[0]
 
-        if clicked:
+        if clicked and zw.container_box.get().contains(mr):
             if mr.colliderect(self.rect):
                 cr.mouse.enable_virtual()
                 self.is_selected = True
@@ -34,10 +38,6 @@ class NameTag(HoverMan):
 
         if self.is_selected and not cr.mouse.is_virtual:
             self.is_selected = False
-
-        # dirty
-        zw: ZoomView = self.owner.zoom_view
-        pa = zw.get_picture_rect()
 
         if self.is_selected:
             x = utils.inv_lerp(pa.left, pa.right, mp.x)
