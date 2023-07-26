@@ -125,19 +125,51 @@ class TagView:
             None,
         )
 
-    def load(self):
-        content: Content = cr.gallery.content_manager.current_content
-        if content in assets.reserved_contents:
-            return
-
+    def clear(self):
         self.people_text_view_list.clear()
         self.people_button_list.clear()
-        self.location_entry_text.text = ""
+
+        self.location_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 2,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.location_text = TextView(
+            self.location_box, is_entry=False, text="Location : ", y_scale=0.75
+        )
+
+        self.location_entry_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 3,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.location_entry_text = TextView(
+            self.location_entry_box, is_entry=True, text="", y_scale=0.75
+        )
+
+    def load(self):
+        content: Content = cr.gallery.content_manager.current_content
+        # print('load was called')
+
+        if content in assets.reserved_contents:
+            # print("abort loading")
+            return
+
+        self.clear()
 
         item = cr.sql_agent.pull_item(content.path)
 
         if not len(item[1]):
+            # print("abort loading")
             return
+        # else:
+        #     print(item)
 
         location = None
         for i in item[1]:
@@ -145,10 +177,11 @@ class TagView:
                 location = i
 
         self.location_entry_text.text = location[2]
-        self.sync_location_text()
 
         for name in item[0]:
             self.add_person(text=name[1], has_focus=False)
+
+        self.location_entry_text.update()
 
     def save(self):
         content: Content = cr.gallery.content_manager.current_content
@@ -162,9 +195,16 @@ class TagView:
         perma_tags = []
 
         if self.location_entry_text.text != "":
-            perma_tags.append([content.path, "Location", self.location_entry_text.text])
+            text = self.location_entry_text.text
+        else:
+            text = " "
+            if not len(name_tags):
+                return
+
+        perma_tags.append([content.path, "Location", text])
 
         cr.sql_agent.push_item(content.path, name_tags, perma_tags)
+        print(cr.sql_agent.pull_item(content.path))
 
     @property
     def text_entries_list(self) -> list[TextView]:

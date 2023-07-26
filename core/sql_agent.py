@@ -24,7 +24,7 @@ class SqlAgent:
         self.make_tables()
 
         print("name_tags!!")
-        map(print, self.__get_table_items("name_tags"))
+        list(map(print, self.__get_table_items("name_tags")))
         print("perma_tags!!")
         list(map(print, self.__get_table_items("perma_tags")))
 

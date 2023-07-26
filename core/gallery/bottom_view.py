@@ -169,6 +169,7 @@ class BottomView:
                 self.update_theme_text()
                 self.update_announce_text()
                 cr.gallery.detailed_view.top_view.sync_texts()
+                cr.gallery.detailed_view.tag_view.load()
                 cr.gallery.detailed_view.folder_view.sync_texts()
                 cr.gallery.detailed_view.info_view.update_texts()
 
