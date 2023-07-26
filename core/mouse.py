@@ -28,9 +28,10 @@ class Mouse:
         # unsafe: there's not telling if data has any items
         cur = pg.mouse.get_cursor().data[0]
 
-        if self.is_virtual:
+        if self.is_virtual and cr.event_holder.mouse_moved:
             rel = pg.mouse.get_rel()
             self.virtual_cursor += rel
+            print(self.virtual_cursor, rel, cr.event_holder.mouse_pos)
 
         if self.high_priority_cursor is not None:
             if cur != self.high_priority_cursor:

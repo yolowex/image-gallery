@@ -47,12 +47,14 @@ def start_program():
 
                 if i.key == pgl.K_3:
                     print(pg.mouse.get_pos())
-                    pg.mouse.set_pos(150, 150)
+                    pos = pg.mouse.get_pos()
+                    new_pos = (pos[0], pos[1] + 50)
+                    pg.mouse.set_pos(new_pos)
                     print(pg.mouse.get_pos())
 
         if is_virtual():
             vm += pg.mouse.get_rel()
-            print(vm)
+            print(vm, pg.mouse.get_pos())
 
 
 pg.init()
