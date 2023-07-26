@@ -88,6 +88,7 @@ class HoverMan:
             return
 
         ws = cr.ws()
+
         self.top_left = cr.event_holder.mouse_pos.copy()
 
         text = self.get_text_str()

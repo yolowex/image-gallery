@@ -6,7 +6,10 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content import Content
 from gui.button import Button
+from gui.name_tag import NameTag
 from gui.text_view import TextView
+from gui.zoom_view import ZoomView
+from helper_kit.relative_pos import RelPos
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
@@ -53,7 +56,9 @@ class TagView:
     def __init__(self, box: RelRect):
         self.box = box
         self.font: Font = assets.fonts["mid"]
+        self.name_tags: list[NameTag] = []
         self.people_text_view_list: list[TextView] = []
+        self.people_location_list: list[Vector2] = []
         # self.people_button_list: list[Button] = []
 
         self.vertical_margin = 0.01
@@ -125,6 +130,39 @@ class TagView:
             None,
         )
 
+    @property
+    def any_name_tag_selected(self):
+        return any([i.is_selected == True for i in self.name_tags])
+
+    @property
+    def text_entries_list(self) -> list[TextView]:
+        res = self.people_text_view_list.copy()
+        res.extend([self.location_entry_text])
+
+        return res
+
+    @property
+    def zoom_view(self) -> ZoomView:
+        return cr.gallery.detailed_view.zoom_view
+
+    def update_name_tags(self):
+        def fun(pos: Vector2):
+            rect = self.zoom_view.get_picture_rect()
+
+            return Vector2(
+                utils.lerp(rect.left, rect.right, pos.x),
+                utils.lerp(rect.top, rect.bottom, pos.y),
+            )
+
+        for text_view, pos in zip(
+            self.people_text_view_list, self.people_location_list
+        ):
+            text = text_view.text
+            rel_pos = RelPos(pos, fun)
+            name_tag = NameTag(self)
+            name_tag.update_text(text, rel_top_left=rel_pos)
+            self.name_tags.append(name_tag)
+
     def clear(self):
         self.people_text_view_list.clear()
         # self.people_button_list.clear()
@@ -154,11 +192,12 @@ class TagView:
         )
 
     def load(self):
+        self.name_tags.clear()
+        self.people_location_list.clear()
+
         content: Content = cr.gallery.content_manager.current_content
-        # print('load was called')
 
         if content in assets.reserved_contents:
-            # print("abort loading")
             return
 
         self.clear()
@@ -166,10 +205,7 @@ class TagView:
         item = cr.sql_agent.pull_item(content.path)
 
         if not len(item[1]):
-            # print("abort loading")
             return
-        # else:
-        #     print(item)
 
         location = None
         for i in item[1]:
@@ -179,17 +215,24 @@ class TagView:
         self.location_entry_text.text = location[2]
 
         for name in item[0]:
-            self.add_person(text=name[1], has_focus=False)
+            self.add_person(
+                text=name[1], location=Vector2(name[2], name[3]), has_focus=False
+            )
 
         self.location_entry_text.update()
+        self.update_name_tags()
 
     def save(self):
+        self.name_tags.clear()
+
         content: Content = cr.gallery.content_manager.current_content
         cr.sql_agent.clear_item(content.path)
 
         name_tags = []
-        for text_view in self.people_text_view_list:
-            name_tag = [content.path, text_view.text, 0, 0]
+        for text_view, location in zip(
+            self.people_text_view_list, self.people_location_list
+        ):
+            name_tag = [content.path, text_view.text, location.x, location.y]
             name_tags.append(name_tag)
 
         perma_tags = []
@@ -204,15 +247,12 @@ class TagView:
         perma_tags.append([content.path, "Location", text])
 
         cr.sql_agent.push_item(content.path, name_tags, perma_tags)
+        self.update_name_tags()
 
-    @property
-    def text_entries_list(self) -> list[TextView]:
-        res = self.people_text_view_list.copy()
-        res.extend([self.location_entry_text])
+    def add_person(self, text="", location=None, has_focus=True):
+        if location is None:
+            location = Vector2(0.5, 0.5)
 
-        return res
-
-    def add_person(self, text="", has_focus=True):
         height = 0.05
 
         y = 0.01 + (1 + len(self.people_text_view_list)) * (
@@ -233,6 +273,7 @@ class TagView:
         # )
 
         self.people_text_view_list.append(person_text)
+        self.people_location_list.append(location)
         # self.people_button_list.append(move_person_button)
 
         self.sync_location_text()
@@ -295,15 +336,17 @@ class TagView:
                 self.save()
                 break
 
-    def check_virtual_mouse(self):
-        val = cr.mouse.is_virtual
-        any_released = any(cr.event_holder.mouse_released_keys)
-
-        if any_released and val:
-            cr.mouse.disable_virtual()
+    def check_name_tags(self):
+        for name_tag in self.name_tags[::-1]:
+            name_tag.check_events()
+            if name_tag.just_selected:
+                break
 
     def check_events(self):
-        self.check_virtual_mouse()
+        if cr.mouse.just_lost_virtual:
+            self.save()
+
+        self.check_name_tags()
         content: Content = cr.gallery.content_manager.current_content
         if content in assets.reserved_contents:
             return
@@ -318,6 +361,7 @@ class TagView:
         for index, text_view in list(enumerate(self.people_text_view_list))[::-1]:
             if text_view.just_lost_focus and text_view.text == "":
                 self.people_text_view_list.pop(index)
+                self.people_location_list.pop(index)
                 # self.people_button_list.pop(index)
                 self.sync_people()
                 self.sync_location_text()
@@ -330,7 +374,18 @@ class TagView:
 
         self.check_save()
 
+    def render_name_tags(self):
+        zv = self.zoom_view
+
+        cr.renderer.draw_color = Color("red")
+        cr.renderer.draw_rect(zv.get_picture_rect())
+
+        for name_tag in self.name_tags:
+            name_tag.render()
+
     def render(self):
+        self.render_name_tags()
+
         content: Content = cr.gallery.content_manager.current_content
         if content in assets.reserved_contents:
             return
@@ -346,3 +401,6 @@ class TagView:
 
         self.location_text.render()
         self.location_entry_text.render()
+
+        for name_tag in self.name_tags:
+            name_tag.render()

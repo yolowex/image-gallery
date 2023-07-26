@@ -162,7 +162,19 @@ class ZoomView:
 
         self.update_picture_rect()
 
+    @property
+    def should_check(self):
+        is_detailed = cr.gallery.get_current_view() == ViewType.DETAILED
+        tag_view = cr.gallery.detailed_view.tag_view
+
+        # print(is_detailed,tag_view.any_name_tag_selected,len(tag_view.name_tags))
+
+        return is_detailed and not tag_view.any_name_tag_selected
+
     def check_events(self):
+        if not self.should_check:
+            return
+
         self.content.check_events()
 
         mw = cr.event_holder.mouse_wheel
@@ -219,14 +231,8 @@ class ZoomView:
         elif mr.colliderect(self.container_box.get()) and mod:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_NO
 
-    def render_debug(self):
-        ...
-
     def render(self):
         # dst_rect = self.container_box.cut_rect_in(self.inner_image_rect)
         # canceled: cut the picture in case it is bigger than the box size
 
         self.content.render(self.get_picture_rect())
-
-        if cr.event_holder.should_render_debug:
-            self.render_debug()

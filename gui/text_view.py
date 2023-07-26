@@ -102,7 +102,7 @@ class TextView:
         if clicked:
             if pa.contains(mr):
                 self.has_focus = True
-            else:
+            elif self.has_focus:
                 self.has_focus = False
                 self.just_lost_focus = True
 
