@@ -58,8 +58,6 @@ def reduce_noise(image: Image, radius):
 
 
 def adjust_shadow_highlight(image: Image, shadow_factor, highlight_factor):
-    image = Image.open(input_image_path)
-
     r, g, b = image.split()
 
     r = ImageOps.autocontrast(r, cutoff=shadow_factor, ignore=None)
