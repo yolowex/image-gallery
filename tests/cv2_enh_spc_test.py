@@ -2,7 +2,7 @@ import subprocess
 import os
 import cv2
 import numpy as np
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 call = lambda x: subprocess.check_call(x, shell=True)
 
@@ -136,6 +136,52 @@ def modify_sharpness(input_image_path, output_image_path, sharpness_factor):
         print(f"Error: {e}")
 
 
+def reduce_noise(input_image_path, output_image_path, radius):
+    try:
+        # Open the image
+        image = Image.open(input_image_path)
+
+        # Apply Gaussian blur for noise reduction
+        modified_image = image.filter(ImageFilter.GaussianBlur(radius))
+
+        # Save the modified image to the output path
+        modified_image.save(output_image_path)
+
+        print("Noise reduction successful!")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+def adjust_shadow_highlight(
+    input_image_path, output_image_path, shadow_factor, highlight_factor
+):
+    try:
+        # Open the image
+        image = Image.open(input_image_path)
+
+        # Split the image into individual channels (R, G, B)
+        r, g, b = image.split()
+
+        # Adjust shadows and highlights separately for each channel
+        r = ImageOps.autocontrast(r, cutoff=shadow_factor, ignore=None)
+        g = ImageOps.autocontrast(g, cutoff=shadow_factor, ignore=None)
+        b = ImageOps.autocontrast(b, cutoff=shadow_factor, ignore=None)
+
+        # Merge the adjusted channels back into a new image
+        modified_image = Image.merge("RGB", (r, g, b))
+
+        # Adjust the overall brightness to control the highlights
+        brightness_enhancer = ImageEnhance.Brightness(modified_image)
+        modified_image = brightness_enhancer.enhance(highlight_factor)
+
+        # Save the modified image to the output path
+        modified_image.save(output_image_path)
+
+        print("Shadow/Highlight adjustment successful!")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 clear()
 
 total = 10
@@ -146,4 +192,4 @@ for i in range(total):
     x += 1 / total * 10
     out_path = f"{out_dir}/{i}_{str(x)[:5]}.jpeg"
 
-    modify_sharpness(input_path, out_path, x)
+    adjust_shadow_highlight(input_path, out_path, x, x)
