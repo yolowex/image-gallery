@@ -1,7 +1,6 @@
 from core.common import assets, utils
 from core.common.names import *
 import core.common.resources as cr
-from core.editor.editor import Editor
 from core.event_holder import EventHolder
 import core.common.constants as constants
 from core.log import Log
@@ -64,7 +63,6 @@ class Entry:
 
         cr.gallery = Gallery()
         cr.gallery.init()
-        cr.editor = Editor()
         utils.init()
 
     def run(self):

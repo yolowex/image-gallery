@@ -14,6 +14,10 @@ class ZoomView:
     def __init__(self, container_box: RelRect, content_manager: ContentManager):
         self.content_manager = content_manager
 
+        self.timer = utils.now()
+        self.duration = 2.5
+        self.slide_show_active = False
+
         self.container_box = container_box
 
         self.inner_image_rect = FRect(0, 0, 0, 0)
@@ -174,6 +178,37 @@ class ZoomView:
     def check_events(self):
         if not self.should_check:
             return
+
+        if pgl.K_HOME in cr.event_holder.pressed_keys:
+            self.slide_show_active = not self.slide_show_active
+
+        if self.slide_show_active:
+            pressed = cr.event_holder.pressed_keys
+
+            if pgl.K_KP_0 in pressed:
+                self.duration = 0.5
+
+            if pgl.K_KP_1 in pressed:
+                self.duration = 1
+
+            if pgl.K_KP_2 in pressed:
+                self.duration = 2
+
+            if pgl.K_KP_3 in pressed:
+                self.duration = 3
+
+            if pgl.K_KP_4 in pressed:
+                self.duration = 4
+
+            if pgl.K_KP_5 in pressed:
+                self.duration = 5
+
+            if utils.now() > self.timer + self.duration:
+                if len(self.content_manager.content_list):
+                    self.content_manager.goto(
+                        random.randint(0, len(self.content_manager.content_list) - 1)
+                    )
+                    self.timer = utils.now()
 
         self.content.check_events()
 
