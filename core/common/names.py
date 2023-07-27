@@ -21,7 +21,7 @@ from pygame import Color, Font, FRect, Vector2, Surface
 
 from pygame._sdl2 import Renderer, Texture, Window  # noqa
 
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageOps, ImageFilter
 import numpy
 import cv2
 from moviepy.editor import VideoFileClip
