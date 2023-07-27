@@ -182,6 +182,12 @@ class ZoomView:
         if pgl.K_HOME in cr.event_holder.pressed_keys:
             self.slide_show_active = not self.slide_show_active
 
+        if pgl.K_END in cr.event_holder.pressed_keys:
+            if cr.window.opacity == 1:
+                cr.window.opacity = 0.5
+            else:
+                cr.window.opacity = 1
+
         if self.slide_show_active:
             pressed = cr.event_holder.pressed_keys
 
