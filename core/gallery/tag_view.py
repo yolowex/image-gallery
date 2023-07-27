@@ -12,7 +12,7 @@ from gui.zoom_view import ZoomView
 from helper_kit.relative_pos import RelPos
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
-
+from core.sql_agent import SqlAgent
 
 def make_fun(size, con_box):
     ar = utils.get_aspect_ratio(Vector2(size))
@@ -223,31 +223,42 @@ class TagView:
         self.update_name_tags()
 
     def save(self):
-        self.name_tags.clear()
+        """
+        using a thread makes the app run smoothely while calling the save function.
+        """
+        def operation():
 
-        content: Content = cr.gallery.content_manager.current_content
-        cr.sql_agent.clear_item(content.path)
+            content: Content = cr.gallery.content_manager.current_content
+            
+            name_tags = []
+            for text_view, location in zip(
+                self.people_text_view_list, self.people_location_list
+            ):
+                name_tag = [content.path, text_view.text, location.x, location.y]
+                name_tags.append(name_tag)
 
-        name_tags = []
-        for text_view, location in zip(
-            self.people_text_view_list, self.people_location_list
-        ):
-            name_tag = [content.path, text_view.text, location.x, location.y]
-            name_tags.append(name_tag)
+            perma_tags = []
 
-        perma_tags = []
+            if self.location_entry_text.text != "":
+                text = self.location_entry_text.text
+            else:
+                text = " "
+                if not len(name_tags):
+                    return
 
-        if self.location_entry_text.text != "":
-            text = self.location_entry_text.text
-        else:
-            text = " "
-            if not len(name_tags):
-                return
 
-        perma_tags.append([content.path, "Location", text])
+            perma_tags.append([content.path, "Location", text])
 
-        cr.sql_agent.push_item(content.path, name_tags, perma_tags)
-        self.update_name_tags()
+            agent = SqlAgent()
+            agent.init()
+            agent.push_item(content.path, name_tags, perma_tags)
+            self.name_tags.clear()
+            self.update_name_tags()
+
+            # self.load(agent)
+        
+        th = threading.Thread(target=operation)
+        th.start()
 
     def add_person(self, text="", location=None, has_focus=True):
         if location is None:
