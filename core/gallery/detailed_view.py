@@ -6,6 +6,7 @@ from core.common.names import *
 import core.common.resources as cr
 from core.gallery.bottom_view import BottomView
 from core.gallery.content_manager import ContentManager
+from core.gallery.edit_view import EditView
 from core.gallery.folder_view import FolderView
 from core.gallery.info_view import InfoView
 from core.gallery.tag_view import TagView
@@ -69,6 +70,7 @@ class DetailedView:
         self.zoom_view = ZoomView(self.image_box, self.content_manager)
         self.info_view = InfoView(self.info_box)
         self.tag_view = TagView(self.left_box)
+        self.edit_view = EditView(self.left_box)
 
         self.folder_view = FolderView(
             self.left_box,
@@ -190,6 +192,8 @@ class DetailedView:
             self.folder_view.check_events()
         elif self.info_view.selected_box_index == SelectedInfoView.TAGS:
             self.tag_view.check_events()
+        elif self.info_view.selected_box_index == SelectedInfoView.EDIT:
+            self.edit_view.check_events()
 
         if pgl.K_r in cr.event_holder.pressed_keys or self.content_manager.was_updated:
             self.zoom_view.reset()
@@ -230,6 +234,8 @@ class DetailedView:
             self.folder_view.render()
         elif self.info_view.selected_box_index == SelectedInfoView.TAGS:
             self.tag_view.render()
+        elif self.info_view.selected_box_index == SelectedInfoView.EDIT:
+            self.edit_view.render()
 
 
 # canceled: find the purpose of DetailedView.log_box box & choose a better name
