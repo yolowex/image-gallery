@@ -182,6 +182,30 @@ def adjust_shadow_highlight(
         print(f"Error: {e}")
 
 
+def rotate_and_flip_image(input_path, output_path, rotate_angle, flip_x, flip_y):
+    try:
+        # Open the image
+        image = Image.open(input_path)
+
+        # Rotate the image by the specified angle
+        rotated_image = image.rotate(rotate_angle)
+
+        # Flip the image horizontally if flip_x is True
+        if flip_x:
+            rotated_image = rotated_image.transpose(Image.FLIP_LEFT_RIGHT)
+
+        # Flip the image vertically if flip_y is True
+        if flip_y:
+            rotated_image = rotated_image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        # Save the modified image to the output path
+        rotated_image.save(output_path)
+
+        print("Image rotation and flipping successful!")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 clear()
 
 total = 10
