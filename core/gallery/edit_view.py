@@ -57,6 +57,7 @@ class EditView:
         self.box = box
         self.font: Font = assets.fonts["mid"]
         self.vertical_margin = 0.01
+        self.height_counter = 0
 
         def fun(rect):
             # win_size = cr.ws()
@@ -91,9 +92,9 @@ class EditView:
         self.text_view_list: list[TextView] = []
         self.button_list: list[Button] = []
 
-        self.init_tv_buttons()
+        self.init_contents()
 
-    def init_tv_buttons(self):
+    def init_contents(self):
         self.add_tv_button(assets.ui_buttons["edit_flip_x"], "Mirror", "Mirror")
         self.add_tv_button(
             assets.ui_buttons["edit_rotate_right"], "Rotate Right", "Rotate Right"
@@ -101,6 +102,37 @@ class EditView:
         self.add_tv_button(
             assets.ui_buttons["edit_rotate_left"], "Rotate Left", "Rotate Left"
         )
+
+        self.add_effect_tv_row(["Vintage", "High Contrast"])
+        self.add_effect_tv_row(
+            [
+                "HDR",
+                "Sepia Tone",
+            ]
+        )
+        self.add_effect_tv_row(["Soft Focus", "Pop Art"])
+        self.add_effect_tv_row(["Glow Effect"])
+        self.add_effect_tv_row(["Cross Processing"])
+        self.add_effect_tv_row(["Solarization", "Comic Book"])
+        self.add_effect_tv_row(["Tilt Shift", "Pencil Sketch"])
+
+    def add_effect_tv_row(self, texts: list[str]):
+        height = 0.05
+
+        y = 0.01 + (self.height_counter * (height + self.vertical_margin))
+
+        # unsafe: this will raise an error if texts is empty
+        step_w = 0.99 / len(texts)
+
+        for index, text in enumerate(texts):
+            tv_box = RelRect(
+                self.fun, 0.01 + step_w * index, y, step_w, height, use_param=True
+            )
+            tv = TextView(tv_box, is_entry=False, text=text)
+
+            self.text_view_list.append(tv)
+
+        self.height_counter += 1
 
     def add_tv_button(
         self,
@@ -111,10 +143,10 @@ class EditView:
     ):
         height = 0.05
 
-        y = 0.01 + (len(self.text_view_list)) * (height + self.vertical_margin)
+        y = 0.01 + (self.height_counter * (height + self.vertical_margin))
 
         tv_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
-        tv = TextView(tv_box, is_entry=True, text=text)
+        tv = TextView(tv_box, is_entry=False, text=text)
         tv.has_focus = has_focus
         tv_button_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
 
@@ -130,6 +162,8 @@ class EditView:
         self.button_list.append(tv_button)
         #
         # self.sync_location_text()
+
+        self.height_counter += 1
 
     def check_events(self):
         for text_view in self.text_view_list:
