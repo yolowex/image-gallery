@@ -69,6 +69,13 @@ class TextView:
 
         self.update()
 
+    def get_info(self, text: Texture, box: RelRect):
+        s1 = self.main_fun(box.rect)
+        r1 = box.get()
+        cut_1 = utils.cut_rect_in(r1, s1)
+        src_rect_1 = utils.mult_rect(cut_1[1], text.width, text.height)
+        return cut_1[0], src_rect_1
+
     def update(self, suffix=""):
         self.used_suffix = suffix != ""
 
@@ -155,4 +162,5 @@ class TextView:
         cr.renderer.draw_color = cr.color_theme.color_2
         cr.renderer.draw_rect(self.box.get())
 
-        self.texture.draw(None, self.main_fun(self.box.rect))
+        info = self.get_info(self.texture, self.box)
+        self.texture.draw(info[1], info[0])

@@ -128,7 +128,7 @@ class EditView:
             tv_box = RelRect(
                 self.fun, 0.01 + step_w * index, y, step_w, height, use_param=True
             )
-            tv = TextView(tv_box, is_entry=False, text=text)
+            tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.7)
 
             self.text_view_list.append(tv)
 
