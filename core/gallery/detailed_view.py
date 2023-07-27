@@ -215,12 +215,20 @@ class DetailedView:
         self.image_box.render(theme.color_1, theme.color_2)
         self.zoom_view.render()
 
+        self.left_box.render(theme.color_1, theme.color_2, theme.color_0)
+
+        if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
+            self.folder_view.render()
+        elif self.info_view.selected_box_index == SelectedInfoView.TAGS:
+            self.tag_view.render()
+        elif self.info_view.selected_box_index == SelectedInfoView.EDIT:
+            self.edit_view.render()
+
         self.top_box.render(theme.color_1, theme.color_2)
 
         self.preview_box.render(theme.color_1, theme.color_2)
 
         self.info_box.render(theme.color_1, theme.color_2, theme.color_0)
-        self.left_box.render(theme.color_1, theme.color_2, theme.color_0)
 
         self.bottom_box.render(theme.color_1, theme.color_2)
 
@@ -229,13 +237,6 @@ class DetailedView:
         self.info_view.render()
         self.bottom_view.render()
         self.top_view.render()
-
-        if self.info_view.selected_box_index == SelectedInfoView.FOLDERS:
-            self.folder_view.render()
-        elif self.info_view.selected_box_index == SelectedInfoView.TAGS:
-            self.tag_view.render()
-        elif self.info_view.selected_box_index == SelectedInfoView.EDIT:
-            self.edit_view.render()
 
 
 # canceled: find the purpose of DetailedView.log_box box & choose a better name

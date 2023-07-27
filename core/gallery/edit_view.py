@@ -58,6 +58,7 @@ class EditView:
         self.font: Font = assets.fonts["mid"]
         self.vertical_margin = 0.01
         self.height_counter = 0
+        self.scroll_y = 0
 
         def fun(rect):
             # win_size = cr.ws()
@@ -68,7 +69,7 @@ class EditView:
             res.w *= pa.w
             res.h *= pa.h
             res.x += pa.x
-            res.y += pa.y
+            res.y += pa.y + self.scroll_y
             return res
 
         def button_fun(rect):
@@ -79,7 +80,7 @@ class EditView:
             res.w *= pa.w
             res.h *= pa.h
             res.x += pa.x
-            res.y += pa.y
+            res.y += pa.y + self.scroll_y
 
             lc = res.center
             res.w = res.h

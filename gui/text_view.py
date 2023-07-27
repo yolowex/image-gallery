@@ -158,7 +158,24 @@ class TextView:
                             self.text = ""
                         self.update()
 
+    @property
+    def bg_color(self):
+        mr = cr.event_holder.mouse_rect
+        pressed = cr.event_holder.mouse_pressed_keys[0]
+        held = cr.event_holder.mouse_held_keys[0]
+
+        if self.box.get().contains(mr):
+            if held:
+                return cr.color_theme.color_1.lerp(cr.color_theme.selection, 0.5)
+            else:
+                return cr.color_theme.color_1.lerp(cr.color_theme.selection, 0.15)
+
+        return cr.color_theme.color_1
+
     def render(self):
+        cr.renderer.draw_color = self.bg_color
+        cr.renderer.fill_rect(self.box.get())
+
         cr.renderer.draw_color = cr.color_theme.color_2
         cr.renderer.draw_rect(self.box.get())
 
