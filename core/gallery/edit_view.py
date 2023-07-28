@@ -374,7 +374,7 @@ class EditView:
             name="saturation",
         )
 
-        self.add_effect_tv_row(["Reset", "Save"])
+        self.add_effect_tv_row(["Reset", "Save"], [self.reset, self.save])
 
     def add_spectrum(self, button_texture: Texture, function, y_scale=1.0, name=""):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
@@ -543,3 +543,11 @@ class EditView:
 
         cr.renderer.draw_color = cr.color_theme.button
         cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
+
+    def reset(self):
+        self.edit_agent.reset_everything()
+        self.sync_spectrums()
+        self.edit_agent.perform()
+
+    def save(self):
+        ...

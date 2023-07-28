@@ -51,6 +51,9 @@ class ContentManager:
         self.init_contents()
         cr.gallery.detailed_view.top_view.sync_texts()
 
+        edit_view = cr.gallery.detailed_view.edit_view
+        edit_view.reset()
+
     def init_contents(self):
         cr.log.write_log("Initializing the contents...", LogLevel.DEBUG)
 
@@ -140,6 +143,8 @@ class ContentManager:
         cr.gallery.detailed_view.tag_view.load()
 
         self.was_updated = True
+        edit_view = cr.gallery.detailed_view.edit_view
+        edit_view.reset()
 
     def go_next(self):
         self.goto(self.current_content_index + 1)

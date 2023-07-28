@@ -32,6 +32,11 @@ class EditAgent:
         # 0, 1,3
         self.blue = 0.5
 
+    def reset_everything(self):
+        self.reset_effects()
+        self.flip_x = False
+        self.angle = 0
+
     def reset_effects(self):
         # 0, 1,3
         self.brightness = 0.5
