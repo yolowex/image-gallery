@@ -188,7 +188,7 @@ class EditView:
             button_name,
             tv_button_box,
             button_texture,
-            cr.mouse.enable_virtual,
+            lambda: None,
             None,
         )
 

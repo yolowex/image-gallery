@@ -84,6 +84,9 @@ class Spectrum:
             else:
                 return self.src_y_scale * 1.25
 
+        if self.scroll_lock:
+            return self.src_y_scale * 1.25
+
         return self.src_y_scale
 
     def check_scroll(self):
