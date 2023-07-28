@@ -1,4 +1,5 @@
 from core.common.names import *
+import copy
 
 
 def modify_brightness(image: Image, brightness_factor):
@@ -18,6 +19,7 @@ def modify_contrast(image: Image, contrast_factor):
 
 
 def modify_color_balance(image: Image, red_factor, green_factor, blue_factor):
+    image = copy.deepcopy(image)
     r, g, b = image.split()
 
     r = r.point(lambda i: i * red_factor)
@@ -30,6 +32,8 @@ def modify_color_balance(image: Image, red_factor, green_factor, blue_factor):
 
 
 def modify_saturation(image: Image, saturation_factor):
+    image = copy.deepcopy(image)
+
     hsl_image = image.convert("HSV")
 
     h, s, l = hsl_image.split()
@@ -58,6 +62,8 @@ def reduce_noise(image: Image, radius):
 
 
 def adjust_shadow_highlight(image: Image, shadow_factor, highlight_factor):
+    image = copy.deepcopy(image)
+
     r, g, b = image.split()
 
     r = ImageOps.autocontrast(r, cutoff=shadow_factor, ignore=None)
@@ -73,6 +79,8 @@ def adjust_shadow_highlight(image: Image, shadow_factor, highlight_factor):
 
 
 def rotate_and_flip_image(image: Image, rotate_angle, flip_x, flip_y):
+    image = copy.deepcopy(image)
+
     rotated_image = image.rotate(rotate_angle)
 
     if flip_x:

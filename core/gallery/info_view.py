@@ -113,11 +113,27 @@ class InfoView:
     def check_click(self):
         mr = cr.event_holder.mouse_rect
         click = cr.event_holder.mouse_pressed_keys[0]
+        # unsafe: dirty
+        content: Content = cr.gallery.content_manager.current_content
+
+        if self.selected_box_index == SelectedInfoView.EDIT:
+            if (
+                content in assets.reserved_contents
+                or content.type != ContentType.PICTURE
+            ):
+                self.selected_box_index = SelectedInfoView.FOLDERS
 
         if click:
             for c, box, enum in zip(
                 range(len(self.box_list)), self.box_list, SelectedInfoView_All
             ):
+                if c == 2:
+                    if (
+                        content in assets.reserved_contents
+                        or content.type != ContentType.PICTURE
+                    ):
+                        continue
+
                 rect = self.fun(box.rect)
                 if mr.colliderect(rect):
                     self.selected_box_index = enum

@@ -1,3 +1,5 @@
+import copy
+
 from core.common.utils import *
 from core.common.enums import *
 import core.common.constants as constants
