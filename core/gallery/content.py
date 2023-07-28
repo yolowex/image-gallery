@@ -266,7 +266,7 @@ class Content:
                     self.edit_agent.perform()
 
                     self.surface = utils.open_image_to_pygame_surface(
-                        image=self.modified_image
+                        image=self.pillow_image
                     )
                     self.texture = Texture.from_surface(cr.renderer, self.surface)
 
@@ -339,6 +339,13 @@ class Content:
         self.is_loaded = False
 
     def check_events(self):
+        if self.type == ContentType.PICTURE:
+            if pgl.K_DELETE in cr.event_holder.pressed_keys:
+                self.surface = utils.open_image_to_pygame_surface(
+                    image=self.pillow_image
+                )
+                self.texture = Texture.from_surface(cr.renderer, self.surface)
+
         if self.type == ContentType.GIF:
             current_duration = self.__gif_surface_list[self.__gif_index][1]
 

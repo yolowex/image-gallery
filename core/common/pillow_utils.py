@@ -67,7 +67,7 @@ def reduce_noise(image: Image, radius):
     return modified_image
 
 
-def adjust_shadow_highlight(image: Image, shadow_factor, highlight_factor):
+def adjust_shadow(image: Image, shadow_factor):
     image = copy.deepcopy(image)
 
     r, g, b = image.split()
@@ -77,9 +77,6 @@ def adjust_shadow_highlight(image: Image, shadow_factor, highlight_factor):
     b = ImageOps.autocontrast(b, cutoff=shadow_factor, ignore=None)
 
     modified_image = Image.merge("RGB", (r, g, b))
-
-    brightness_enhancer = ImageEnhance.Brightness(modified_image)
-    modified_image = brightness_enhancer.enhance(highlight_factor)
 
     return modified_image
 

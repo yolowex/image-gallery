@@ -231,20 +231,6 @@ class EditView:
 
             return fun
 
-        def make_shadow_fun(spectrum: Spectrum):
-            def fun():
-                self.edit_agent.shadow = spectrum.scroll_value
-                self.sync_edits()
-
-            return fun
-
-        def make_highlight_fun(spectrum: Spectrum):
-            def fun():
-                self.edit_agent.highlight = spectrum.scroll_value
-                self.sync_edits()
-
-            return fun
-
         self.add_spectrum(
             assets.ui_buttons["edit_brightness"], make_brightness_fun, 1.25
         )
@@ -257,8 +243,6 @@ class EditView:
         self.add_spectrum(
             assets.ui_buttons["edit_saturation"], make_saturation_fun, 1.25
         )
-        self.add_spectrum(assets.ui_buttons["edit_shadow"], make_shadow_fun, 1.25)
-        self.add_spectrum(assets.ui_buttons["edit_highlight"], make_highlight_fun, 1.25)
 
         self.add_effect_tv_row(["Abort", "Save"])
 
