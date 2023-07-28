@@ -400,7 +400,6 @@ def copy(src_path, dst_path, is_cut=False):
                 this_name += "." + x[-1]
 
             path = pathlib.Path(dst_path + "/" + this_name).resolve().as_posix()
-            print(path)
             if not os.path.exists(path):
                 break
 

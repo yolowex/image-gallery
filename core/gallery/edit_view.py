@@ -550,4 +550,26 @@ class EditView:
         self.edit_agent.perform()
 
     def save(self):
-        ...
+        content: Content = cr.gallery.content_manager.current_content
+
+        name = content.name
+        pure_name = content.pure_name
+        extension = content.extension
+        dst_path = cr.gallery.content_manager.path
+        c = 0
+        while True:
+            this_name = pure_name
+
+            if c != 0:
+                this_name += f"_{c}"
+
+            this_name += "." + extension
+
+            path = pathlib.Path(dst_path + "/" + this_name).resolve().as_posix()
+            if not os.path.exists(path):
+                break
+
+            c += 1
+
+        content.modified_image.save(path)
+        cr.gallery.content_manager.reinit()
