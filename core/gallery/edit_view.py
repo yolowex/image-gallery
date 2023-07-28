@@ -7,6 +7,7 @@ from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
 from core.gallery.content import Content
+from core.gallery.edit_agent import EditAgent
 from gui.button import Button
 from gui.name_tag import NameTag
 from gui.spectrum import Spectrum
@@ -100,6 +101,65 @@ class EditView:
 
         self.init_contents()
 
+    @property
+    def __vertical_scroll_bar_width(self):
+        pa = self.box.get()
+
+        val = cr.ws().y * 0.01
+        if val > pa.h * 0.1:
+            val = pa.h * 0.1
+
+        return val
+
+    @property
+    def __vertical_scroll_bar_rect(self):
+        pa = self.box.get()
+        w = self.__vertical_scroll_bar_width
+        y = pa.y
+        x = pa.left
+        h = pa.h
+
+        return FRect(x, y, w, h)
+
+    @property
+    def content_height(self):
+        return self.height_counter * (self.item_height + self.vertical_margin)
+
+    @property
+    def __vertical_scroll_button_rect(self):
+        pa = self.box.get()
+        bar_rect = self.__vertical_scroll_bar_rect
+
+        bottom_bound = -self.content_height + 0.95
+
+        h = self.box.rect.h / self.content_height * pa.h
+
+        if h > pa.h:
+            h = pa.h
+
+        lerp_value = utils.inv_lerp(0, abs(bottom_bound), abs(self.scroll_y))
+
+        rect = FRect(
+            bar_rect.x,
+            utils.lerp(bar_rect.top, bar_rect.bottom - h, lerp_value),
+            bar_rect.w,
+            h,
+        )
+
+        return rect
+
+    @property
+    def edit_agent(self) -> EditAgent:
+        content: Content = cr.gallery.content_manager.current_content
+
+        return content.edit_agent
+
+    def sync_edits(self):
+        content: Content = cr.gallery.content_manager.current_content
+
+        if content.type == ContentType.PICTURE:
+            content.edit_agent.perform()
+
     def init_contents(self):
         self.add_tv_button(assets.ui_buttons["edit_flip_x"], "Mirror", "Mirror")
         self.add_tv_button(
@@ -122,36 +182,92 @@ class EditView:
         self.add_effect_tv_row(["Solarization", "Comic Book"])
         self.add_effect_tv_row(["Tilt Shift", "Pencil Sketch"])
 
-        self.add_spectrum(
-            assets.ui_buttons["edit_brightness"], lambda: print("brightness"), 1.25
-        )
-        self.add_spectrum(
-            assets.ui_buttons["edit_contrast"], lambda: print("contrast"), 1.25
-        )
-        self.add_spectrum(
-            assets.ui_buttons["edit_sharpness"], lambda: print("sharpness"), 1.25
-        )
+        def make_brightness_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.brightness = spectrum.scroll_value
+                self.sync_edits()
 
-        self.add_spectrum(assets.ui_buttons["edit_red"], lambda: print("red"), 1)
-        self.add_spectrum(assets.ui_buttons["edit_green"], lambda: print("green"), 1)
-        self.add_spectrum(assets.ui_buttons["edit_blue"], lambda: print("blue"), 1)
+            return fun
+
+        def make_contrast_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.contrast = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_saturation_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.saturation = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_sharpness_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.sharpness = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_red_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.red = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_green_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.green = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_blue_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.blue = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_shadow_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.shadow = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
+        def make_highlight_fun(spectrum: Spectrum):
+            def fun():
+                self.edit_agent.highlight = spectrum.scroll_value
+                self.sync_edits()
+
+            return fun
+
         self.add_spectrum(
-            assets.ui_buttons["edit_saturation"], lambda: print("saturation"), 1.25
+            assets.ui_buttons["edit_brightness"], make_brightness_fun, 1.25
         )
+        self.add_spectrum(assets.ui_buttons["edit_contrast"], make_contrast_fun, 1.25)
+        self.add_spectrum(assets.ui_buttons["edit_sharpness"], make_sharpness_fun, 1.25)
+
+        self.add_spectrum(assets.ui_buttons["edit_red"], make_red_fun, 1)
+        self.add_spectrum(assets.ui_buttons["edit_green"], make_green_fun, 1)
+        self.add_spectrum(assets.ui_buttons["edit_blue"], make_blue_fun, 1)
         self.add_spectrum(
-            assets.ui_buttons["edit_shadow"], lambda: print("shadow"), 1.25
+            assets.ui_buttons["edit_saturation"], make_saturation_fun, 1.25
         )
-        self.add_spectrum(
-            assets.ui_buttons["edit_highlight"], lambda: print("highlight"), 1.25
-        )
+        self.add_spectrum(assets.ui_buttons["edit_shadow"], make_shadow_fun, 1.25)
+        self.add_spectrum(assets.ui_buttons["edit_highlight"], make_highlight_fun, 1.25)
 
         self.add_effect_tv_row(["Abort", "Save"])
 
-    def add_spectrum(self, button_texture: Texture, source_function, y_scale=1.0):
+    def add_spectrum(self, button_texture: Texture, function, y_scale=1.0):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
         tv_box = RelRect(self.fun, 0.05, y, 0.75, self.item_height, use_param=True)
 
-        spectrum = Spectrum(tv_box, button_texture, source_function, y_scale)
+        spectrum = Spectrum(tv_box, button_texture, lambda: None, y_scale)
+        spectrum.on_release_function = function(spectrum)
 
         tv_button_box = RelRect(
             self.button_fun, 0.8, y, 0.2, self.item_height, use_param=True
@@ -223,53 +339,6 @@ class EditView:
         # self.sync_location_text()
 
         self.height_counter += 1
-
-    @property
-    def __vertical_scroll_bar_width(self):
-        pa = self.box.get()
-
-        val = cr.ws().y * 0.01
-        if val > pa.h * 0.1:
-            val = pa.h * 0.1
-
-        return val
-
-    @property
-    def __vertical_scroll_bar_rect(self):
-        pa = self.box.get()
-        w = self.__vertical_scroll_bar_width
-        y = pa.y
-        x = pa.left
-        h = pa.h
-
-        return FRect(x, y, w, h)
-
-    @property
-    def content_height(self):
-        return self.height_counter * (self.item_height + self.vertical_margin)
-
-    @property
-    def __vertical_scroll_button_rect(self):
-        pa = self.box.get()
-        bar_rect = self.__vertical_scroll_bar_rect
-
-        bottom_bound = -self.content_height + 0.95
-
-        h = self.box.rect.h / self.content_height * pa.h
-
-        if h > pa.h:
-            h = pa.h
-
-        lerp_value = utils.inv_lerp(0, abs(bottom_bound), abs(self.scroll_y))
-
-        rect = FRect(
-            bar_rect.x,
-            utils.lerp(bar_rect.top, bar_rect.bottom - h, lerp_value),
-            bar_rect.w,
-            h,
-        )
-
-        return rect
 
     def check_scroll_bar(self):
         pa = self.box.get()

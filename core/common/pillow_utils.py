@@ -19,7 +19,13 @@ def modify_contrast(image: Image, contrast_factor):
 
 
 def modify_color_balance(image: Image, red_factor, green_factor, blue_factor):
-    image = copy.deepcopy(image)
+    image = ImageOps.exif_transpose(
+        image
+    )  # Automatically rotates the image based on EXIF data if available
+    if image.mode != "RGB":
+        # Convert the image to RGB mode if it's not already in RGB
+        image = image.convert("RGB")
+
     r, g, b = image.split()
 
     r = r.point(lambda i: i * red_factor)

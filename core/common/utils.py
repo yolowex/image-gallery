@@ -316,7 +316,9 @@ def open_image_to_pygame_surface(image_path=None, image=None):
     # Open the image with Pillow
     if image is None and image_path is not None:
         image = Image.open(image_path)
-    elif not (image is not None and image_path is None):
+    elif image is not None:
+        pass
+    else:
         raise ValueError(f"Bad input! image_path: {image_path} ,image: {image}")
 
     # Convert the image to RGBA mode (with alpha channel)

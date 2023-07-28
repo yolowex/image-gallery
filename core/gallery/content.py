@@ -6,8 +6,10 @@ import core.common.constants as constants
 from core.common.constants import colors as colors
 from core.common.names import *
 import core.common.resources as cr
+from core.gallery.edit_agent import EditAgent
 from helper_kit.relative_rect import RelRect
 from core.common import utils
+import copy
 
 
 class Content:
@@ -22,7 +24,6 @@ class Content:
             "%B/%d/%Y", time.localtime(os.path.getctime(self.path))
         )
         self.size = utils.get_file_size(self.path)
-
         self.__gif_surface_list: Optional[list[tuple[Surface, float]]] = None
         self.__gif_index: Optional[int] = None
         self.__gif_timer: float = 0
@@ -49,6 +50,10 @@ class Content:
         self.is_loading_audio = False
         self.video_audio_loaded = False
 
+        self.edit_agent: Optional[EditAgent] = None
+
+        self.pillow_image: Optional[Image] = None
+        self.modified_image: Optional[Image] = None
         self.surface: Optional[Surface] = None
         self.texture: Optional[Texture] = None
 
@@ -255,9 +260,17 @@ class Content:
 
                     self.texture = Texture.from_surface(cr.renderer, self.surface)
                 else:
-                    self.surface = utils.open_image_to_pygame_surface(self.path)
+                    self.pillow_image = Image.open(self.path).convert()
+                    self.modified_image = copy.deepcopy(self.pillow_image)
+                    self.edit_agent = EditAgent(self)
+                    self.edit_agent.perform()
+
+                    self.surface = utils.open_image_to_pygame_surface(
+                        image=self.modified_image
+                    )
                     self.texture = Texture.from_surface(cr.renderer, self.surface)
-            except Exception as e:
+
+            except OSError as e:
                 cr.log.write_log(
                     f"Could not load {self.path} due to this error: {e}", LogLevel.ERROR
                 )
