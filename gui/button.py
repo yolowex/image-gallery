@@ -58,11 +58,30 @@ class Button:
                             LogLevel.ERROR,
                         )
 
+    @property
+    def bg_color(self):
+        mr = cr.event_holder.mouse_rect
+        pressed = cr.event_holder.mouse_pressed_keys[0]
+        held = cr.event_holder.mouse_held_keys[0]
+
+        if self.rel_rect.get().contains(mr):
+            if held:
+                return cr.color_theme.color_1.lerp(cr.color_theme.selection, 0.6)
+            else:
+                return cr.color_theme.color_1.lerp(cr.color_theme.selection, 0.25)
+
+        return cr.color_theme.color_1
+
     def render(self):
         if not (
             not callable(self.render_condition)
             or (callable(self.render_condition) and self.render_condition())
         ):
             return
+
+        color = self.bg_color
+        if color != cr.color_theme.color_1:
+            cr.renderer.draw_color = color
+            cr.renderer.fill_rect(self.rel_rect.get())
 
         self.image.draw(None, self.rel_rect.get())

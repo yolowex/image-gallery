@@ -14,6 +14,7 @@ from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 from core.sql_agent import SqlAgent
 
+
 def make_fun(size, con_box):
     ar = utils.get_aspect_ratio(Vector2(size))
 
@@ -226,10 +227,10 @@ class TagView:
         """
         using a thread makes the app run smoothely while calling the save function.
         """
-        def operation():
 
+        def operation():
             content: Content = cr.gallery.content_manager.current_content
-            
+
             name_tags = []
             for text_view, location in zip(
                 self.people_text_view_list, self.people_location_list
@@ -246,7 +247,6 @@ class TagView:
                 if not len(name_tags):
                     return
 
-
             perma_tags.append([content.path, "Location", text])
 
             agent = SqlAgent()
@@ -256,7 +256,7 @@ class TagView:
             self.update_name_tags()
 
             # self.load(agent)
-        
+
         th = threading.Thread(target=operation)
         th.start()
 
