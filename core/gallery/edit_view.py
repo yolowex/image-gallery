@@ -143,30 +143,49 @@ class EditView:
             assets.ui_buttons["edit_highlight"], lambda: print("highlight"), 1.25
         )
 
+        self.add_effect_tv_row(["Abort", "Save"])
+
     def add_spectrum(self, button_texture: Texture, source_function, y_scale=1.0):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
-        tv_box = RelRect(self.fun, 0.01, y, 0.97, self.item_height, use_param=True)
+        tv_box = RelRect(self.fun, 0.05, y, 0.75, self.item_height, use_param=True)
 
         spectrum = Spectrum(tv_box, button_texture, source_function, y_scale)
+
+        tv_button_box = RelRect(
+            self.button_fun, 0.8, y, 0.2, self.item_height, use_param=True
+        )
+
+        def func():
+            spectrum.scroll_value = 0.5
+            spectrum.on_release_function()
+
+        tv_button = Button(
+            "Reset",
+            tv_button_box,
+            assets.ui_buttons["reset"],
+            func,
+            None,
+        )
         self.spectrum_list.append(spectrum)
+        self.button_list.append(tv_button)
         self.height_counter += 1
 
     def add_effect_tv_row(self, texts: list[str]):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
         # unsafe: this will raise an error if texts is empty
-        step_w = 0.97 / len(texts)
+        step_w = 0.93 / len(texts)
 
         for index, text in enumerate(texts):
             tv_box = RelRect(
                 self.fun,
-                0.01 + step_w * index,
+                0.05 + step_w * index,
                 y,
                 step_w,
                 self.item_height,
                 use_param=True,
             )
-            tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.7)
+            tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.65)
 
             self.text_view_list.append(tv)
 
@@ -181,8 +200,8 @@ class EditView:
     ):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
-        tv_box = RelRect(self.fun, 0.01, y, 0.8, self.item_height, use_param=True)
-        tv = TextView(tv_box, is_entry=False, text=text)
+        tv_box = RelRect(self.fun, 0.05, y, 0.75, self.item_height, use_param=True)
+        tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.8)
         tv.has_focus = has_focus
         tv_button_box = RelRect(
             self.button_fun, 0.8, y, 0.2, self.item_height, use_param=True
@@ -309,11 +328,11 @@ class EditView:
         for text_view in self.text_view_list:
             text_view.render()
 
-        for button in self.button_list:
-            button.render()
-
         for spectrum in self.spectrum_list:
             spectrum.render()
+
+        for button in self.button_list:
+            button.render()
 
         cr.renderer.draw_color = cr.color_theme.color_0
         cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
