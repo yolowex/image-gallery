@@ -61,6 +61,7 @@ class EditView:
         self.item_height = 0.05
         self.height_counter = 0
         self.scroll_y = 0
+        self.scroll_x_locked = False
 
         def fun(rect):
             # win_size = cr.ws()
@@ -71,7 +72,7 @@ class EditView:
             res.w *= pa.w
             res.h *= pa.h
             res.x += pa.x
-            res.y += pa.y + self.scroll_y
+            res.y += pa.y + self.scroll_y * self.content_height * pa.h
             return res
 
         def button_fun(rect):
@@ -82,8 +83,7 @@ class EditView:
             res.w *= pa.w
             res.h *= pa.h
             res.x += pa.x
-            res.y += pa.y + self.scroll_y
-
+            res.y += pa.y + self.scroll_y * self.content_height * pa.h
             lc = res.center
             res.w = res.h
             res.center = lc
@@ -129,6 +129,10 @@ class EditView:
         self.add_spectrum(
             assets.ui_buttons["edit_sharpness"], lambda: print("sharpness"), 1.25
         )
+
+        self.add_spectrum(assets.ui_buttons["edit_red"], lambda: print("red"), 1)
+        self.add_spectrum(assets.ui_buttons["edit_green"], lambda: print("green"), 1)
+        self.add_spectrum(assets.ui_buttons["edit_blue"], lambda: print("blue"), 1)
         self.add_spectrum(
             assets.ui_buttons["edit_saturation"], lambda: print("saturation"), 1.25
         )
@@ -139,7 +143,7 @@ class EditView:
             assets.ui_buttons["edit_highlight"], lambda: print("highlight"), 1.25
         )
 
-    def add_spectrum(self, button_texture: Texture, source_function, y_scale=1):
+    def add_spectrum(self, button_texture: Texture, source_function, y_scale=1.0):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
         tv_box = RelRect(self.fun, 0.01, y, 0.97, self.item_height, use_param=True)
 
@@ -199,7 +203,97 @@ class EditView:
 
         self.height_counter += 1
 
+    @property
+    def __vertical_scroll_bar_width(self):
+        pa = self.box.get()
+
+        val = cr.ws().y * 0.01
+        if val > pa.h * 0.1:
+            val = pa.h * 0.1
+
+        return val
+
+    @property
+    def __vertical_scroll_bar_rect(self):
+        pa = self.box.get()
+        w = self.__vertical_scroll_bar_width
+        y = pa.y
+        x = pa.left
+        h = pa.h
+
+        return FRect(x, y, w, h)
+
+    @property
+    def content_height(self):
+        return self.height_counter * (self.item_height + self.vertical_margin)
+
+    @property
+    def __vertical_scroll_button_rect(self):
+        pa = self.box.get()
+        bar_rect = self.__vertical_scroll_bar_rect
+
+        bottom_bound = -self.content_height + 0.95
+
+        h = self.box.rect.h / self.content_height * pa.h
+
+        if h > pa.h:
+            h = pa.h
+
+        lerp_value = utils.inv_lerp(0, abs(bottom_bound), abs(self.scroll_y))
+
+        rect = FRect(
+            bar_rect.x,
+            utils.lerp(bar_rect.top, bar_rect.bottom - h, lerp_value),
+            bar_rect.w,
+            h,
+        )
+
+        return rect
+
+    def check_scroll_bar(self):
+        pa = self.box.get()
+        ar = utils.get_aspect_ratio(self.box.rect.size)
+        mw = cr.event_holder.mouse_wheel
+        mr = cr.event_holder.mouse_rect
+        mp = Vector2(mr.center)
+        mod = pgl.K_LCTRL in cr.event_holder.held_keys
+        clicked = cr.event_holder.mouse_pressed_keys[0]
+        released = cr.event_holder.mouse_released_keys[0]
+
+        if mr.colliderect(pa):
+            if mw:
+                self.scroll_y += mw * 0.04
+                if self.scroll_y > 0:
+                    self.scroll_y = 0
+                bottom_bound = -self.content_height + 0.95
+                if self.scroll_y < bottom_bound:
+                    self.scroll_y = bottom_bound
+
+        if clicked:
+            v_bar = self.__vertical_scroll_bar_rect
+
+            if mr.colliderect(v_bar):
+                self.scroll_x_locked = True
+
+        if released:
+            self.scroll_x_locked = False
+
+        if self.scroll_x_locked:
+            bar = self.__vertical_scroll_bar_rect
+            bottom_bound = -self.content_height + 0.95
+            val = utils.inv_lerp(bar.top, bar.bottom, mp.y)
+            self.scroll_y = utils.lerp(0, bottom_bound, val)
+            if self.scroll_y > 0:
+                self.scroll_y = 0
+            if self.scroll_y < bottom_bound:
+                self.scroll_y = bottom_bound
+
+        if self.content_height < 1:
+            self.scroll_y = 0
+
     def check_events(self):
+        self.check_scroll_bar()
+
         for text_view in self.text_view_list:
             text_view.check_events()
 
@@ -220,3 +314,12 @@ class EditView:
 
         for spectrum in self.spectrum_list:
             spectrum.render()
+
+        cr.renderer.draw_color = cr.color_theme.color_0
+        cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
+
+        cr.renderer.draw_color = cr.color_theme.scroll_bar_border
+        cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
+
+        cr.renderer.draw_color = cr.color_theme.button
+        cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
