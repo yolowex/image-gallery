@@ -14,8 +14,14 @@ class Spectrum:
     """
 
     def __init__(
-        self, box: RelRect, button_texture: Texture, on_release_function, y_scale=1
+        self,
+        box: RelRect,
+        button_texture: Texture,
+        on_release_function,
+        y_scale=1,
+        name="",
     ):
+        self.name = name
         self.font = assets.fonts["mid"]
         self.box = box
         self.src_y_scale = y_scale

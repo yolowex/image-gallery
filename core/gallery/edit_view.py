@@ -160,27 +160,142 @@ class EditView:
         if content.type == ContentType.PICTURE:
             content.edit_agent.perform()
 
+    def get_spectrum(self, name) -> Optional[Spectrum]:
+        for spectrum in self.spectrum_list:
+            if spectrum.name == name:
+                return spectrum
+
+        return None
+
+    def sync_spectrums(self):
+        ea = self.edit_agent
+        self.get_spectrum("brightness").scroll_value = ea.brightness
+        self.get_spectrum("contrast").scroll_value = ea.contrast
+        self.get_spectrum("sharpness").scroll_value = ea.sharpness
+        self.get_spectrum("saturation").scroll_value = ea.saturation
+        self.get_spectrum("red").scroll_value = ea.red
+        self.get_spectrum("green").scroll_value = ea.green
+        self.get_spectrum("blue").scroll_value = ea.blue
+
     def init_contents(self):
-        self.add_tv_button(assets.ui_buttons["edit_flip_x"], "Mirror", "Mirror")
+        def flip_function():
+            self.edit_agent.flip_x = not self.edit_agent.flip_x
+            self.edit_agent.perform()
+
+        def rotate_right_function():
+            self.edit_agent.angle -= 90
+            self.edit_agent.perform()
+
+        def rotate_left_function():
+            self.edit_agent.angle += 90
+            self.edit_agent.perform()
+
         self.add_tv_button(
-            assets.ui_buttons["edit_rotate_right"], "Rotate Right", "Rotate Right"
+            assets.ui_buttons["edit_flip_x"],
+            "Mirror",
+            "Mirror",
+            on_click_function=flip_function,
         )
         self.add_tv_button(
-            assets.ui_buttons["edit_rotate_left"], "Rotate Left", "Rotate Left"
+            assets.ui_buttons["edit_rotate_right"],
+            "Rotate Right",
+            "Rotate Right",
+            on_click_function=rotate_right_function,
+        )
+        self.add_tv_button(
+            assets.ui_buttons["edit_rotate_left"],
+            "Rotate Left",
+            "Rotate Left",
+            on_click_function=rotate_left_function,
         )
 
-        self.add_effect_tv_row(["Vintage", "High Contrast"])
+        def black_and_white_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0
+            self.edit_agent.brightness = 0.25
+            self.edit_agent.contrast = 0.7
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def cozy_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.7
+            self.edit_agent.brightness = 0.3
+            self.edit_agent.contrast = 0.3
+            self.edit_agent.sharpness = 0.8
+            self.edit_agent.red = 0.75
+            self.edit_agent.blue = 0.5
+            self.edit_agent.green = 0.6
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def fog_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.3
+            self.edit_agent.brightness = 0.5
+            self.edit_agent.contrast = 0.25
+            self.edit_agent.sharpness = 0.15
+            self.edit_agent.red = 0.5
+            self.edit_agent.blue = 0.8
+            self.edit_agent.green = 0.5
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def inferno_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.35
+            self.edit_agent.brightness = 0.7
+            self.edit_agent.contrast = 0.6
+            self.edit_agent.sharpness = 0.75
+            self.edit_agent.red = 0.65
+            self.edit_agent.blue = 0.35
+            self.edit_agent.green = 0.35
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def blue_dust_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.35
+            self.edit_agent.brightness = 0.7
+            self.edit_agent.contrast = 0.6
+            self.edit_agent.sharpness = 0.75
+            self.edit_agent.red = 0.35
+            self.edit_agent.blue = 0.65
+            self.edit_agent.green = 0.35
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def forest_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.3
+            self.edit_agent.brightness = 0.5
+            self.edit_agent.contrast = 0.30
+            self.edit_agent.sharpness = 0.20
+            self.edit_agent.red = 0.55
+            self.edit_agent.blue = 0.4
+            self.edit_agent.green = 0.8
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        def vintage_function():
+            self.edit_agent.reset_effects()
+            self.edit_agent.saturation = 0.2
+            self.edit_agent.brightness = 0.45
+            self.edit_agent.contrast = 0.15
+            self.edit_agent.sharpness = 0.7
+            self.edit_agent.red = 0.55
+            self.edit_agent.blue = 0.3
+            self.edit_agent.green = 0.4
+            self.sync_spectrums()
+            self.edit_agent.perform()
+
+        self.add_effect_tv_row(["Black And White"], [black_and_white_function])
+        self.add_effect_tv_row(["Inferno"], [inferno_function])
+        self.add_effect_tv_row(["Cold Fog", "Forest"], [fog_function, forest_function])
         self.add_effect_tv_row(
-            [
-                "HDR",
-                "Sepia Tone",
-            ]
+            ["Desert", "Blue Dust"], [cozy_function, blue_dust_function]
         )
-        self.add_effect_tv_row(["Soft Focus", "Pop Art"])
-        self.add_effect_tv_row(["Glow Effect"])
-        self.add_effect_tv_row(["Cross Processing"])
-        self.add_effect_tv_row(["Solarization", "Comic Book"])
-        self.add_effect_tv_row(["Tilt Shift", "Pencil Sketch"])
+        self.add_effect_tv_row(["Vintage"], [vintage_function])
 
         def make_brightness_fun(spectrum: Spectrum):
             def fun():
@@ -232,25 +347,40 @@ class EditView:
             return fun
 
         self.add_spectrum(
-            assets.ui_buttons["edit_brightness"], make_brightness_fun, 1.25
+            assets.ui_buttons["edit_brightness"],
+            make_brightness_fun,
+            1.25,
+            name="brightness",
         )
-        self.add_spectrum(assets.ui_buttons["edit_contrast"], make_contrast_fun, 1.25)
-        self.add_spectrum(assets.ui_buttons["edit_sharpness"], make_sharpness_fun, 1.25)
-
-        self.add_spectrum(assets.ui_buttons["edit_red"], make_red_fun, 1)
-        self.add_spectrum(assets.ui_buttons["edit_green"], make_green_fun, 1)
-        self.add_spectrum(assets.ui_buttons["edit_blue"], make_blue_fun, 1)
         self.add_spectrum(
-            assets.ui_buttons["edit_saturation"], make_saturation_fun, 1.25
+            assets.ui_buttons["edit_contrast"], make_contrast_fun, 1.25, name="contrast"
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_sharpness"],
+            make_sharpness_fun,
+            1.25,
+            name="sharpness",
         )
 
-        self.add_effect_tv_row(["Abort", "Save"])
+        self.add_spectrum(assets.ui_buttons["edit_red"], make_red_fun, 1, name="red")
+        self.add_spectrum(
+            assets.ui_buttons["edit_green"], make_green_fun, 1, name="green"
+        )
+        self.add_spectrum(assets.ui_buttons["edit_blue"], make_blue_fun, 1, name="blue")
+        self.add_spectrum(
+            assets.ui_buttons["edit_saturation"],
+            make_saturation_fun,
+            1.25,
+            name="saturation",
+        )
 
-    def add_spectrum(self, button_texture: Texture, function, y_scale=1.0):
+        self.add_effect_tv_row(["Reset", "Save"])
+
+    def add_spectrum(self, button_texture: Texture, function, y_scale=1.0, name=""):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
         tv_box = RelRect(self.fun, 0.05, y, 0.75, self.item_height, use_param=True)
 
-        spectrum = Spectrum(tv_box, button_texture, lambda: None, y_scale)
+        spectrum = Spectrum(tv_box, button_texture, lambda: None, y_scale, name=name)
         spectrum.on_release_function = function(spectrum)
 
         tv_button_box = RelRect(
@@ -272,13 +402,16 @@ class EditView:
         self.button_list.append(tv_button)
         self.height_counter += 1
 
-    def add_effect_tv_row(self, texts: list[str]):
+    def add_effect_tv_row(self, texts: list[str], functions: list = None):
+        if functions is None:
+            return
+
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
         # unsafe: this will raise an error if texts is empty
         step_w = 0.93 / len(texts)
 
-        for index, text in enumerate(texts):
+        for index, text, function in zip(range(len(texts)), texts, functions):
             tv_box = RelRect(
                 self.fun,
                 0.05 + step_w * index,
@@ -287,7 +420,13 @@ class EditView:
                 self.item_height,
                 use_param=True,
             )
-            tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.65)
+            tv = TextView(
+                tv_box,
+                is_entry=False,
+                text=text,
+                y_scale=0.65,
+                on_click_function=function,
+            )
 
             self.text_view_list.append(tv)
 
@@ -299,11 +438,18 @@ class EditView:
         button_name: str,
         text="",
         has_focus=True,
+        on_click_function=None,
     ):
         y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
         tv_box = RelRect(self.fun, 0.05, y, 0.75, self.item_height, use_param=True)
-        tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.8)
+        tv = TextView(
+            tv_box,
+            is_entry=False,
+            text=text,
+            y_scale=0.8,
+            on_click_function=on_click_function,
+        )
         tv.has_focus = has_focus
         tv_button_box = RelRect(
             self.button_fun, 0.8, y, 0.2, self.item_height, use_param=True
@@ -313,7 +459,7 @@ class EditView:
             button_name,
             tv_button_box,
             button_texture,
-            lambda: None,
+            on_click_function,
             None,
         )
 

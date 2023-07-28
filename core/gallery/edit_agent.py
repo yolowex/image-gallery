@@ -32,6 +32,26 @@ class EditAgent:
         # 0, 1,3
         self.blue = 0.5
 
+    def reset_effects(self):
+        # 0, 1,3
+        self.brightness = 0.5
+        # 0, 1,3
+        self.contrast = 0.5
+        # 0, 1,3
+        self.saturation = 0.5
+        # 0, 1,3
+        self.sharpness = 0.5
+
+        # 0, 1,3
+        self.highlight = 0.5
+
+        # 0, 1,3
+        self.red = 0.5
+        # 0, 1,3
+        self.green = 0.5
+        # 0, 1,3
+        self.blue = 0.5
+
     def print_fields(self):
         # Use dir() to get all the names (fields) in the current scope (class)
         fields = dir(self)
@@ -52,7 +72,6 @@ class EditAgent:
             return utils.lerp(1, mod, (val - 0.5) * 2)
 
     def perform(self):
-        self.print_fields()
         img = self.content.pillow_image
 
         f = self.formula_1
