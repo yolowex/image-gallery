@@ -7,6 +7,7 @@ import core.common.resources as cr
 from core.gallery.content import Content
 from gui.button import Button
 from gui.name_tag import NameTag
+from gui.spectrum import Spectrum
 from gui.text_view import TextView
 from gui.zoom_view import ZoomView
 from helper_kit.relative_pos import RelPos
@@ -57,6 +58,7 @@ class EditView:
         self.box = box
         self.font: Font = assets.fonts["mid"]
         self.vertical_margin = 0.01
+        self.item_height = 0.05
         self.height_counter = 0
         self.scroll_y = 0
 
@@ -92,6 +94,7 @@ class EditView:
 
         self.text_view_list: list[TextView] = []
         self.button_list: list[Button] = []
+        self.spectrum_list: list[Spectrum] = []
 
         self.init_contents()
 
@@ -117,17 +120,47 @@ class EditView:
         self.add_effect_tv_row(["Solarization", "Comic Book"])
         self.add_effect_tv_row(["Tilt Shift", "Pencil Sketch"])
 
-    def add_effect_tv_row(self, texts: list[str]):
-        height = 0.05
+        self.add_spectrum(
+            assets.ui_buttons["edit_brightness"], lambda: print("brightness"), 1.25
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_contrast"], lambda: print("contrast"), 1.25
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_sharpness"], lambda: print("sharpness"), 1.25
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_saturation"], lambda: print("saturation"), 1.25
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_shadow"], lambda: print("shadow"), 1.25
+        )
+        self.add_spectrum(
+            assets.ui_buttons["edit_highlight"], lambda: print("highlight"), 1.25
+        )
 
-        y = 0.01 + (self.height_counter * (height + self.vertical_margin))
+    def add_spectrum(self, button_texture: Texture, source_function, y_scale=1):
+        y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
+        tv_box = RelRect(self.fun, 0.01, y, 0.97, self.item_height, use_param=True)
+
+        spectrum = Spectrum(tv_box, button_texture, source_function, y_scale)
+        self.spectrum_list.append(spectrum)
+        self.height_counter += 1
+
+    def add_effect_tv_row(self, texts: list[str]):
+        y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
         # unsafe: this will raise an error if texts is empty
-        step_w = 0.99 / len(texts)
+        step_w = 0.97 / len(texts)
 
         for index, text in enumerate(texts):
             tv_box = RelRect(
-                self.fun, 0.01 + step_w * index, y, step_w, height, use_param=True
+                self.fun,
+                0.01 + step_w * index,
+                y,
+                step_w,
+                self.item_height,
+                use_param=True,
             )
             tv = TextView(tv_box, is_entry=False, text=text, y_scale=0.7)
 
@@ -142,14 +175,14 @@ class EditView:
         text="",
         has_focus=True,
     ):
-        height = 0.05
+        y = 0.01 + (self.height_counter * (self.item_height + self.vertical_margin))
 
-        y = 0.01 + (self.height_counter * (height + self.vertical_margin))
-
-        tv_box = RelRect(self.fun, 0.01, y, 0.8, height, use_param=True)
+        tv_box = RelRect(self.fun, 0.01, y, 0.8, self.item_height, use_param=True)
         tv = TextView(tv_box, is_entry=False, text=text)
         tv.has_focus = has_focus
-        tv_button_box = RelRect(self.button_fun, 0.8, y, 0.2, height, use_param=True)
+        tv_button_box = RelRect(
+            self.button_fun, 0.8, y, 0.2, self.item_height, use_param=True
+        )
 
         tv_button = Button(
             button_name,
@@ -173,6 +206,9 @@ class EditView:
         for button in self.button_list:
             button.check_events()
 
+        for spectrum in self.spectrum_list:
+            spectrum.check_events()
+
     def render(self):
         cr.renderer.draw_rect(self.box.get())
 
@@ -181,3 +217,6 @@ class EditView:
 
         for button in self.button_list:
             button.render()
+
+        for spectrum in self.spectrum_list:
+            spectrum.render()
