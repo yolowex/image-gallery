@@ -342,7 +342,11 @@ def extract_frames_from_gif(gif_path):
     try:
         while True:
             frames.append(gif.copy())
-            dur = gif.info["duration"] / 1000
+            dur = 0
+            try:
+                dur = gif.info["duration"] / 1000
+            except KeyError as e:
+                dur = 0
             if dur == 0:
                 dur = 1 / 25
 

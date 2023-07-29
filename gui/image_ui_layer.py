@@ -255,13 +255,13 @@ class ImageUiLayer(UiLayer):
         )
 
         self.buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button]
         )
         self.picture_buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button]
         )
         self.video_buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button, reset_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button]
         )
 
     def update_navigator_button(self):
