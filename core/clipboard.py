@@ -41,10 +41,9 @@ class Clipboard:
         if ret:
             index = cr.gallery.content_manager.current_content_index
             cr.gallery.content_manager.reinit()
-            index -= 1
 
             if index >= len(cr.gallery.content_manager.content_list):
-                index = cr.gallery.content_manager.content_list - 1
+                index = cr.gallery.content_manager.content_list.__len__() - 1
 
             cr.gallery.content_manager.current_content_index = index
             cr.gallery.content_manager.load_contents()

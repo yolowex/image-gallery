@@ -263,7 +263,6 @@ class Content:
                     self.pillow_image = Image.open(self.path).convert()
                     self.modified_image = copy.deepcopy(self.pillow_image)
                     self.edit_agent = EditAgent(self)
-                    self.edit_agent.perform()
 
                     self.surface = utils.open_image_to_pygame_surface(
                         image=self.pillow_image

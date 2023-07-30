@@ -573,3 +573,4 @@ class EditView:
 
         content.modified_image.save(path)
         cr.gallery.content_manager.reinit()
+        cr.gallery.detailed_view.thumbnail_view.reinit()
