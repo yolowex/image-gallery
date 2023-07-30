@@ -512,6 +512,9 @@ class EditView:
             self.scroll_y = 0
 
     def check_events(self):
+        if self.edit_agent is None:
+            return
+
         self.check_scroll_bar()
 
         for text_view in self.text_view_list:
@@ -524,6 +527,9 @@ class EditView:
             spectrum.check_events()
 
     def render(self):
+        if self.edit_agent is None:
+            return
+
         cr.renderer.draw_rect(self.box.get())
 
         for text_view in self.text_view_list:
@@ -545,11 +551,16 @@ class EditView:
         cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
 
     def reset(self):
+        if self.edit_agent is None:
+            return
         self.edit_agent.reset_everything()
         self.sync_spectrums()
         self.edit_agent.perform()
 
     def save(self):
+        if self.edit_agent is None:
+            return
+
         content: Content = cr.gallery.content_manager.current_content
 
         name = content.name
