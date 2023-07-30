@@ -15,7 +15,7 @@ class EventHolder:
         self.window_resized = False
 
         self.__mouse_double_click_timer = 0
-        self.__mouse_double_click_duration = 0.35
+        self.__mouse_double_click_duration = 0.2
         self.mouse_double_clicked = False
         self.mouse_wheel = 0
         self.mouse_moved = False
