@@ -72,6 +72,9 @@ class FolderView:
         ) and cp.current_result == ClipboardResultEnum.PENDING
 
         info.add_item("Paste", lambda: cr.clipboard.paste(item["path"]), paste_active)
+        info.add_item(
+            "Create New Folder", lambda: cr.clipboard.paste(item["path"]), paste_active
+        )
 
     @property
     def error_color(self):

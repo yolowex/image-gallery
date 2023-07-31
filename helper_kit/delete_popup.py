@@ -16,7 +16,6 @@ def center_window(root, width, height):
 
 
 def delete_file_popup(clipboard):
-
     def on_yes():
         popup.destroy()
         clipboard.trigger_operation = True
