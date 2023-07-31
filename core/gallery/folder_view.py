@@ -10,6 +10,7 @@ from core.gallery.content_manager import ContentManager
 from gui.context_menu import ContextMenu, ContextMenuInfo
 from gui.hover_man import HoverMan
 from gui.thumbnail_view import ThumbnailView
+from helper_kit.name_dialog_popup import name_dialog
 from helper_kit.relative_rect import RelRect
 from core.common import utils, assets
 
@@ -73,7 +74,7 @@ class FolderView:
 
         info.add_item("Paste", lambda: cr.clipboard.paste(item["path"]), paste_active)
         info.add_item(
-            "Create New Folder", lambda: cr.clipboard.paste(item["path"]), paste_active
+            "Create New Folder", lambda: cr.clipboard.create_new_folder(item), True
         )
 
     @property

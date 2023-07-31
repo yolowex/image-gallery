@@ -5,6 +5,7 @@ import core.common.resources as cr
 from core.common.names import *
 from core.common.enums import ClipboardEnum, ClipboardResultEnum, LogLevel
 from helper_kit.delete_popup import delete_file_popup
+from helper_kit.name_dialog_popup import name_dialog
 
 
 class Clipboard:
@@ -15,6 +16,7 @@ class Clipboard:
         self.dst_path: Optional[str] = None
         self.trigger_operation = False
         self.has_popup = False
+        self.new_folder_name: Optional[str] = None
 
     @property
     def log_text(self):
@@ -33,6 +35,27 @@ class Clipboard:
         self.current_operation = ClipboardEnum.CUT
         self.src_path = path
         self.dst_path = None
+        cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
+
+    def create_new_folder(self, item):
+        self.current_result = ClipboardResultEnum.PENDING
+        self.current_operation = ClipboardEnum.NEW_FOLDER
+        self.src_path = item["path"]
+        fun = lambda: name_dialog(self)
+        th = threading.Thread(target=fun)
+        th.start()
+        cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
+
+    def perform_folder_creation(self):
+        path = self.src_path + "/" + self.new_folder_name
+        path = pathlib.Path(path).resolve()
+
+        try:
+            self.current_result = ClipboardResultEnum.SUCCESS
+            os.mkdir(path)
+        except OSError as e:
+            self.current_result = ClipboardResultEnum.FAILED
+
         cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
 
     def __do_delete(self, path):
@@ -121,4 +144,11 @@ class Clipboard:
                 self.current_result = ClipboardResultEnum.RUNNING
                 th = threading.Thread(target=lambda: self.__do_delete(self.src_path))
                 th.start()
+                self.trigger_operation = False
+
+            elif (
+                self.trigger_operation
+                and self.current_operation == ClipboardEnum.NEW_FOLDER
+            ):
+                self.perform_folder_creation()
                 self.trigger_operation = False

@@ -88,6 +88,7 @@ class ClipboardEnum(Enum):
     COPY = 0
     CUT = 1
     DELETE = 2
+    NEW_FOLDER = 3
 
 
 class ClipboardResultEnum(Enum):
