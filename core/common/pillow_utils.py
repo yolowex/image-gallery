@@ -84,7 +84,7 @@ def adjust_shadow(image: Image, shadow_factor):
 def rotate_and_flip_image(image: Image, rotate_angle, flip_x, flip_y):
     image = copy.deepcopy(image)
 
-    rotated_image = image.rotate(rotate_angle)
+    rotated_image = image.rotate(rotate_angle, expand=True)
 
     if flip_x:
         rotated_image = rotated_image.transpose(Image.FLIP_LEFT_RIGHT)
