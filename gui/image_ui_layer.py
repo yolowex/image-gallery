@@ -346,11 +346,6 @@ class ImageUiLayer(UiLayer):
     def check_events(self):
         pa = self.get_box().get()
         mr = cr.event_holder.mouse_rect
-        if (
-            cr.event_holder.mouse_double_clicked
-            or pgl.K_RETURN in cr.event_holder.pressed_keys
-        ) and pa.colliderect(mr):
-            self.trigger_fullscreen()
 
         is_vid = False
         content = cr.gallery.content_manager.current_content
@@ -367,6 +362,12 @@ class ImageUiLayer(UiLayer):
         super().check_events()
         if self.any_hovered:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_HAND
+        else:
+            if (
+                cr.event_holder.mouse_double_clicked
+                or pgl.K_RETURN in cr.event_holder.pressed_keys
+            ) and pa.colliderect(mr):
+                self.trigger_fullscreen()
 
     def render(self):
         is_vid = False
