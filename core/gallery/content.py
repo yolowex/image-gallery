@@ -261,7 +261,7 @@ class Content:
                     self.texture = Texture.from_surface(cr.renderer, self.surface)
                 else:
                     self.pillow_image = Image.open(self.path).convert()
-                    self.modified_image = copy.deepcopy(self.pillow_image)
+                    # self.modified_image = copy.deepcopy(self.pillow_image)
                     self.edit_agent = EditAgent(self)
 
                     self.surface = utils.open_image_to_pygame_surface(
