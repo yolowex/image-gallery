@@ -190,23 +190,32 @@ class EditView:
             self.edit_agent.angle += 90
             self.edit_agent.perform()
 
-        self.add_tv_button(
-            assets.ui_buttons["edit_flip_x"],
-            "Mirror",
-            "Mirror",
-            on_click_function=flip_function,
-        )
-        self.add_tv_button(
-            assets.ui_buttons["edit_rotate_right"],
-            "Rotate Right",
-            "Rotate Right",
-            on_click_function=rotate_right_function,
-        )
-        self.add_tv_button(
-            assets.ui_buttons["edit_rotate_left"],
-            "Rotate Left",
-            "Rotate Left",
-            on_click_function=rotate_left_function,
+        # self.add_tv_button(
+        #     assets.ui_buttons["edit_flip_x"],
+        #     "Mirror",
+        #     "Mirror",
+        #     on_click_function=flip_function,
+        # )
+        # self.add_tv_button(
+        #     assets.ui_buttons["edit_rotate_right"],
+        #     "Rotate Right",
+        #     "Rotate Right",
+        #     on_click_function=rotate_right_function,
+        # )
+        # self.add_tv_button(
+        #     assets.ui_buttons["edit_rotate_left"],
+        #     "Rotate Left",
+        #     "Rotate Left",
+        #     on_click_function=rotate_left_function,
+        # )
+
+        self.add_effect_tv_row(
+            [
+                ("Mirror", assets.ui_buttons["edit_flip_x"]),
+                ("Rotate Right", assets.ui_buttons["edit_rotate_right"]),
+                ("Rotate Left", assets.ui_buttons["edit_rotate_left"]),
+            ],
+            [flip_function, rotate_right_function, rotate_left_function],
         )
 
         def black_and_white_function():
@@ -402,7 +411,7 @@ class EditView:
         self.button_list.append(tv_button)
         self.height_counter += 1
 
-    def add_effect_tv_row(self, texts: list[str], functions: list = None):
+    def add_effect_tv_row(self, texts: list, functions: list = None):
         if functions is None:
             return
 
@@ -412,23 +421,30 @@ class EditView:
         step_w = 0.93 / len(texts)
 
         for index, text, function in zip(range(len(texts)), texts, functions):
+            fun = self.fun
+            if not isinstance(text, str):
+                fun = self.button_fun
+
             tv_box = RelRect(
-                self.fun,
+                fun,
                 0.05 + step_w * index,
                 y,
                 step_w,
                 self.item_height,
                 use_param=True,
             )
-            tv = TextView(
-                tv_box,
-                is_entry=False,
-                text=text,
-                y_scale=0.65,
-                on_click_function=function,
-            )
-
-            self.text_view_list.append(tv)
+            if isinstance(text, str):
+                tv = TextView(
+                    tv_box,
+                    is_entry=False,
+                    text=text,
+                    y_scale=0.65,
+                    on_click_function=function,
+                )
+                self.text_view_list.append(tv)
+            else:
+                tv = Button(text[0], tv_box, text[1], function, None, None)
+                self.button_list.append(tv)
 
         self.height_counter += 1
 
@@ -515,7 +531,7 @@ class EditView:
         if self.edit_agent is None:
             return
 
-        self.check_scroll_bar()
+        # self.check_scroll_bar()
 
         for text_view in self.text_view_list:
             text_view.check_events()
@@ -541,14 +557,14 @@ class EditView:
         for button in self.button_list:
             button.render()
 
-        cr.renderer.draw_color = cr.color_theme.color_0
-        cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
-
-        cr.renderer.draw_color = cr.color_theme.scroll_bar_border
-        cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
-
-        cr.renderer.draw_color = cr.color_theme.button
-        cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
+        # cr.renderer.draw_color = cr.color_theme.color_0
+        # cr.renderer.fill_rect(self.__vertical_scroll_bar_rect)
+        #
+        # cr.renderer.draw_color = cr.color_theme.scroll_bar_border
+        # cr.renderer.draw_rect(self.__vertical_scroll_bar_rect)
+        #
+        # cr.renderer.draw_color = cr.color_theme.button
+        # cr.renderer.fill_rect(self.__vertical_scroll_button_rect)
 
     def reset(self):
         if self.edit_agent is None:
