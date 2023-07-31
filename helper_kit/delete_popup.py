@@ -16,7 +16,6 @@ def center_window(root, width, height):
 
 
 def delete_file_popup(clipboard):
-    # cr.window.opacity = 0.65
 
     def on_yes():
         popup.destroy()
@@ -48,4 +47,3 @@ def delete_file_popup(clipboard):
     popup.mainloop()
 
     clipboard.has_popup = False
-    # cr.window.opacity = 1
