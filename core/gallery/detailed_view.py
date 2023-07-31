@@ -199,6 +199,7 @@ class DetailedView:
             self.zoom_view.reset()
 
         self.zoom_view.update()
+
         if not self.image_ui_layer.any_hovered:
             self.zoom_view.check_events()
             self.check_mouse_events()

@@ -16,10 +16,12 @@ class UiLayer:
 
     def check_events(self):
         self.any_hovered = False
+
         for button in self.buttons:
             button.check_events()
             if button.is_hovered:
                 self.any_hovered = True
+                break
 
     def render(self):
         for button in self.buttons:

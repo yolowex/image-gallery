@@ -46,6 +46,7 @@ class Button:
             not callable(self.render_condition)
             or (callable(self.render_condition) and self.render_condition())
         ):
+            self.is_hovered = False
             return
 
         self.hover_man_check()

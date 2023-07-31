@@ -173,6 +173,11 @@ class ZoomView:
 
         # print(is_detailed,tag_view.any_name_tag_selected,len(tag_view.name_tags))
 
+        c = 0
+        for i in tag_view.name_tags:
+            if i.is_selected:
+                c += 1
+
         return (is_detailed and not tag_view.any_name_tag_selected) or not is_detailed
 
     def check_events(self):
