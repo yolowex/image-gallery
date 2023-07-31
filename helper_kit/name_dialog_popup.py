@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import simpledialog
 
 from core.common import constants
+import os
+import pathlib
 
 
 def center_window(root, width, height):
@@ -17,14 +19,20 @@ def center_window(root, width, height):
 def name_dialog(clipboard):
     clipboard.has_popup = True
 
+    def is_valid_entry(input_text):
+        entry_path = pathlib.Path(clipboard.src_path + "/" + input_text).resolve()
+        val = os.path.exists(entry_path)
+        print(entry_path, val)
+        return val
+
     def on_ok():
-        input_text = entry.get()
-        if (
-            not input_text.strip()
-        ):  # Check if the input is empty or contains only whitespaces
-            error_label.config(text="Invalid Entry", fg="red")
+        input_text = entry.get().strip().replace(" ", "_")
+        if not input_text:  # Check if the input is empty or contains only whitespaces
+            ...
+        elif is_valid_entry(input_text):
+            error_label.config(text="Bad Input", fg="red", wraplength=250)
         else:
-            clipboard.new_folder_name = input_text.replace(" ", "_")
+            clipboard.new_folder_name = input_text
             clipboard.trigger_operation = True
             popup.destroy()
 
@@ -56,7 +64,7 @@ def name_dialog(clipboard):
     cancel_button.pack(side=tk.RIGHT, padx=25)
 
     # Label to display error message
-    error_label = tk.Label(popup, text="", fg="red")
+    error_label = tk.Label(popup, text="", fg="red", wraplength=300)
     error_label.pack()
 
     popup.mainloop()

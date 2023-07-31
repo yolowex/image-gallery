@@ -46,7 +46,7 @@ class Clipboard:
         th.start()
         cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
 
-    def perform_folder_creation(self):
+    def __perform_folder_creation(self):
         path = self.src_path + "/" + self.new_folder_name
         path = pathlib.Path(path).resolve()
 
@@ -150,5 +150,5 @@ class Clipboard:
                 self.trigger_operation
                 and self.current_operation == ClipboardEnum.NEW_FOLDER
             ):
-                self.perform_folder_creation()
+                self.__perform_folder_creation()
                 self.trigger_operation = False
