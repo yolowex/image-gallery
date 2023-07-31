@@ -42,6 +42,12 @@ class Button:
             hover_man.update_text(self.name)
 
     def check_events(self):
+        if not (
+            not callable(self.render_condition)
+            or (callable(self.render_condition) and self.render_condition())
+        ):
+            return
+
         self.hover_man_check()
 
         this = self.rel_rect.get()

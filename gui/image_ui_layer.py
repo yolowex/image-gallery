@@ -194,9 +194,8 @@ class ImageUiLayer(UiLayer):
             else:
                 cr.gallery.update_current_view(ViewType.FULLSCREEN)
 
-        def reset_function():
-            self.parent.zoom_view.reset()
-            self.parent.zoom_view.check_events()
+        def delete_function():
+            cr.clipboard.delete(cr.gallery.content_manager.current_content.path)
 
         def zoom_function(in_: bool):
             def do_zoom():
@@ -246,22 +245,27 @@ class ImageUiLayer(UiLayer):
             right_pane_render_condition,
         )
 
-        reset_button = Button(
-            "Reset",
+        def delete_render_condition():
+            x = right_pane_render_condition()
+            content = cr.gallery.content_manager.current_content
+            return x and content not in assets.reserved_contents
+
+        delete_button = Button(
+            "Delete",
             R((0.95, h_step * 3), (0.05, 0.05)),
-            assets.ui_buttons["reset"],
-            reset_function,
-            right_pane_render_condition,
+            assets.ui_buttons["delete"],
+            delete_function,
+            delete_render_condition,
         )
 
         self.buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button, delete_button]
         )
         self.picture_buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button, delete_button]
         )
         self.video_buttons.extend(
-            [fullscreen_button, zoom_in_button, zoom_out_button]
+            [fullscreen_button, zoom_in_button, zoom_out_button, delete_button]
         )
 
     def update_navigator_button(self):

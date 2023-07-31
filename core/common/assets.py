@@ -33,7 +33,7 @@ def init_assets():
 
     cr.log.write_log("Loading the assets from disk...", LogLevel.DEBUG)
 
-    expected_ui_buttons = 26
+    expected_ui_buttons = 27
 
     ui_buttons_path = os.path.abspath("./assets/ui-buttons")
     # this might fail on windows
