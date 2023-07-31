@@ -3,6 +3,8 @@ from pygame.locals import *
 from pygame.rect import FRect
 from pygame.math import Vector2
 
+from core.common import utils
+
 
 class EventHolder:
     def __init__(self):
@@ -12,6 +14,9 @@ class EventHolder:
         self.window_focus = True
         self.window_resized = False
 
+        self.mouse_double_click_timer = 0
+        self.mouse_double_click_duration = 0.35
+        self.mouse_double_clicked = False
         self.mouse_wheel = 0
         self.mouse_moved = False
         self.mouse_pos = Vector2(0, 0)
@@ -114,3 +119,15 @@ class EventHolder:
                         self.mouse_released_keys[index] = False
 
                 self.mouse_held_keys = list(pg.mouse.get_pressed())
+
+        self.mouse_double_clicked = False
+
+        if self.mouse_pressed_keys[0]:
+            n = utils.now()
+            # print(n,self.mouse_double_click_timer+self.mouse_double_click_duration)
+
+            if n > self.mouse_double_click_timer + self.mouse_double_click_duration:
+                self.mouse_double_click_timer = n
+
+            else:
+                self.mouse_double_clicked = True
