@@ -125,9 +125,9 @@ class ContentManager:
         self.current_content_index = index
 
         if self.current_content_index > le:
-            self.current_content_index = le  # some log here
+            self.current_content_index = 0  # some log here
         if self.current_content_index < 0:
-            self.current_content_index = 0  # and some here
+            self.current_content_index = le  # and some here
 
         # con = self.content_list[self.current_content_index]
         # print(con.ctime,con.size)
