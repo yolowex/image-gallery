@@ -71,12 +71,7 @@ class FolderView:
             cp.current_operation in [ClipboardEnum.COPY, ClipboardEnum.CUT]
         ) and cp.current_result == ClipboardResultEnum.PENDING
 
-        save_active = False
-
         info.add_item("Paste", lambda: cr.clipboard.paste(item["path"]), paste_active)
-        info.add_item(
-            "Save Edits", lambda: cr.clipboard.save(item["path"]), save_active
-        )
 
     @property
     def error_color(self):
