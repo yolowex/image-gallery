@@ -63,6 +63,8 @@ class TagView:
         # self.people_button_list: list[Button] = []
 
         self.vertical_margin = 0.01
+        self.save_timer = 0
+        self.save_duration = 0.5
 
         def fun(rect):
             # win_size = cr.ws()
@@ -261,6 +263,10 @@ class TagView:
         th.start()
 
     def add_person(self, text="", location=None, has_focus=True):
+        for text_entry in self.text_entries_list:
+            if text_entry.has_focus:
+                return
+
         if location is None:
             location = Vector2(0.5, 0.5)
 
@@ -370,13 +376,15 @@ class TagView:
             text_view.check_events()
 
         for index, text_view in list(enumerate(self.people_text_view_list))[::-1]:
-            if text_view.just_lost_focus and text_view.text == "":
+            if text_view.just_lost_focus:
                 self.people_text_view_list.pop(index)
                 self.people_location_list.pop(index)
                 # self.people_button_list.pop(index)
                 self.sync_people()
                 self.sync_location_text()
-                self.save()
+
+                if not text_view.text == "":
+                    self.save()
 
         self.add_people_button.check_events()
 

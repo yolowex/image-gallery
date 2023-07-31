@@ -42,11 +42,12 @@ class Log:
                 self.last_announcement = message
 
             # unsafe af
-            self.was_updated = True
 
-            file = open(self.path, "r")
-            readfile = file.read()
-            dict_ = json.loads(readfile)
-            dict_[key] = message
-            json.dump(dict_, open(self.path, "w"), indent=4)
-            Log._id += 1
+            with open(self.path, "r") as file:
+                self.was_updated = True
+
+                readfile = file.read()
+                dict_ = json.loads(readfile)
+                dict_[key] = message
+                json.dump(dict_, open(self.path, "w"), indent=4)
+                Log._id += 1
