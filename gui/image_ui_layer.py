@@ -178,6 +178,12 @@ class ImageUiLayer(UiLayer):
         )
         self.picture_buttons.extend([next_button, previous_button])
 
+    def trigger_fullscreen(self):
+        if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
+            cr.gallery.update_current_view(ViewType.DETAILED)
+        else:
+            cr.gallery.update_current_view(ViewType.FULLSCREEN)
+
     def init_right_pane(self):
         def right_pane_render_condition():
             x = self.parent.image_box.get()
@@ -187,12 +193,6 @@ class ImageUiLayer(UiLayer):
         def source_function():
             x = self.parent.image_box.get()
             return x.x, x.y, x.w, x.w
-
-        def fullscreen_function():
-            if cr.gallery.get_current_view() == ViewType.FULLSCREEN:
-                cr.gallery.update_current_view(ViewType.DETAILED)
-            else:
-                cr.gallery.update_current_view(ViewType.FULLSCREEN)
 
         def delete_function():
             cr.clipboard.delete(cr.gallery.content_manager.current_content.path)
@@ -225,7 +225,7 @@ class ImageUiLayer(UiLayer):
             "Trigger fullscreen",
             R((0.95, h_step * 0), (0.05, 0.05)),
             assets.ui_buttons["fullscreen_enter"],
-            fullscreen_function,
+            self.trigger_fullscreen,
             right_pane_render_condition,
         )
 
@@ -344,6 +344,14 @@ class ImageUiLayer(UiLayer):
 
     # done: fix the bug in navigation
     def check_events(self):
+        pa = self.get_box().get()
+        mr = cr.event_holder.mouse_rect
+        if (
+            cr.event_holder.mouse_double_clicked
+            or pgl.K_RETURN in cr.event_holder.pressed_keys
+        ) and pa.colliderect(mr):
+            self.trigger_fullscreen()
+
         is_vid = False
         content = cr.gallery.content_manager.current_content
         if content.type in [ContentType.PICTURE, ContentType.GIF]:

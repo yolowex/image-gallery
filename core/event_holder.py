@@ -14,8 +14,8 @@ class EventHolder:
         self.window_focus = True
         self.window_resized = False
 
-        self.mouse_double_click_timer = 0
-        self.mouse_double_click_duration = 0.35
+        self.__mouse_double_click_timer = 0
+        self.__mouse_double_click_duration = 0.35
         self.mouse_double_clicked = False
         self.mouse_wheel = 0
         self.mouse_moved = False
@@ -126,8 +126,8 @@ class EventHolder:
             n = utils.now()
             # print(n,self.mouse_double_click_timer+self.mouse_double_click_duration)
 
-            if n > self.mouse_double_click_timer + self.mouse_double_click_duration:
-                self.mouse_double_click_timer = n
+            if n > self.__mouse_double_click_timer + self.__mouse_double_click_duration:
+                self.__mouse_double_click_timer = n
 
             else:
                 self.mouse_double_clicked = True
