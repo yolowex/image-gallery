@@ -17,7 +17,7 @@ class ZoomView:
         self.timer = utils.now()
         self.duration = 2.5
         self.slide_show_active = False
-
+        self.slide_show_random = False
         self.container_box = container_box
 
         self.inner_image_rect = FRect(0, 0, 0, 0)
@@ -214,11 +214,20 @@ class ZoomView:
             if pgl.K_KP_5 in pressed:
                 self.duration = 5
 
+            if pgl.K_LCTRL:
+                self.slide_show_random = not self.slide_show_random
+
             if utils.now() > self.timer + self.duration:
                 if len(self.content_manager.content_list):
-                    self.content_manager.goto(
-                        random.randint(0, len(self.content_manager.content_list) - 1)
-                    )
+                    if self.slide_show_random:
+                        self.content_manager.goto(
+                            random.randint(
+                                0, len(self.content_manager.content_list) - 1
+                            )
+                        )
+                    else:
+                        self.content_manager.go_next()
+
                     self.timer = utils.now()
 
         self.content.check_events()
