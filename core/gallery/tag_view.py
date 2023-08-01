@@ -100,6 +100,16 @@ class TagView:
         self.people_box = RelRect(fun, 0.01, 0.01, 0.8, 0.05, use_param=True)
         self.people_text = TextView(self.people_box, is_entry=False, text="Add People")
 
+        self.add_people_box = RelRect(button_fun, 0.8, 0.01, 0.2, 0.05, use_param=True)
+
+        self.add_people_button = Button(
+            "Add People",
+            self.add_people_box,
+            assets.ui_buttons["tag_add"],
+            self.add_person,
+            None,
+        )
+
         self.location_box = RelRect(
             self.fun,
             0.01,
@@ -124,14 +134,32 @@ class TagView:
             self.location_entry_box, is_entry=True, text="", y_scale=0.75
         )
 
-        self.add_people_box = RelRect(button_fun, 0.8, 0.01, 0.2, 0.05, use_param=True)
+        self.caption_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 5,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.caption_text = TextView(
+            self.caption_box, is_entry=False, text="Caption : ", y_scale=0.75
+        )
 
-        self.add_people_button = Button(
-            "Add People",
-            self.add_people_box,
-            assets.ui_buttons["tag_add"],
-            self.add_person,
-            None,
+        self.caption_entry_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 6,
+            0.97,
+            self.people_box.rect.h * 4,
+            use_param=True,
+        )
+        self.caption_entry_text = TextView(
+            self.caption_entry_box,
+            is_entry=True,
+            text="",
+            y_scale=0.18,
+            line_max_char=20,
         )
 
     @property
@@ -193,6 +221,34 @@ class TagView:
         )
         self.location_entry_text = TextView(
             self.location_entry_box, is_entry=True, text="", y_scale=0.75
+        )
+
+        self.caption_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 4,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.caption_text = TextView(
+            self.caption_box, is_entry=False, text="Caption : ", y_scale=0.75
+        )
+
+        self.caption_entry_box = RelRect(
+            self.fun,
+            0.01,
+            0.01 + (self.people_box.rect.h + self.vertical_margin) * 5,
+            0.97,
+            self.people_box.rect.h * 4,
+            use_param=True,
+        )
+        self.caption_entry_text = TextView(
+            self.caption_entry_box,
+            is_entry=True,
+            text=self.caption_entry_text.text,
+            y_scale=self.caption_entry_text.y_scale,
+            line_max_char=self.caption_entry_text.line_max_char,
         )
 
     def load(self):
@@ -294,7 +350,7 @@ class TagView:
         self.people_location_list.append(location)
         # self.people_button_list.append(move_person_button)
 
-        self.sync_location_text()
+        self.sync_perma_tags()
 
     def sync_people(self):
         height = 0.05
@@ -307,7 +363,7 @@ class TagView:
         #     y = 0.01 + (1 + index) * (height + self.vertical_margin)
         #     button.rel_rect.rect.y = y
 
-    def sync_location_text(self):
+    def sync_perma_tags(self):
         height = 0.05
 
         y = 0.01 + (2 + len(self.people_text_view_list)) * (
@@ -348,6 +404,42 @@ class TagView:
             y_scale=self.location_text.y_scale,
         )
 
+        y = 0.01 + (4 + len(self.people_text_view_list)) * (
+            height + self.vertical_margin
+        )
+
+        self.caption_box = RelRect(
+            self.fun,
+            0.01,
+            y,
+            0.97,
+            self.people_box.rect.h,
+            use_param=True,
+        )
+        self.caption_text = TextView(
+            self.caption_box, is_entry=False, text="Caption : ", y_scale=0.75
+        )
+
+        y = 0.01 + (5 + len(self.people_text_view_list)) * (
+            height + self.vertical_margin
+        )
+
+        self.caption_entry_box = RelRect(
+            self.fun,
+            0.01,
+            y,
+            0.97,
+            self.people_box.rect.h * 4,
+            use_param=True,
+        )
+        self.caption_entry_text = TextView(
+            self.caption_entry_box,
+            is_entry=True,
+            text=self.caption_entry_text.text,
+            y_scale=self.caption_entry_text.y_scale,
+            line_max_char=self.caption_entry_text.line_max_char,
+        )
+
     def trigger_save_timer(self):
         self.save_timer = utils.now()
         self.check_save_timer = True
@@ -379,7 +471,8 @@ class TagView:
 
         self.location_text.check_events()
         self.location_entry_text.check_events()
-
+        self.caption_text.check_events()
+        self.caption_entry_text.check_events()
         self.people_text.check_events()
         for text_view in self.people_text_view_list:
             text_view.check_events()
@@ -390,7 +483,7 @@ class TagView:
                 self.people_location_list.pop(index)
                 # self.people_button_list.pop(index)
                 self.sync_people()
-                self.sync_location_text()
+                self.sync_perma_tags()
                 self.trigger_save_timer()
 
         self.add_people_button.check_events()
@@ -426,3 +519,5 @@ class TagView:
 
         self.location_text.render()
         self.location_entry_text.render()
+        self.caption_text.render()
+        self.caption_entry_text.render()

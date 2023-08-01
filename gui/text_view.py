@@ -10,7 +10,13 @@ from core.common import utils, assets
 
 class TextView:
     def __init__(
-        self, box: RelRect, is_entry=False, text="", y_scale=1, on_click_function=None
+        self,
+        box: RelRect,
+        is_entry=False,
+        text="",
+        y_scale=1,
+        on_click_function=None,
+        line_max_char=None,
     ):
         self.on_click_function = on_click_function
         self.font = assets.fonts["mid"]
@@ -21,6 +27,8 @@ class TextView:
         self.is_entry = is_entry
         self.has_focus = False
         self.just_lost_focus = False
+        self.line_max_char: Optional[int] = line_max_char
+        self.total_lines = 1
 
         self.cursor_timer = utils.now()
         self.cursor_duration = 0.6
@@ -48,8 +56,8 @@ class TextView:
             def new_fun(rect):
                 pa = box.get()
                 res = fun(rect)
-                res.h *= self.y_scale
-                res.w *= self.y_scale
+                res.h *= self.y_scale * self.total_lines
+                res.w *= self.y_scale * self.total_lines
 
                 # dirty: redundant
                 res.center = pa.center
@@ -80,11 +88,28 @@ class TextView:
         return cut_1[0], src_rect_1
 
     def update(self, suffix=""):
+        self.total_lines = 1
         self.used_suffix = suffix != ""
+        text = self.text
+
+        new_text = ""
+        if self.line_max_char is None:
+            new_text = text
+        else:
+            c = 0
+            for i in text:
+                c += 1
+
+                if c == self.line_max_char:
+                    new_text += "\n"
+                    c = 0
+                    self.total_lines += 1
+
+                new_text += i
 
         self.texture = Texture.from_surface(
             cr.renderer,
-            self.font.render(" " + self.text + suffix, True, cr.color_theme.text_0),
+            self.font.render(" " + new_text + suffix, True, cr.color_theme.text_0),
         )
 
         self.main_fun = self.make_box_fun(

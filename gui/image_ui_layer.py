@@ -363,10 +363,7 @@ class ImageUiLayer(UiLayer):
         if self.any_hovered:
             cr.mouse.current_cursor = pgl.SYSTEM_CURSOR_HAND
         else:
-            if (
-                cr.event_holder.mouse_double_clicked
-                or pgl.K_RETURN in cr.event_holder.pressed_keys
-            ) and pa.colliderect(mr):
+            if cr.event_holder.mouse_double_clicked and pa.colliderect(mr):
                 self.trigger_fullscreen()
 
     def render(self):
