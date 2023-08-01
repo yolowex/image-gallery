@@ -43,6 +43,9 @@ class ThumbnailView:
         info.add_item("Copy", lambda: cr.clipboard.copy(content.path))
         info.add_item("Cut", lambda: cr.clipboard.cut(content.path))
         info.add_item("Delete", lambda: cr.clipboard.delete(content.path))
+        info.add_item(
+            "Rename", lambda: cr.clipboard.rename_file(content.path, content.extension)
+        )
 
     def reinit(self):
         self.boxes.clear()

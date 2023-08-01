@@ -1,3 +1,4 @@
+import pathlib
 import threading
 
 from core.common import utils
@@ -6,6 +7,7 @@ from core.common.names import *
 from core.common.enums import ClipboardEnum, ClipboardResultEnum, LogLevel
 from helper_kit.delete_popup import delete_file_popup
 from helper_kit.name_dialog_popup import name_dialog
+from helper_kit.rename_dialog_popup import rename_dialog
 
 
 class Clipboard:
@@ -17,6 +19,8 @@ class Clipboard:
         self.trigger_operation = False
         self.has_popup = False
         self.new_folder_name: Optional[str] = None
+        self.new_file_name: Optional[str] = None
+        self.new_file_extension: Optional[str] = None
 
     @property
     def log_text(self):
@@ -37,9 +41,40 @@ class Clipboard:
         self.dst_path = None
         cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
 
+    def rename_file(self, path, extension):
+        self.current_result = ClipboardResultEnum.PENDING
+        self.current_operation = ClipboardEnum.RENAME
+        self.src_path = path
+        self.new_file_extension = extension
+        fun = lambda: rename_dialog(self)
+        th = threading.Thread(target=fun)
+        th.start()
+        cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
+
+    def __do_rename(self):
+        try:
+            dst_path = (
+                cr.gallery.content_manager.path
+                + "/"
+                + self.new_file_name
+                + "."
+                + self.new_file_extension
+            )
+            dst_path = pathlib.Path(dst_path).resolve()
+
+            os.rename(self.src_path, dst_path)
+            self.current_result = ClipboardResultEnum.SUCCESS
+            cr.gallery.content_manager.reinit()
+            cr.gallery.detailed_view.thumbnail_view.reinit()
+
+        except Exception as e:
+            self.current_result = ClipboardResultEnum.FAILED
+
+        cr.log.write_log(self.log_text, LogLevel.ANNOUNCE)
+
     def create_new_folder(self, item):
         self.current_result = ClipboardResultEnum.PENDING
-        self.current_operation = ClipboardEnum.NEW_FOLDER
+        self.current_operation = ClipboardEnum.CREATE_FOLDER
         self.src_path = item["path"]
         fun = lambda: name_dialog(self)
         th = threading.Thread(target=fun)
@@ -148,7 +183,14 @@ class Clipboard:
 
             elif (
                 self.trigger_operation
-                and self.current_operation == ClipboardEnum.NEW_FOLDER
+                and self.current_operation == ClipboardEnum.CREATE_FOLDER
             ):
                 self.__perform_folder_creation()
+                self.trigger_operation = False
+
+            elif (
+                self.trigger_operation
+                and self.current_operation == ClipboardEnum.RENAME
+            ):
+                self.__do_rename()
                 self.trigger_operation = False
