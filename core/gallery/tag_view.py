@@ -65,6 +65,7 @@ class TagView:
         self.vertical_margin = 0.01
         self.save_timer = 0
         self.save_duration = 0.5
+        self.check_save_timer = False
 
         def fun(rect):
             # win_size = cr.ws()
@@ -362,11 +363,19 @@ class TagView:
             y_scale=self.location_text.y_scale,
         )
 
+    def trigger_save_timer(self):
+        self.save_timer = utils.now()
+        self.check_save_timer = True
+
     def check_save(self):
         for text_entry in self.text_entries_list:
             if text_entry.just_lost_focus:
                 self.save()
                 break
+
+        if self.check_save_timer and utils.now() > self.save_timer + self.save_duration:
+            self.save()
+            self.check_save_timer = False
 
     def check_name_tags(self):
         for name_tag in self.name_tags[::-1]:
@@ -391,15 +400,13 @@ class TagView:
             text_view.check_events()
 
         for index, text_view in list(enumerate(self.people_text_view_list))[::-1]:
-            if text_view.just_lost_focus:
+            if text_view.just_lost_focus and text_view.text == "":
                 self.people_text_view_list.pop(index)
                 self.people_location_list.pop(index)
                 # self.people_button_list.pop(index)
                 self.sync_people()
                 self.sync_location_text()
-
-                if not text_view.text == "":
-                    self.save()
+                self.trigger_save_timer()
 
         self.add_people_button.check_events()
         self.search_button.check_events()
