@@ -134,21 +134,6 @@ class TagView:
             None,
         )
 
-        self.search_box = RelRect(fun, 0.01, 0.94, 0.8, 0.05, use_param=True)
-        self.search_text = TextView(self.search_box, is_entry=True, text="")
-
-        self.search_button_box = RelRect(
-            button_fun, 0.8, 0.94, 0.2, 0.05, use_param=True
-        )
-
-        self.search_button = Button(
-            "Add People",
-            self.search_button_box,
-            assets.ui_buttons["search"],
-            lambda: None,
-            None,
-        )
-
     @property
     def any_name_tag_selected(self):
         return any([i.is_selected == True for i in self.name_tags])
@@ -409,8 +394,6 @@ class TagView:
                 self.trigger_save_timer()
 
         self.add_people_button.check_events()
-        self.search_button.check_events()
-        self.search_text.check_events()
 
         # for button in self.people_button_list:
         #     button.check_events()
@@ -443,5 +426,3 @@ class TagView:
 
         self.location_text.render()
         self.location_entry_text.render()
-        self.search_button.render()
-        self.search_text.render()
