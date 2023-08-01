@@ -309,15 +309,15 @@ class TagView:
                     location_text = self.location_entry_text.text
                 else:
                     location_text = " "
-                    if not len(name_tags):
-                        return
+
 
                 if self.caption_entry_text.text != "":
                     caption_text = self.caption_entry_text.text
                 else:
                     caption_text = " "
-                    if not len(name_tags):
-                        return
+
+                if self.caption_entry_text.text == "" and self.location_entry_text.text and not len(self.name_tags):
+                    return
 
                 perma_tags.append([content.path, "Location", location_text])
                 perma_tags.append([content.path, "Caption", caption_text])
