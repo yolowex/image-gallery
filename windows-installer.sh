@@ -261,7 +261,7 @@ if [ $shouldBuildExe -eq 1 ]; then
     mkdir $buildPath
     cd $buildPath
     echo "I'm in $(pwd)"
-    pyinstaller $pythonEntryPath --onefile --icon=$iconPath 
+    pyinstaller $pythonEntryPath --windowed --onefile --icon=$iconPath 
 
     rm -rf "$buildPath\build"
     rm "$buildPath\main.spec"

@@ -169,7 +169,7 @@ class TagView:
     @property
     def text_entries_list(self) -> list[TextView]:
         res = self.people_text_view_list.copy()
-        res.extend([self.location_entry_text])
+        res.extend([self.location_entry_text,self.caption_entry_text])
 
         return res
 

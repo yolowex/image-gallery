@@ -57,5 +57,5 @@ except Exception as e:
 
 
 log.write_log("Closing the app...", LogLevel.INFO)
-if error and not constants.IS_LINUX:
-    input("Press any key to exit")
+# if error and not constants.IS_LINUX:
+#     input("Press any key to exit")
