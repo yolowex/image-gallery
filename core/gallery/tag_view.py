@@ -293,39 +293,45 @@ class TagView:
         """
 
         def operation():
-            content: Content = cr.gallery.content_manager.current_content
+            try:
+                content: Content = cr.gallery.content_manager.current_content
 
-            name_tags = []
-            for text_view, location in zip(
-                self.people_text_view_list, self.people_location_list
-            ):
-                name_tag = [content.path, text_view.text, location.x, location.y]
-                name_tags.append(name_tag)
+                name_tags = []
+                for text_view, location in zip(
+                    self.people_text_view_list, self.people_location_list
+                ):
+                    name_tag = [content.path, text_view.text, location.x, location.y]
+                    name_tags.append(name_tag)
 
-            perma_tags = []
+                perma_tags = []
 
-            if self.location_entry_text.text != "":
-                location_text = self.location_entry_text.text
-            else:
-                location_text = " "
-                if not len(name_tags):
-                    return
+                if self.location_entry_text.text != "":
+                    location_text = self.location_entry_text.text
+                else:
+                    location_text = " "
+                    if not len(name_tags):
+                        return
 
-            if self.caption_entry_text.text != "":
-                caption_text = self.caption_entry_text.text
-            else:
-                caption_text = " "
-                if not len(name_tags):
-                    return
+                if self.caption_entry_text.text != "":
+                    caption_text = self.caption_entry_text.text
+                else:
+                    caption_text = " "
+                    if not len(name_tags):
+                        return
 
-            perma_tags.append([content.path, "Location", location_text])
-            perma_tags.append([content.path, "Caption", caption_text])
+                perma_tags.append([content.path, "Location", location_text])
+                perma_tags.append([content.path, "Caption", caption_text])
 
-            agent = SqlAgent()
-            agent.init()
-            agent.push_item(content.path, name_tags, perma_tags)
-            self.name_tags.clear()
-            self.update_name_tags()
+                agent = SqlAgent()
+                agent.init()
+                agent.push_item(content.path, name_tags, perma_tags)
+                self.name_tags.clear()
+                self.update_name_tags()
+            except Exception as e:
+                cr.log.write_log(
+                    f"An error occurred while saving changes to database!: {e}",
+                    LogLevel.ERROR,
+                )
 
             # self.load(agent)
 

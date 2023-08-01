@@ -42,12 +42,15 @@ class Log:
                 self.last_announcement = message
 
             # unsafe af
+            try:
+                with open(self.path, "r") as file:
+                    self.was_updated = True
 
-            with open(self.path, "r") as file:
-                self.was_updated = True
+                    readfile = file.read()
+                    dict_ = json.loads(readfile)
+                    dict_[key] = message
+                    json.dump(dict_, open(self.path, "w"), indent=4)
+                    Log._id += 1
 
-                readfile = file.read()
-                dict_ = json.loads(readfile)
-                dict_[key] = message
-                json.dump(dict_, open(self.path, "w"), indent=4)
-                Log._id += 1
+            except Exception as e:
+                print(f"An error occurred while trying to write log message!: {e}")
