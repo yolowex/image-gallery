@@ -246,7 +246,7 @@ class TagView:
         self.caption_entry_text = TextView(
             self.caption_entry_box,
             is_entry=True,
-            text=self.caption_entry_text.text,
+            text=" ",
             y_scale=self.caption_entry_text.y_scale,
             line_max_char=self.caption_entry_text.line_max_char,
         )
@@ -268,11 +268,15 @@ class TagView:
             return
 
         location = None
+        caption = None
         for i in item[1]:
             if i[1] == "Location":
                 location = i
+            if i[1] == "Caption":
+                caption = i
 
         self.location_entry_text.text = location[2]
+        self.caption_entry_text.text = caption[2]
 
         for name in item[0]:
             self.add_person(
@@ -280,6 +284,7 @@ class TagView:
             )
 
         self.location_entry_text.update()
+        self.caption_entry_text.update()
         self.update_name_tags()
 
     def save(self):
@@ -300,13 +305,21 @@ class TagView:
             perma_tags = []
 
             if self.location_entry_text.text != "":
-                text = self.location_entry_text.text
+                location_text = self.location_entry_text.text
             else:
-                text = " "
+                location_text = " "
                 if not len(name_tags):
                     return
 
-            perma_tags.append([content.path, "Location", text])
+            if self.caption_entry_text.text != "":
+                caption_text = self.caption_entry_text.text
+            else:
+                caption_text = " "
+                if not len(name_tags):
+                    return
+
+            perma_tags.append([content.path, "Location", location_text])
+            perma_tags.append([content.path, "Caption", caption_text])
 
             agent = SqlAgent()
             agent.init()
