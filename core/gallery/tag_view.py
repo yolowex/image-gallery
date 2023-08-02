@@ -169,7 +169,7 @@ class TagView:
     @property
     def text_entries_list(self) -> list[TextView]:
         res = self.people_text_view_list.copy()
-        res.extend([self.location_entry_text,self.caption_entry_text])
+        res.extend([self.location_entry_text, self.caption_entry_text])
 
         return res
 
@@ -310,13 +310,16 @@ class TagView:
                 else:
                     location_text = " "
 
-
                 if self.caption_entry_text.text != "":
                     caption_text = self.caption_entry_text.text
                 else:
                     caption_text = " "
 
-                if self.caption_entry_text.text == "" and self.location_entry_text.text and not len(self.name_tags):
+                if (
+                    self.caption_entry_text.text == ""
+                    and self.location_entry_text.text
+                    and not len(self.name_tags)
+                ):
                     return
 
                 perma_tags.append([content.path, "Location", location_text])
