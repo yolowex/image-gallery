@@ -1,5 +1,6 @@
 # pycache
 __pycache__
+*.pyc
 
 # pycharm
 .idea
