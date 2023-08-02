@@ -34,6 +34,7 @@ Make sure you have the following libraries installed before running Foto Folio:
 * numpy
 * opencv-python
 * moviepy
+* ffmpeg project (https://ffmpeg.org/)
 
 To install the required libraries, you can use pip:
 
