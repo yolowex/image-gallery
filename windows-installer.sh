@@ -23,14 +23,14 @@ shouldBuildExe=0
 shouldBuildInstaller=0
 extensions=("jpg" "gif" "webp" "png" "mp4" "mkv" "avi" )
 source_dirs=("assets" "ffmpeg")
-appName="Lotus"
+appName="Foto Folio"
 appVersion="1.0"
 appPublisher="Arthur378"
 appUrl="https://github.com/Arthur378"
-appExeName="Lotus.exe"
+appExeName="Foto Folio.exe"
 appAssocName="$appName File"
 # this should probably be more dynamic
-exeSource="../build/Lotus.exe"
+exeSource="../build/Foto Folio.exe"
 
 
 
@@ -147,7 +147,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-OutputBaseFilename=Lotus Setup
+OutputBaseFilename=Foto Folio Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
