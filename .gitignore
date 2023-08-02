@@ -1,0 +1,25 @@
+# pycache
+__pycache__
+
+# pycharm
+.idea
+
+# log
+log.json
+Foto Folio
+Lotus
+# build
+installer
+build
+
+# inno
+Output
+
+ffmpeg
+
+test_assets
+
+dump
+
+tests/tmp
+tests/build
